@@ -13,6 +13,7 @@ env/
 .env
 .idea/
 .vscode/
+.ssh/
 
 # 实验生成物：原始结果、日志、断点数据库和临时文件不进入 Git
 results/*
