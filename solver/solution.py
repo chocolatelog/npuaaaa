@@ -84,6 +84,43 @@ class Sol:
     def num_used_sg(self):
         return sum(1 for x in self.blocks_in_sg if x)
 
+    def validate(self, model, num_cores, max_subgraphs=None):
+        """检查块覆盖、核编号和子图商图无环，不修改当前解。"""
+        nb = len(getattr(model, "blocks", ()))
+        if nb == 0 or len(self.sg_of_block) != nb or not self.core_of_sg:
+            return False
+        if any(s < 0 or s >= len(self.core_of_sg)
+               for s in self.sg_of_block):
+            return False
+        if any(c < 0 or c >= num_cores for c in self.core_of_sg):
+            return False
+        used = set(self.sg_of_block)
+        if max_subgraphs is not None and len(used) > max_subgraphs:
+            return False
+        succ = [set() for _ in self.core_of_sg]
+        for edge in getattr(model, "block_edges", ()):
+            if len(edge) == 2 and isinstance(edge[0], (tuple, list)):
+                u, v = edge[0]
+            else:
+                u, v = edge[:2]
+            su, sv = self.sg_of_block[int(u)], self.sg_of_block[int(v)]
+            if su != sv:
+                succ[su].add(sv)
+        indeg = [0] * len(succ)
+        for out in succ:
+            for v in out:
+                indeg[v] += 1
+        stack = [i for i, d in enumerate(indeg) if d == 0]
+        seen = 0
+        while stack:
+            u = stack.pop()
+            seen += 1
+            for v in succ[u]:
+                indeg[v] -= 1
+                if indeg[v] == 0:
+                    stack.append(v)
+        return seen == len(succ)
+
 
 class Context:
     """搜索上下文：模型、场景、核数、适应度权重与评估缓存。

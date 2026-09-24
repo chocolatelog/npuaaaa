@@ -47,7 +47,8 @@ def solve_task(task):
                      time_budget=task.get('budget') or budget_for(n_ops),
                      seed=task.get('seed', hash((case, scene, n)) & 0xffff),
                      block_ops_cap=block_cap_for(n_eligible))
-    out_plan = os.path.join(OUT_PLANS, f'{case}_{scene}_N{n}.json')
+    out_plan = os.path.join(task.get('out_plans', OUT_PLANS),
+                            f'{case}_{scene}_N{n}.json')
     with open(out_plan, 'w', encoding='utf-8') as f:
         json.dump(res['plan'], f)
     entry = {'case': case, 'scene': scene, 'N': n,
@@ -69,14 +70,19 @@ def parse_cases(spec):
 
 
 def main():
+    global OUT_PLANS, OUT_LOG
     parser = argparse.ArgumentParser()
     parser.add_argument('--cases', default='1-100')
     parser.add_argument('--cores', default='2,3,4,5')
     parser.add_argument('--scenes', default='A,B')
     parser.add_argument('--workers', type=int, default=8)
     parser.add_argument('--budget', type=float, default=None)
+    parser.add_argument('--output-dir', default=OUT_PLANS)
+    parser.add_argument('--log-file', default=OUT_LOG)
     args = parser.parse_args()
 
+    OUT_PLANS = os.path.abspath(args.output_dir)
+    OUT_LOG = os.path.abspath(args.log_file)
     os.makedirs(OUT_PLANS, exist_ok=True)
     cases = parse_cases(args.cases)
     cores = [int(x) for x in args.cores.split(',')]
@@ -98,7 +104,8 @@ def main():
             for n in cores:
                 if (case, scene, n) not in done:
                     tasks.append({'case': case, 'scene': scene, 'n': n,
-                                  'budget': args.budget})
+                                  'budget': args.budget,
+                                  'out_plans': OUT_PLANS})
     print(f'{len(tasks)} tasks to solve '
           f'({len(done)} already done), workers={args.workers}')
     t0 = time.time()

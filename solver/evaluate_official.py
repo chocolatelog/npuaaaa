@@ -11,6 +11,7 @@ ATTACH = os.path.normpath(os.path.join(
     HERE, '..', '通用神经网络处理器下的多核调度问题附件'))
 DATA = os.path.join(ATTACH, 'data')
 OUT = os.path.normpath(os.path.join(HERE, '..', 'results', 'official'))
+PLANS = os.path.normpath(os.path.join(HERE, '..', 'results', 'plans'))
 PY = sys.executable
 
 
@@ -27,9 +28,9 @@ def run_one(job):
                '--trace-output', stem + '_trace.json',
                '--log-output', stem + '_log.txt']
     else:
+        scene = {'problem_1': 'A', 'problem_2': 'B', 'problem_3': 'C'}[kind]
         plan = os.path.normpath(os.path.join(
-            HERE, '..', 'results', 'plans',
-            f'{case}_{"A" if kind == "problem_1" else "B"}_N{n}.json'))
+            PLANS, f'{case}_{scene}_N{n}.json'))
         if not os.path.exists(plan):
             return (job, 'missing_plan', plan)
         cmd = [PY, '-X', 'utf8', f'code/multicore_cut_evaluate_{kind}.py',
@@ -59,13 +60,18 @@ def parse_cases(spec):
 
 
 def main():
+    global OUT, PLANS
     parser = argparse.ArgumentParser()
     parser.add_argument('--cases', default='1-100')
     parser.add_argument('--cores', default='2,3,4,5')
     parser.add_argument('--workers', type=int, default=6)
     parser.add_argument('--skip-singlecore', action='store_true')
+    parser.add_argument('--plans-dir', default=os.path.normpath(os.path.join(HERE, '..', 'results', 'plans')))
+    parser.add_argument('--output-dir', default=OUT)
     args = parser.parse_args()
 
+    OUT = os.path.abspath(args.output_dir)
+    PLANS = os.path.abspath(args.plans_dir)
     os.makedirs(OUT, exist_ok=True)
     cases = parse_cases(args.cases)
     cores = [int(x) for x in args.cores.split(',')]

@@ -760,7 +760,8 @@ class Model:
         else:
             added = max(0.0, added_b - self.original_copy_bytes + spill_bytes)
         info = {'orders': orders, 'K': K, 'durs': durs,
-                'sg_wm': sg_wm, 'sg_wv': sg_wv, 'spill_sig': sig}
+                'sg_wm': sg_wm, 'sg_wv': sg_wv, 'spill_sig': sig,
+                'spill_bytes': spill_bytes}
         result = (makespan, added, info)
         if use_cache and key is not None:
             if len(self._eval_cache) > 8192:
