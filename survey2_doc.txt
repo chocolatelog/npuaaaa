@@ -1,0 +1,538 @@
+
+
+
+    
+    
+    
+    
+    
+近两年通用神经网络处理器多核调度：开源论文、可复现实现与技术路线调研
+    
+    
+执行摘要
+    
+本报告以 2024-01-01 至 2026-09-23 为时间范围，围绕 NPU scheduling、multi-core NPU、DAG partition、tensor compiler、cache/memory-aware scheduling、GNN/RL scheduling、hardware-aware scheduling、DMA/pipeline overlap 等关键词重新检索并交叉核验论文与官方开源实现。综合“与赛题机制的匹配度、代码完整性、可复现性、迁移成本”后，我认为最值得优先吸收的不是单一 GNN/RL 方法，而是四条互补路线：LATTICE/DAN-Scheduler 的内存压力感知排序与 Compute-DMA 重叠、MAGIS 的计算图变换—调度联合优化、DOPS 的 DAG+硬件代价模型+动态设备映射，以及 Tessel 的受约束调度搜索。其中，LATTICE 与题目中的 Cube/Vector/MTE、L1/UB、DDR spill/reload 几乎是一一对应的低层机制；MAGIS 尤其适合场景 B 的缓存驻留—时延联合权衡；DOPS 最适合借鉴为“统一调度框架”；Tessel 则非常适合作为场景 A 的多核调度搜索模板。[1]
+    
+对你们这道题，最现实且有竞争力的技术路线应当是“硬件感知启发式 + 多阶段局部搜索 + 官方评测器闭环”，而不是一开始就训练 GNN/RL。理由是：赛题只允许输出 node_to_subgraph 和 core_schedules，真正的 L1/UB 换入换出、Pipe 排布、共享 DDR 带宽竞争和 L2 FIFO Cache 均由官方评测器重建；同时单例希望在约 5–10 分钟内得到结果。因此学习模型最适合后期作为候选动作排序器/代价预测器，而不是替代整个调度器。赛题明确规定场景 A 所有跨子图数据经 DDR，场景 B 同核子图可以在 L1/UB 驻留，问题三再引入 1 MB、250 bytes/cycle 的共享只读 L2，而 DDR 总带宽仅 60 bytes/cycle。fileciteturn0file0
+    
+    
+    
+赛题映射与筛选口径
+    
+你们的问题并不是一般意义上的“把神经网络放到多个核”，而是下面这个联合组合优化：
+    
+Graph Partition+Core Mapping+Intra-core Ordering+Memory Locality+Bandwidth Contention+Pipeline Overlap
+    
+场景 A 的主要矛盾是并行度 versus DDR 通信量；因为每个子图独立成为 Task，即使两个相邻 Task 在同一个核上，跨 Task 数据依然需要 DDR 中转。场景 B 则变成跨核通信 versus 同核驻留 versus L1/UB 内存压力；一个核上的全部子图会组成一个 Task，因此私有缓存数据可跨子图保留。问题三进一步把“共享输入是否值得跨核复制”变复杂：L2 是只读 FIFO Cache，1 MB 容量、250 bytes/cycle 带宽且与 DDR 带宽独立，因此“多个核读取同一个输入”不再必然是坏事——如果这些读取具有足够好的时间局部性，就可能先由一次 DDR miss 将数据带入 L2，随后其他核直接以更高带宽命中。fileciteturn0file0
+    
+因此，本轮没有仅按论文标题中的“NPU”筛选，而是按以下四项判断实际价值：是否具有 DAG/计算图调度；是否显式考虑内存、通信或流水；是否存在官方公开代码/Artifact；是否能把方法映射到你们仅能控制的两个决策变量——node_to_subgraph 与 core_schedules。对于 Cocco 一类概念高度相关但本轮未找到可核验官方代码仓库的工作，没有放入核心开源清单；Cocco 本身确实把 graph-partition scheduling 与 memory configuration search 联合起来，并通过遗传搜索优化片外访问和带宽，因此仍值得读论文，但不符合本次“优先可直接下载实现”的严格筛选条件。[2]
+    
+还有一个重要结论：在本轮筛到的高质量开源项目中，我没有找到一个现成系统同时实现“同构 2–5 核 NPU + 私有 L1/UB + 共享竞争 DDR + 同核 Task 驻留 + 共享只读 FIFO L2”这一完整模型。这反而意味着问题三存在非常清晰的创新空间：可以把已有的 memory-aware scheduling 与共享输入的 cache-aware temporal scheduling 结合起来。
+    
+    
+    
+开源论文与实现总表
+    
+下面第一张表侧重“论文思想和与你们题目的匹配关系”。优先级含义为：1 = 建议直接吸收到主算法；2 = 建议作为重要辅助模块/基线；3 = 主要用作工程或学习型扩展参考。
+    
+项目 / 论文
+年份、作者、出处
+核心方法及与你们题目的关系
+开源情况与可复现性
+A / B / L2 匹配
+优先级
+LATTICE / DAN-Scheduler: Deterministic Three-Stage Co-Optimization of Scheduling, Memory Layout, and Pipeline Overlap for General-Purpose NPUs
+2026；arXiv 元数据目前列 Runhao Liu、Peng Zheng；预印本正文当前已出现 LATTICE 新标题，元数据与正文版本存在名称不一致
+最像本题底层硬件。 MPAS 做 memory-pressure-aware 拓扑排序；DLR 做 L1/UB 分层放置、spill/reload；CPE 在保持内存合法性的情况下恢复 Cube/Vector/MTE 之间的 compute-DMA overlap。论文报告相对最强外部基线平均降低 peak memory 18.3%、额外 DDR 20.4%、spill 约14%、makespan 16.3%。[3]
+论文公开 code/data 匿名 Artifact；当前 requirements、license 尚无法完整核验，故评 中。[3]
+中 / 高 / 中
+1
+MAGIS: Memory Optimization via Coordinated Graph Transformation and Scheduling for DNN
+2024；Renze Chen 等；ASPLOS 2024
+将 graph transformation 与 graph scheduling 联合起来，同时优化峰值内存和 latency；仓库包含 computation graph IR、scheduler、simulator、mutator 和 optimizer。对场景 B 中“大 Task 导致缓存压力、过度融合导致 spill”的问题尤其贴合。[4]
+官方 GitHub、完整安装和示例、MIT；高。[4]
+中 / 高 / 中
+1
+Beyond Prefill-Decode Disaggregation / DOPS: Dynamic Operator Scheduling
+2026；Jiaqi Yang、Jiayi Li、Yihan Fu 等；arXiv 2026，当前仓库标注关联 MICRO 2026
+构造 stage-aware DAG，建立 hardware/communication cost model，由 Bifocal 动态做 operator-to-device placement，并有 HEFT baseline 和 weight-layout search。论文报告 Bifocal 相对 PD 基线几何平均 1.20×–2.23×，WLA 再提供 1.28×–1.33×。[5]
+官方 DOPS 仓库已给 fast mode，甚至无需 GPU/NPU/PIM/真实模型权重即可运行；MIT；高。[6]
+高 / 中 / 中
+1
+Tessel: Boosting Distributed Execution of Large DNN Models via Flexible Schedule Search
+2024；Zhiqi Lin、Youshan Miao、Guanbin Xu 等；HPCA 2024，另有 TPDS 2024 扩展
+把 DNN 表示成 operator/tensor dataflow graph，在给定 placement 下搜索高效执行序；Tessel-fast 降低搜索复杂度。它不像本题那样建模 L1/UB，但“placement + execution-order search”几乎正好对应你们的子图分核与 core_schedules。HPCA 论文报告训练最高 5.5×、推理时延最高降低 38%。[7]
+官方 GitHub、206 commits、示例齐全、MIT；高。[8]
+高 / 中 / 低
+1
+ONNXim: A Fast, Cycle-Level Multi-Core NPU Simulator
+2024；Hyungkyu Ham 等；IEEE Computer Architecture Letters 2024
+直接模拟 multi-core NPU，含片上 SRAM、DRAM/Ramulator、NoC/Booksim2 和多核配置；非常适合参考你们的“核+共享内存+通信竞争”代价模型，但赛题已有官方模拟器，不建议把 ONNXim 本体嵌进去。[9]
+Docker、手工编译、示例 ONNX、MIT；高。[9]
+高 / 中 / 中
+2
+NeuPIMs: NPU-PIM Heterogeneous Acceleration for Batched LLM Inferencing
+2024；Guseul Heo、Sangyeop Lee、Jaehong Cho 等；ASPLOS 2024
+核心是同时利用不同计算/存储资源，通过 sub-batch interleaving 最大化并行；非常适合借鉴“通信/计算重叠”和“不要让某种资源长期空闲”的思想。[10]
+官方 cycle-accurate simulator，Docker 与 build 脚本齐全；高。[11]
+中 / 中 / 低
+2
+Mirage: A Multi-Level Superoptimizer for Tensor Programs
+2024 arXiv，2025 OSDI；Mengdi Wu、Xinhao Cheng、Shengyu Liu 等
+使用多层 μGraph 联合搜索 algebraic transformation、schedule transformation 与新 kernel，并通过抽象表达式剪枝；最大价值是其搜索空间剪枝与图变换思路，而不是直接移植 GPU kernel。[12]
+官方大型活跃仓库，Apache-2.0；当前同仓库还包含 MPK/OSDI 2026；高。[13]
+中 / 中 / 低
+2
+GrapheonRL: GNN + RL for Constraint and Data-Aware Workflow Mapping and Scheduling
+2025；Aasish Kumar Sharma、Julian Kunkel；arXiv
+GNN 编码任务依赖与资源信息，RL 做 mapping/scheduling；论文报告接近 ILP 的结果且求解时间显著下降，是你们做“GNN/RL 创新扩展”最直接的近期参考。[14]
+论文思路强，但当前主 GitHub 只有两个工作流/结果文件，未看到完整可运行训练源码或 checkpoint；因此可复现性 低。2026 年作者另有 benchmark/Zenodo 数据与 HEFT/MILP/CP-SAT 实现。[15]
+高 / 中 / 低
+3
+XSched: Preemptive Scheduling for Diverse XPUs
+2025；Weihang Shen、Mingcong Han、Jialong Liu、Rong Chen、Haibo Chen；OSDI 2025
+面向 GPU/NPU/ASIC 等 XPU 的统一可抢占调度，提出 XQueue 与多层硬件模型；实际评测包含 Ascend 910B、Intel NPU3720、NVIDIA DLA。主要价值在“调度策略与硬件抽象分层”，不是计算图切分。[16]
+Artifact 非常完整，GitHub + Zenodo，Apache-2.0；高。[17]
+中 / 低 / 低
+3
+ACT: Automatically Generating Compiler Backends from Tensor Accelerator ISA Descriptions / TAIDL
+2025；Devansh Jain、Akash Pardeshi、Marco Frigo 等；ACT arXiv 2025，TAIDL MICRO 2025
+把 tensor accelerator 的 programmable memory、指令约束描述为 ISA，自动从 XLA-HLO 生成 backend；支持外接 cycle/analytic/ML cost model。它不是调度算法，但很适合参考如何把你们的 Cube/Vector/MTE/L1/UB 参数抽象成统一硬件模型。[18]
+TAIDL、ACT Backend 和 MICRO Artifact 均公开；Docker Artifact 可复现实验；Apache-2.0；高。[19]
+低 / 中 / 中
+3
+    
+更具体的“能不能下载下来马上跑”的信息如下。这里要特别说明，多数调度/编译器论文不是深度学习模型，所以不存在传统意义上的 .pt/.pth checkpoint；对这些项目，“可下载模型”实际表现为 ONNX 工作负载、模型 shape card、trace、benchmark dataset 或优化器源码。
+    
+项目
+官方代码仓库
+checkpoint / 模型与数据
+主要 requirements
+License
+LATTICE / DAN-Scheduler
+https://anonymous.4open.science/r/MICRO2026-5C74
+论文称 code + data 可下载；无神经网络 checkpoint；Artifact 细节目前未说明/未完全核验。[3]
+未说明
+未说明
+MAGIS
+https://github.com/pku-liang/MAGIS
+无训练 checkpoint；直接运行 graph optimizer；结果可保存为 graph/schedule pickle。[4]
+pip install -r requirements.txt；Python 包；图结构使用 rustworkx，带 PyTorch CUDA backend。[4]
+MIT
+DOPS
+https://github.com/YIAI-02/DOPS
+fast mode 不需要模型权重，仓库内提供 Llama/Qwen 等 shape card；调度结果输出 JSON、op trace、communication trace。[6]
+Python ≥3.10；3.12 fast mode 可仅 stdlib；可选 PyTorch、Ramulator2、LLMCompass、Huawei CANN、NumPy/Pandas 等。[6]
+MIT
+Tessel
+https://github.com/zhiqi-0/Tessel
+无 checkpoint；可以直接输出 .sched.json；包含多个 placement/simulator 示例。[8]
+pip install -e .；runtime 依赖 nnScaler 的 osdi24ae 分支。[8]
+MIT
+ONNXim
+https://github.com/PSAL-POSTECH/ONNXim
+仓库带 fused ResNet-18 ONNX；脚本可生成 ResNet-50、GPT-2、BERT ONNX。[9]
+Ubuntu 20.04 推荐；Python ≥3.8、torch ≥1.10.1、onnxruntime ≥1.10、conan 1.57、CMake ≥3.22.1、GCC ≥10.5。[9]
+MIT
+NeuPIMs
+https://github.com/casys-kaist/NeuPIMs
+无学习型 checkpoint；cycle-accurate simulator，main / npu-only / npu+pim 分支对应实验方案。[11]
+torch ≥1.10.1、onnxruntime ≥1.10、conan 1.57、CMake ≥3.22.1、GCC 8.3；提供 Docker。[11]
+仓库当前页面未在本次抓取中明确展示，记为未说明
+Mirage
+https://github.com/mirage-project/mirage
+无 scheduling checkpoint；可直接编译 tensor program；当前 MPK 分支还能从 Hugging Face 工作负载生成 persistent megakernel。[13]
+源码安装 pip install -e . -v；依赖 GPU/CUDA 环境完成实际 kernel 运行。[13]
+Apache-2.0
+GrapheonRL
+https://github.com/AasishKumarSharma/GrapheonRL
+未找到可下载 pretrained checkpoint；主仓库当前仅两个文件，不宜作为直接工程基线。[20]
+未说明
+未说明
+XSched
+https://github.com/XpuOS/xsched；Artifact：https://github.com/XpuOS/xsched-artifacts
+Artifact 的 assets/download.sh 可下载模型和 media；没有学习型调度 checkpoint。[17]
+C++14、CMake ≥3.14；第三方库基本随工程附带；实际 NPU 实验需对应 SDK，例如 Ascend CANN。[17]
+Apache-2.0
+ACT / TAIDL
+https://github.com/act-compiler/act-backend；https://github.com/act-compiler/taidl
+无 checkpoint；输入是 TAIDL accelerator specification；MICRO Artifact 提供 Docker 重现实验。[19]
+TAIDL 可 pip install git+...@v2.2；完整 Artifact 用 Docker；完整统计约需 30–45 分钟。[19]
+Apache-2.0
+    
+    
+    
+高优先级项目的迁移方案
+    
+    
+LATTICE / DAN-Scheduler：场景 B 的核心参考
+    
+这个工作与赛题在微架构上的相似程度最高。论文目标核心包含 Cube、Vector、Scalar、MTE、DDR、L1/UB，MTE2 负责 load/reload、MTE3 负责 store/spill；不同 Pipe 可以并行，这与题目给出的 Cube/Vector/MTE2/MTE3 和私有 L1/UB 结构高度相似。LATTICE 的关键洞察也是：一个合法拓扑序不等于一个好的内存序，不同合法顺序会导致完全不同的 Tensor lifetime、峰值驻留和 DDR spill。 [3]
+    
+但是不能把 LATTICE 的完整调度器直接塞入赛题。原因是赛题核内 schedule_step1/2/3 已固定，参赛者不能直接修改其 ALLOC/FREE、spill/reload 和 Pipe 排布，只能通过“哪些节点放一个 Task/核”和“子图顺序”间接影响它。fileciteturn0file0
+    
+因此最好的移植方式是把 MPAS 变成一个切图与 core-order 的评分函数。对候选子图或候选 core assignment 预估：
+    
+Pmem=maxtx∈L1live(t)​sizex+ηmaxtx∈UBlive(t)​sizex
+    
+再同时引入关键路径长度：
+    
+Score(v)=α Criticality(v)−β ΔMemory(v)−γ SpillRisk(v)+δ Reuse(v)
+    
+这样就能把 LATTICE “先释放大 Tensor、避免过早申请、兼顾长关键路径”的思想用在你们可控制的决策上。LATTICE 的 MPAS 本身就是在 ready-set 内结合生命周期变化与 bottom-level criticality 选择下一命令。[3]
+    
+预计集成时间：只实现 memory-pressure proxy 和 ordering score，大约 1–2 天；加入 tensor lifetime、spill-risk 模拟并用官方 evaluator 验证，大约 4–6 天。不建议比赛阶段重写 DLR 的真实地址分配器，因为官方 evaluator 已经替你们做实际 cache 换入换出。
+    
+    
+    
+MAGIS：把“切图”和“内存压力”放进一个搜索器
+    
+MAGIS 的工程结构几乎可以作为你们自己的算法架构参考：op_graph.py 管计算图，scheduler.py 负责排序，simulator.py 同时估计 latency/memory，transform/ 生成候选图，optimizer.py 在候选之间搜索。官方示例甚至直接支持给 optimizer 一个 time budget，例如 3 分钟，这种设计与赛题要求单例有限时间内出结果非常契合。[4]
+    
+移植时不应该用 MAGIS 的 Torch CUDA backend，而应该只借其：
+    
+Graph→Mutator→Scheduler→Simulator/Cost→Optimizer
+    
+把 mutator 换成你们自己的四种动作：
+    
+{merge,split,move-to-core,swap/order}
+    
+例如当前两个相邻子图 Si,Sj 之间存在大小为 Bij 的 Tensor，合并收益初步可以写成
+    
+Gainmerge=DDRSaveij⏟减少跨边界搬运+PipelineGainij⏟头尾流水重叠−ParallelLossij⏟减少并行−MemoryPressureij⏟增加spill风险.
+    
+场景 B 中这个公式特别有效，因为同核子图最终都进入一个 Task，而大 Task 又可能因为 L1/UB 紧张导致官方调度器自动 spill。fileciteturn0file0
+    
+预计集成时间：约 3–5 天。 第一版甚至没有必要安装 MAGIS；照其模块划分重写一个针对题目 JSON 的轻量优化器反而更快。真正值得借鉴的是“graph transformation 和 scheduling 不分开优化”的思想。[4]
+    
+    
+    
+DOPS：最适合改造成你们的统一搜索框架
+    
+DOPS 的当前代码完整度是本轮调研里非常突出的：它有 task_graph.py、hardware.py、cost_model.py、scheduler_heft.py、scheduler_bifocal.py、buffer_manager.py、通信建模和 trace 输出，而且 fast-mode 不依赖实际 NPU 或模型权重。[6]
+    
+它可以非常自然地映射为：
+    
+DOPS
+本题
+stage-aware execution DAG
+Op-Tensor DAG
+heterogeneous device
+2–5 个同构 NPU Core
+operator-to-device placement
+子图/节点到 Core 的分配
+topology/communication model
+60 bytes/cycle 共享 DDR
+memory manager
+L1/UB/L2 代价代理
+HEFT/Bifocal
+HEFT baseline + 改进启发式
+op/comms trace
+官方 Perfetto trace / result JSON
+    
+真正需要删掉的是 LLM prefill/decode、PIM 和 weight-layout-specific 部分。保留 task_graph + scheduler + cost_model 的软件结构即可。DOPS 当前允许新 scheduler 直接放入 src/scheduler/，也有 HEFT 实现和参数扫搜索脚本，非常适合做你们自己的实验平台。[6]
+    
+更重要的是，我建议把官方评测器当作 DOPS 中“高精度 cost model”：
+    
+Cheap surrogate→生成 100–1000 个候选→官方 evaluator 精评前 K 个→继续邻域搜索
+    
+这样无需自己百分之百重现官方 DDR contention、L1/UB spill 和 FIFO L2，只需把便宜模型做成“候选排序足够正确”。
+    
+预计集成时间：改写 DAG parser + homogeneous core model 约 1–2 天；建立可用的候选搜索器约 3–5 天。
+    
+    
+    
+Tessel：最适合解决场景 A 的“分区之后怎么排”
+    
+Tessel 最值得借鉴的不是大型分布式训练，而是它把问题明确拆成 placement strategy → schedule construction。给定 operator placement 后，再专门寻找高效 execution ordering，并通过限制搜索结构减少组合爆炸。[21]
+    
+你们可以对应地拆成：
+    
+节点/子图分核 ⇒ 每个核的 core_schedules 搜索.
+    
+场景 A 尤其适合，因为每个子图本来就是单独 Task：一个不好的核内子图顺序会产生依赖等待，太粗的子图又会损失并行度。因此可固定一份 node_to_subgraph，针对 core_schedules 做轻量 beam search；然后再反向固定顺序调整 partition，形成交替优化：
+    
+Partition(k)→Schedule(k)→Partition(k+1)→⋯
+    
+预计集成时间：约 2–4 天。 不推荐直接依赖 Tessel 的 nnScaler runtime，而是移植它“先 placement、后 schedule search、利用结构剪枝”的算法思想；原仓库安装和示例本身很完整。[8]
+    
+    
+    
+    
+推荐的最终技术路线
+    
+结合论文和这道题本身，我建议你们最终不要做一个“所有场景通吃的单一目标遗传算法”，而应做成一个共享框架 + 三个场景特定代价项。
+    
+
+    
+    
+共享底座：先把 DAG 特征做对
+    
+对每个计算 Op v，建议至少预计算五类特征：
+    
+xv=[cyclesv, pipev, BL(v), inputBytesv, outputBytesv, fanoutv, reusev].
+    
+其中 BL(v) 是从 v 到出口的 bottom-level/关键路径长度。边或者关联 Tensor 使用：
+    
+euv=[sizeuv,reuseCountuv,samePipe?,sharedInput?].
+    
+这样无论最终是 HEFT、局部搜索还是 GNN，都可以共享同一套特征。
+    
+不要一开始把所有操作直接按计算量平分。场景 A 的通信代价非常大，因为切开后会自动产生 COPY_OUT/COPY_IN；场景 B 又必须把 tensor lifetime 加进去，否则把很多强依赖节点塞入同一核可能触发更多 L1/UB spill。fileciteturn0file0 LATTICE 的结果进一步说明，即使 DAG 数据依赖完全不变，仅仅改变合法顺序，也可以显著改变 on-chip peak 和额外 DDR traffic。[3]
+    
+    
+    
+场景 A：通信感知分区 + 关键路径调度
+    
+第一版就可以定义切边代价：
+    
+CutCost(Si,Sj)=t∈boundary(Si,Sj)​size(t).
+    
+但不能只最小化 CutCost，否则最优答案永远趋向“整张图一个子图”。因此加入负载与关键路径项：
+    
+TA=CP+α⋅Imbalance+β⋅DDRBytes+γ⋅SyncDelay.
+    
+这里 CP 不应只用原始 op cycles，应同时考虑每个 cluster 的估计执行时间。核分配时使用 HEFT/EFT 风格策略：
+    
+core*(S)=argmincEFT(S,c)
+    
+但 EFT 里增加当前 DDR 压力。DOPS 自带 HEFT baseline 和硬件/通信代价建模接口，可以直接参考代码结构；Tessel 则适合在 placement 后进一步搜索每核执行序。[22]
+    
+场景 A 的主要创新点可以写成：
+    
+Bandwidth-aware Critical-path Graph Partitioning：以 Tensor 大小定义通信亲和度，以关键路径保护并行性，并用共享 DDR 带宽压力修正传统 HEFT 的 EFT。
+    
+这个创新比“普通遗传算法优化子图编号”更符合题目的硬件机制。
+    
+    
+    
+场景 B：加入 Tensor lifetime 与 spill risk
+    
+场景 B 最容易犯的错误是觉得“同核不走 DDR，所以尽量全放一起”。题目明确指出，同核跨子图驻留数据会长期占用 L1/UB，大 Task 还会令核内启发式调度自动产生换出换入。fileciteturn0file0
+    
+因此把场景 A 的目标扩展成：
+    
+TB=CP+αImbalance+βCrossCoreDDR+γSpillRisk−δLocalReuse−ϵPipeOverlap.
+    
+其中：
+    
+LocalReuse=t​sizet⋅1[producer(t),consumer(t) 位于同核]
+    
+而 SpillRisk 可以不用真实模拟地址，只计算近似 live set：
+    
+SpillRisk=τ∈{L1,UB}​max0,PeakLiveτ−CapacityτCapacityτ.
+    
+LATTICE 的 MPAS 和 MAGIS 的 memory-latency joint optimization 正好分别支撑“生命周期排序”和“内存与性能联合搜索”这两个模块。[23]
+    
+此外一定要把 PIPE_M 与 PIPE_V 平衡 纳入聚类。两个子图若一个几乎都是 Cube，一个几乎都是 Vector，把它们合并到同一核不一定是坏事，因为两个 Pipe 能并行；反过来两个高度 Cube-heavy 子图放同一核则可能发生资源串行。这一点也是本题区别于普通 DAG scheduling 的关键。fileciteturn0file0
+    
+    
+    
+共享 L2：我认为最值得你们做“原创创新”的地方
+    
+这个问题不能简单写成“提高 Cache 命中率”。
+    
+因为一个 Tensor 是否值得通过 L2 复用，至少取决于：
+    
+Benefit(t)≈size(t)×(Nread(t)−1)×Phit(t)×1BWDDR−1BWL2.
+    
+题目中：
+    
+BWDDR=60,  BWL2=250 bytes/cycle
+    
+而且两者独立。因此对共享输入 Tensor，允许不同 Core 分别消费它可能同时得到并行收益和 Cache reuse 收益；这与场景 B 单纯追求“共享输入消费者放同一核”是不同的。fileciteturn0file0
+    
+真正的新变量是 FIFO 的复用距离。可以定义：
+    
+ReuseDistance(t)=x 在两次访问之间进入L2​size(x).
+    
+如果：
+    
+ReuseDistance(t)<1MB,
+    
+那么二次访问更有机会保持命中；超过 1 MB 就要显著降低预估 P_hit(t)。这是一个非常适合本题的 cache-aware scheduling 指标。
+    
+因此我最推荐的问题三创新是：
+    
+Shared-Input Hypergraph + FIFO-Reuse-Distance-Aware Scheduling
+    
+即把多个消费同一个 DDR 输入的节点用一条“超边”连接。场景 B 时，这条超边鼓励消费者聚到同一核；而问题三时不再简单聚合，而是比较：
+    
+SameCoreReuse⏟L1/UB vs CrossCoreParallelism+L2Hit⏟共享L2.
+    
+再通过 core_schedules 调整同一输入的多个消费者在时间上的邻近程度，使 FIFO Cache 中的热门输入还没被淘汰就被其他核读取。现有检索到的开源论文里没有直接替你们做这一步，所以这部分反而非常适合作为论文中的赛题定制创新点。
+    
+    
+    
+最后的搜索器：不要暴力枚举，用“Cheap-to-Expensive”分层
+    
+最终优化目标不建议完全写成一个固定加权和，因为比赛真正最重要的是 Makespan，额外搬运是次要指标。fileciteturn0file0 因此真正接受解时可以用词典序：
+    
+F(S)=(Makespan(S),AddedDDR(S))
+    
+而搜索阶段才使用便宜的 surrogate：
+    
+F=w1CP+w2Imbalance+w3DDR+w4SpillRisk−w5LocalReuse−w6L2Benefit−w7PipeOverlap.
+    
+每轮生成例如几百个 merge/split/move/swap 候选，只让 surrogate 最好的几十个进入官方 evaluator。DOPS 的“硬件代价模型 → scheduler → trace”，MAGIS 的“mutator → simulator → optimizer”，都支持这种分层搜索思想。[24]
+    
+我会把完整方案组织成三个阶段：
+    
+Stage I: Communication-aware Initial Partition
+    
+Stage II: Memory/Pipeline-aware Core Mapping
+    
+Stage III: Evaluator-in-the-loop Local Refinement
+    
+问题三再在 Stage II 增加：
+    
+FIFO L2 Reuse-Distance Optimization
+    
+这样三个问题不是三套完全不同的算法，而是同一骨架逐层增加硬件约束，论文结构也会非常漂亮。
+    
+关于 GNN/RL，我的建议是放到最后做增强版。GrapheonRL 从方法上证明近期研究确实在用 GNN 表示 DAG 并由 RL 进行 mapping/scheduling，但它当前公开主仓库的可运行度明显弱于 MAGIS/DOPS/Tessel。[25] 因此更稳的办法是先用上述启发式搜索生成大量：
+    
+(graph, action, ΔMakespan)
+    
+数据，再训练一个 GNN 预测 merge/move/split 的收益。这样 GNN 不承担可行性，而只是从数千个邻域动作中选 Top-K：
+    
+GNN:(G, state, action)→ΔMakespan.
+    
+最终仍由官方 evaluator 判定，这样既能形成“学习型硬件感知调度”的创新，也不会因为 RL 训练不稳定而毁掉基本成绩。
+    
+    
+    
+    
+可复现性分布与研究风险
+    
+按本报告最终纳入的 10 个项目，依据“官方仓库是否完整、是否有安装/运行脚本、是否有 Artifact/样例、是否能拿到实际执行输入”进行人工评级，得到 高 8 / 中 1 / 低 1。其中 LATTICE/DAN-Scheduler 因代码目前以匿名 Artifact 形式给出且依赖与许可证尚未完全核验评为“中”；GrapheonRL 论文有公开仓库，但当前主仓库缺乏完整训练实现与 checkpoint，因此评为“低”。其余项目均有相对完整的官方安装、示例或 Artifact。[26]
+    
+
+    
+这里还需要注意三个风险。
+    
+第一，论文硬件模型不等于赛题模型。MAGIS/Mirage 主要面向 GPU，Tessel 面向多设备分布式 DNN，NeuPIMs/DOPS 又带 PIM。它们最值得移植的是“算法模块”和“搜索思想”，不是论文中的绝对性能数字。[27]
+    
+第二，不能重新实现一个自己的模拟器然后以为它就是最终目标函数。本题最终 Makespan 由官方离散事件模拟器确定，它会自动插入跨 Task COPY、L1/UB spill/reload，同时按照当前并发搬运数公平共享 60 bytes/cycle DDR，并在问题三单独模拟只读 FIFO Cache。fileciteturn0file0 所以所有 paper-inspired cost model 都应该只是筛选候选的 surrogate，官方 evaluator 才是最终 oracle。
+    
+第三，本轮研究不可避免会遗漏闭源商业编译器、企业内部 scheduler、未公开 Artifact 的论文以及尚未被搜索引擎完全索引的 2026 新工作。特别是 Huawei CANN、Google TPU/XLA 内部硬件策略、Apple ANE 与各厂商 NPU compiler 的真实多核调度算法，公开材料通常远少于学术 simulator/compiler；因此本报告结论仅针对截至 2026-09-23 能公开核验的论文、仓库和 Artifact。DOPS 明确提供 Huawei CANN/Ascend-C/msprof 作为可选真实测量后端，也从侧面说明公开研究通常只能通过已有 SDK/Profiler 与真实 NPU 连接，而不是公开芯片内部完整调度算法。[6]
+    
+综合下来，我建议你们阅读/复现顺序就是：
+    
+LATTICE → DOPS → MAGIS → Tessel → ONNXim → 其余。
+    
+其中真正可以形成你们论文主线的组合是：
+    
+LATTICE式 Memory Pressure+DOPS式 Hardware-aware DAG Scheduling+MAGIS式 Joint Search+Tessel式 Schedule Refinement
+    
+而你们自己的核心创新则可以落在：
+    
+Communication-aware Partition+L1/UB Lifetime-aware Mapping+FIFO L2 Reuse-Distance Scheduling
+    
+这条路线比单独写“HEFT+遗传算法”，也比未经充分训练就直接上“GNN+PPO”，更贴合题目给定的硬件和评测机制。
+    
+    
+    
+检索数据库与检索语句
+    
+本轮检索以 arXiv、ACM/ASPLOS/MICRO 论文元数据、IEEE 论文元数据、USENIX OSDI、GitHub 官方论文仓库、Zenodo Artifact 为主要可核验源，并对候选论文进一步检查官方 README、requirements、License、Artifact 和示例输入。ONNXim 的官方仓库给出 IEEE Computer Architecture Letters 的正式引用信息；MAGIS 和 NeuPIMs 官方仓库给出 ASPLOS 论文信息；XSched 则同时核验 USENIX OSDI 页面与 GitHub/Zenodo Artifact。[28]
+    
+主要使用和扩展过的检索表达式包括：
+    
+"NPU scheduling" multi-core DAG 2024 2025 2026 GitHub"multi-core NPU" scheduling simulator GitHub"general-purpose NPU" memory scheduling pipeline overlap"NPU" memory-pressure-aware scheduling DMA overlap"DAG partition" DNN accelerator memory communication GitHub"graph partition scheduling" accelerator memory 2024"tensor compiler" graph scheduling memory optimization 2024 2025"tensor compiler" hardware-aware scheduling GitHub"cache-aware scheduling" NPU DNN accelerator"memory-aware scheduling" neural network accelerator"GNN reinforcement learning" DAG scheduling heterogeneous hardware"GNN RL workflow mapping scheduling" GitHub"operator scheduling" NPU GitHub"NPU PIM dynamic operator scheduling" 2026"compute DMA overlap" NPU scheduling"pipeline overlap" tensor accelerator compilersite:arxiv.org NPU scheduling memory pipeline 2026site:github.com NPU scheduling DAG memorysite:github.com tensor compiler scheduling ASPLOS 2024site:usenix.org scheduling NPU OSDI 2025
+    
+对最终最关键的项目，原始入口分别为 LATTICE/DAN-Scheduler 的 arXiv 预印本及其公开 Artifact、MAGIS ASPLOS'24 官方仓库、DOPS 2026 官方仓库、Tessel HPCA'24/TPDS'24 官方仓库、ONNXim 官方 multi-core NPU simulator、XSched OSDI'25 Artifact，以及 ACT/TAIDL MICRO'25 Artifact。[29]
+    
+    
+    
+    
+
+    
+    
+[1] [3] [23] [26] [29] DAN-Scheduler: Deterministic Three-Stage Co-Optimization of Scheduling, Memory Layout, and Pipeline Overlap for General-Purpose NPUs
+    
+https://arxiv.org/abs/2607.17422
+    
+[2] Cocco: Hardware-Mapping Co-Exploration towards Memory Capacity-Communication Optimization
+    
+https://arxiv.org/abs/2402.00629?utm_source=chatgpt.com
+    
+[4] [27] GitHub - pku-liang/MAGIS: MAGIS: Memory Optimization via Coordinated Graph Transformation and Scheduling for DNN (ASPLOS'24) · GitHub
+    
+https://github.com/pku-liang/MAGIS?utm_source=chatgpt.com
+    
+[5] Beyond Prefill-Decode Disaggregation: Dissecting LLM Inference for Heterogeneous Platforms via Dynamic Operator Scheduling
+    
+https://arxiv.org/abs/2607.25498?utm_source=chatgpt.com
+    
+[6] [22] [24] GitHub - YIAI-02/DOPS · GitHub
+    
+https://github.com/YIAI-02/DOPS?utm_source=chatgpt.com
+    
+[7] Tessel: Boosting Distributed Execution of Large DNN Models via Flexible Schedule Search
+    
+https://arxiv.org/abs/2311.15269?utm_source=chatgpt.com
+    
+[8] [21] GitHub - zhiqi-0/Tessel: HPCA'2024 & TPDS'2024 Tessel: Boosting Distributed Execution of Large DNN Models via Flexible Schedule Search · GitHub
+    
+https://github.com/zhiqi-0/Tessel?utm_source=chatgpt.com
+    
+[9] [28] GitHub - PSAL-POSTECH/ONNXim: ONNXim is a fast cycle-level simulator that can model multi-core NPUs for DNN inference · GitHub
+    
+https://github.com/PSAL-POSTECH/ONNXim?utm_source=chatgpt.com
+    
+[10] NeuPIMs: NPU-PIM Heterogeneous Acceleration for Batched LLM Inferencing
+    
+https://arxiv.org/abs/2403.00579?utm_source=chatgpt.com
+    
+[11] GitHub - casys-kaist/NeuPIMs: NeuPIMs: NPU-PIM Heterogeneous Acceleration for Batched LLM Inferencing · GitHub
+    
+https://github.com/casys-kaist/NeuPIMs?utm_source=chatgpt.com
+    
+[12] Mirage: A Multi-Level Superoptimizer for Tensor Programs
+    
+https://arxiv.org/abs/2405.05751
+    
+[13] GitHub - mirage-project/mirage: Mirage Persistent Kernel: Compiling LLMs into a MegaKernel · GitHub
+    
+https://github.com/mirage-project/mirage
+    
+[14] [25] GrapheonRL: A Graph Neural Network and Reinforcement Learning Framework for Constraint and Data-Aware Workflow Mapping and Scheduling in Heterogeneous HPC Systems
+    
+https://arxiv.org/abs/2506.00260?utm_source=chatgpt.com
+    
+[15] GitHub - AasishKumarSharma/GrapheonRL · GitHub
+    
+https://github.com/AasishKumarSharma/GrapheonRL?utm_source=chatgpt.com
+    
+[16] XSched: Preemptive Scheduling for Diverse XPUs | USENIX
+    
+https://www.usenix.org/conference/osdi25/presentation/shen-weihang
+    
+[17] GitHub - XpuOS/xsched-artifacts: Artifact evaluation for XSched [OSDI'25] · GitHub
+    
+https://github.com/XpuOS/xsched-artifacts?utm_source=chatgpt.com
+    
+[18] ACT: Automatically Generating Compiler Backends from Tensor Accelerator ISA Descriptions
+    
+https://arxiv.org/abs/2510.09932?utm_source=chatgpt.com
+    
+[19] GitHub - act-compiler/taidl: TAIDL: Tensor Accelerator ISA Definition Language · GitHub
+    
+https://github.com/act-compiler/taidl?utm_source=chatgpt.com
+    
+[20] GitHub - AasishKumarSharma/GrapheonRL · GitHub
+    
+https://github.com/AasishKumarSharma/GrapheonRL
+    
+    
+      
+        
+                
+        
+        
+              
+      
+    
+  
+

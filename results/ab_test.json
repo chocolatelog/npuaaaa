@@ -1,0 +1,698 @@
+[
+ {
+  "case": "case_004",
+  "scene": "A",
+  "screen": true,
+  "est_mk": 97772.0,
+  "est_added": 2780160.0,
+  "evals": 1503,
+  "tried": 2768,
+  "elapsed": 4.187739610671997,
+  "screen_stats": {
+   "admitted": 636,
+   "skipped": 2132,
+   "forced": 113,
+   "admit_improved": 240,
+   "skip_would_improve": 34,
+   "learn": 749
+  }
+ },
+ {
+  "case": "case_004",
+  "scene": "A",
+  "screen": false,
+  "est_mk": 97772.0,
+  "est_added": 2780160.0,
+  "evals": 1503,
+  "tried": null,
+  "elapsed": 4.2405993938446045,
+  "screen_stats": null
+ },
+ {
+  "case": "case_001",
+  "scene": "A",
+  "screen": false,
+  "est_mk": 58300.0,
+  "est_added": 8064.0,
+  "evals": 1504,
+  "tried": null,
+  "elapsed": 5.341546535491943,
+  "screen_stats": null
+ },
+ {
+  "case": "case_001",
+  "scene": "A",
+  "screen": true,
+  "est_mk": 58300.0,
+  "est_added": 8064.0,
+  "evals": 1504,
+  "tried": 2651,
+  "elapsed": 5.665643930435181,
+  "screen_stats": {
+   "admitted": 626,
+   "skipped": 2025,
+   "forced": 123,
+   "admit_improved": 117,
+   "skip_would_improve": 30,
+   "learn": 749
+  }
+ },
+ {
+  "case": "case_002",
+  "scene": "A",
+  "screen": false,
+  "est_mk": 87221.6,
+  "est_added": 525312.0,
+  "evals": 1502,
+  "tried": null,
+  "elapsed": 6.10075044631958,
+  "screen_stats": null
+ },
+ {
+  "case": "case_002",
+  "scene": "A",
+  "screen": true,
+  "est_mk": 87221.6,
+  "est_added": 525312.0,
+  "evals": 1502,
+  "tried": 2742,
+  "elapsed": 6.370197057723999,
+  "screen_stats": {
+   "admitted": 654,
+   "skipped": 2088,
+   "forced": 95,
+   "admit_improved": 149,
+   "skip_would_improve": 16,
+   "learn": 749
+  }
+ },
+ {
+  "case": "case_011",
+  "scene": "A",
+  "screen": false,
+  "est_mk": 46212.0,
+  "est_added": 1261568.0,
+  "evals": 1500,
+  "tried": null,
+  "elapsed": 6.9065632820129395,
+  "screen_stats": null
+ },
+ {
+  "case": "case_011",
+  "scene": "A",
+  "screen": true,
+  "est_mk": 46212.0,
+  "est_added": 1261568.0,
+  "evals": 1500,
+  "tried": 2715,
+  "elapsed": 7.020824193954468,
+  "screen_stats": {
+   "admitted": 631,
+   "skipped": 2084,
+   "forced": 118,
+   "admit_improved": 234,
+   "skip_would_improve": 27,
+   "learn": 749
+  }
+ },
+ {
+  "case": "case_044",
+  "scene": "A",
+  "screen": false,
+  "est_mk": 81211.57333333333,
+  "est_added": 1201158.4,
+  "evals": 1501,
+  "tried": null,
+  "elapsed": 1.0984265804290771,
+  "screen_stats": null
+ },
+ {
+  "case": "case_044",
+  "scene": "A",
+  "screen": true,
+  "est_mk": 66701.70666666667,
+  "est_added": 1366886.4,
+  "evals": 1501,
+  "tried": 2498,
+  "elapsed": 1.6334683895111084,
+  "screen_stats": {
+   "admitted": 639,
+   "skipped": 1859,
+   "forced": 110,
+   "admit_improved": 165,
+   "skip_would_improve": 14,
+   "learn": 749
+  }
+ },
+ {
+  "case": "case_047",
+  "scene": "A",
+  "screen": false,
+  "est_mk": 534444.2666666666,
+  "est_added": 4005252.0000000005,
+  "evals": 1508,
+  "tried": null,
+  "elapsed": 6.9122254848480225,
+  "screen_stats": null
+ },
+ {
+  "case": "case_064",
+  "scene": "A",
+  "screen": false,
+  "est_mk": 23448.166666666664,
+  "est_added": 18342.0,
+  "evals": 1505,
+  "tried": null,
+  "elapsed": 0.5495343208312988,
+  "screen_stats": null
+ },
+ {
+  "case": "case_064",
+  "scene": "A",
+  "screen": true,
+  "est_mk": 23448.166666666664,
+  "est_added": 18342.0,
+  "evals": 1505,
+  "tried": 2263,
+  "elapsed": 1.0069811344146729,
+  "screen_stats": {
+   "admitted": 629,
+   "skipped": 1634,
+   "forced": 120,
+   "admit_improved": 103,
+   "skip_would_improve": 14,
+   "learn": 749
+  }
+ },
+ {
+  "case": "case_020",
+  "scene": "A",
+  "screen": false,
+  "est_mk": 379458.4,
+  "est_added": 0.0,
+  "evals": 1508,
+  "tried": null,
+  "elapsed": 11.503828048706055,
+  "screen_stats": null
+ },
+ {
+  "case": "case_020",
+  "scene": "A",
+  "screen": true,
+  "est_mk": 379458.4,
+  "est_added": 0.0,
+  "evals": 1508,
+  "tried": 2671,
+  "elapsed": 12.218616962432861,
+  "screen_stats": {
+   "admitted": 637,
+   "skipped": 2034,
+   "forced": 112,
+   "admit_improved": 252,
+   "skip_would_improve": 30,
+   "learn": 749
+  }
+ },
+ {
+  "case": "case_047",
+  "scene": "A",
+  "screen": true,
+  "est_mk": 534444.2666666666,
+  "est_added": 4005252.0000000005,
+  "evals": 1508,
+  "tried": 2502,
+  "elapsed": 9.287970542907715,
+  "screen_stats": {
+   "admitted": 649,
+   "skipped": 1853,
+   "forced": 100,
+   "admit_improved": 214,
+   "skip_would_improve": 17,
+   "learn": 749
+  }
+ },
+ {
+  "case": "case_100",
+  "scene": "A",
+  "screen": false,
+  "est_mk": 150870.52666666667,
+  "est_added": 3820703.6000000006,
+  "evals": 1505,
+  "tried": null,
+  "elapsed": 5.735228538513184,
+  "screen_stats": null
+ },
+ {
+  "case": "case_100",
+  "scene": "A",
+  "screen": true,
+  "est_mk": 150870.52666666667,
+  "est_added": 3820703.6000000006,
+  "evals": 1505,
+  "tried": 1457,
+  "elapsed": 5.7767333984375,
+  "screen_stats": {
+   "admitted": 701,
+   "skipped": 756,
+   "forced": 48,
+   "admit_improved": 89,
+   "skip_would_improve": 13,
+   "learn": 749
+  }
+ },
+ {
+  "case": "case_093",
+  "scene": "A",
+  "screen": false,
+  "est_mk": 27872.0,
+  "est_added": 16384.0,
+  "evals": 1501,
+  "tried": null,
+  "elapsed": 8.544339418411255,
+  "screen_stats": null
+ },
+ {
+  "case": "case_093",
+  "scene": "A",
+  "screen": true,
+  "est_mk": 27872.0,
+  "est_added": 16384.0,
+  "evals": 1501,
+  "tried": 2644,
+  "elapsed": 9.144784688949585,
+  "screen_stats": {
+   "admitted": 648,
+   "skipped": 1996,
+   "forced": 101,
+   "admit_improved": 311,
+   "skip_would_improve": 33,
+   "learn": 749
+  }
+ },
+ {
+  "case": "case_001",
+  "scene": "B",
+  "screen": false,
+  "est_mk": 70651.84,
+  "est_added": 750566.4,
+  "evals": 1511,
+  "tried": null,
+  "elapsed": 10.70484447479248,
+  "screen_stats": null
+ },
+ {
+  "case": "case_001",
+  "scene": "B",
+  "screen": true,
+  "est_mk": 70651.84,
+  "est_added": 750566.4,
+  "evals": 1511,
+  "tried": 2667,
+  "elapsed": 10.927512407302856,
+  "screen_stats": {
+   "admitted": 634,
+   "skipped": 2033,
+   "forced": 115,
+   "admit_improved": 68,
+   "skip_would_improve": 17,
+   "learn": 749
+  }
+ },
+ {
+  "case": "case_002",
+  "scene": "B",
+  "screen": false,
+  "est_mk": 112685.97333333333,
+  "est_added": 2171494.4,
+  "evals": 1508,
+  "tried": null,
+  "elapsed": 12.317005395889282,
+  "screen_stats": null
+ },
+ {
+  "case": "case_002",
+  "scene": "B",
+  "screen": true,
+  "est_mk": 112587.57333333333,
+  "est_added": 2171494.4,
+  "evals": 1508,
+  "tried": 2715,
+  "elapsed": 12.50303030014038,
+  "screen_stats": {
+   "admitted": 651,
+   "skipped": 2064,
+   "forced": 98,
+   "admit_improved": 153,
+   "skip_would_improve": 19,
+   "learn": 749
+  }
+ },
+ {
+  "case": "case_004",
+  "scene": "B",
+  "screen": false,
+  "est_mk": 150615.57333333333,
+  "est_added": 3532390.4,
+  "evals": 1500,
+  "tried": null,
+  "elapsed": 6.822342395782471,
+  "screen_stats": null
+ },
+ {
+  "case": "case_004",
+  "scene": "B",
+  "screen": true,
+  "est_mk": 150615.57333333333,
+  "est_added": 3532390.4,
+  "evals": 1500,
+  "tried": 2750,
+  "elapsed": 7.284337520599365,
+  "screen_stats": {
+   "admitted": 630,
+   "skipped": 2120,
+   "forced": 119,
+   "admit_improved": 147,
+   "skip_would_improve": 21,
+   "learn": 749
+  }
+ },
+ {
+  "case": "case_011",
+  "scene": "B",
+  "screen": false,
+  "est_mk": 71413.49333333333,
+  "est_added": 2658713.6,
+  "evals": 1501,
+  "tried": null,
+  "elapsed": 14.061704874038696,
+  "screen_stats": null
+ },
+ {
+  "case": "case_011",
+  "scene": "B",
+  "screen": true,
+  "est_mk": 71413.49333333333,
+  "est_added": 2658713.6,
+  "evals": 1501,
+  "tried": 2751,
+  "elapsed": 14.947030544281006,
+  "screen_stats": {
+   "admitted": 640,
+   "skipped": 2111,
+   "forced": 109,
+   "admit_improved": 133,
+   "skip_would_improve": 20,
+   "learn": 749
+  }
+ },
+ {
+  "case": "case_033",
+  "scene": "A",
+  "screen": false,
+  "est_mk": 623793.4066666665,
+  "est_added": 21694768.4,
+  "evals": 1502,
+  "tried": null,
+  "elapsed": 53.14197897911072,
+  "screen_stats": null
+ },
+ {
+  "case": "case_033",
+  "scene": "A",
+  "screen": true,
+  "est_mk": 623934.9733333333,
+  "est_added": 21761588.4,
+  "evals": 1502,
+  "tried": 2735,
+  "elapsed": 53.296043157577515,
+  "screen_stats": {
+   "admitted": 640,
+   "skipped": 2095,
+   "forced": 109,
+   "admit_improved": 224,
+   "skip_would_improve": 36,
+   "learn": 749
+  }
+ },
+ {
+  "case": "case_020",
+  "scene": "B",
+  "screen": false,
+  "est_mk": 1000057.44,
+  "est_added": 54158950.4,
+  "evals": 1501,
+  "tried": null,
+  "elapsed": 36.92072892189026,
+  "screen_stats": null
+ },
+ {
+  "case": "case_044",
+  "scene": "B",
+  "screen": false,
+  "est_mk": 80714.24,
+  "est_added": 1023142.4,
+  "evals": 1501,
+  "tried": null,
+  "elapsed": 1.5950021743774414,
+  "screen_stats": null
+ },
+ {
+  "case": "case_020",
+  "scene": "B",
+  "screen": true,
+  "est_mk": 1000057.44,
+  "est_added": 54158950.4,
+  "evals": 1501,
+  "tried": 2657,
+  "elapsed": 37.33883547782898,
+  "screen_stats": {
+   "admitted": 649,
+   "skipped": 2008,
+   "forced": 100,
+   "admit_improved": 156,
+   "skip_would_improve": 23,
+   "learn": 749
+  }
+ },
+ {
+  "case": "case_044",
+  "scene": "B",
+  "screen": true,
+  "est_mk": 80714.24,
+  "est_added": 1023142.4,
+  "evals": 1501,
+  "tried": 2215,
+  "elapsed": 1.9665048122406006,
+  "screen_stats": {
+   "admitted": 660,
+   "skipped": 1555,
+   "forced": 89,
+   "admit_improved": 84,
+   "skip_would_improve": 10,
+   "learn": 749
+  }
+ },
+ {
+  "case": "case_047",
+  "scene": "B",
+  "screen": false,
+  "est_mk": 562272.4866666666,
+  "est_added": 5691013.199999999,
+  "evals": 1504,
+  "tried": null,
+  "elapsed": 4.8571391105651855,
+  "screen_stats": null
+ },
+ {
+  "case": "case_064",
+  "scene": "B",
+  "screen": false,
+  "est_mk": 23848.166666666664,
+  "est_added": 18342.0,
+  "evals": 1500,
+  "tried": null,
+  "elapsed": 0.6515588760375977,
+  "screen_stats": null
+ },
+ {
+  "case": "case_064",
+  "scene": "B",
+  "screen": true,
+  "est_mk": 23848.166666666664,
+  "est_added": 18342.0,
+  "evals": 1500,
+  "tried": 2129,
+  "elapsed": 0.9803998470306396,
+  "screen_stats": {
+   "admitted": 643,
+   "skipped": 1486,
+   "forced": 106,
+   "admit_improved": 74,
+   "skip_would_improve": 11,
+   "learn": 749
+  }
+ },
+ {
+  "case": "case_047",
+  "scene": "B",
+  "screen": true,
+  "est_mk": 562272.4866666666,
+  "est_added": 5691013.199999999,
+  "evals": 1504,
+  "tried": 2196,
+  "elapsed": 6.815896987915039,
+  "screen_stats": {
+   "admitted": 661,
+   "skipped": 1535,
+   "forced": 88,
+   "admit_improved": 101,
+   "skip_would_improve": 8,
+   "learn": 749
+  }
+ },
+ {
+  "case": "case_093",
+  "scene": "B",
+  "screen": false,
+  "est_mk": 26800.0,
+  "est_added": 32768.0,
+  "evals": 1504,
+  "tried": null,
+  "elapsed": 11.836997747421265,
+  "screen_stats": null
+ },
+ {
+  "case": "case_093",
+  "scene": "B",
+  "screen": true,
+  "est_mk": 26009.6,
+  "est_added": 131072.0,
+  "evals": 1504,
+  "tried": 2704,
+  "elapsed": 12.627814054489136,
+  "screen_stats": {
+   "admitted": 626,
+   "skipped": 2078,
+   "forced": 123,
+   "admit_improved": 92,
+   "skip_would_improve": 12,
+   "learn": 749
+  }
+ },
+ {
+  "case": "case_100",
+  "scene": "B",
+  "screen": false,
+  "est_mk": 198378.40666666668,
+  "est_added": 6470278.3999999985,
+  "evals": 1508,
+  "tried": null,
+  "elapsed": 8.642758846282959,
+  "screen_stats": null
+ },
+ {
+  "case": "case_100",
+  "scene": "B",
+  "screen": true,
+  "est_mk": 198378.40666666668,
+  "est_added": 6470278.3999999985,
+  "evals": 1508,
+  "tried": 1324,
+  "elapsed": 7.95976996421814,
+  "screen_stats": {
+   "admitted": 692,
+   "skipped": 632,
+   "forced": 57,
+   "admit_improved": 63,
+   "skip_would_improve": 10,
+   "learn": 749
+  }
+ },
+ {
+  "case": "case_016",
+  "scene": "A",
+  "screen": false,
+  "est_mk": 33340026.159999996,
+  "est_added": 731056009.6000011,
+  "evals": 1504,
+  "tried": null,
+  "elapsed": 130.31104946136475,
+  "screen_stats": null
+ },
+ {
+  "case": "case_016",
+  "scene": "B",
+  "screen": false,
+  "est_mk": 33620765.219999984,
+  "est_added": 719560907.2,
+  "evals": 1502,
+  "tried": null,
+  "elapsed": 119.61781001091003,
+  "screen_stats": null
+ },
+ {
+  "case": "case_016",
+  "scene": "B",
+  "screen": true,
+  "est_mk": 33614969.30666666,
+  "est_added": 719901694.4000001,
+  "evals": 1502,
+  "tried": 1827,
+  "elapsed": 137.43355178833008,
+  "screen_stats": {
+   "admitted": 659,
+   "skipped": 1168,
+   "forced": 90,
+   "admit_improved": 246,
+   "skip_would_improve": 31,
+   "learn": 749
+  }
+ },
+ {
+  "case": "case_016",
+  "scene": "A",
+  "screen": true,
+  "est_mk": 33340026.159999996,
+  "est_added": 731056009.6000011,
+  "evals": 1504,
+  "tried": 2136,
+  "elapsed": 203.27621364593506,
+  "screen_stats": {
+   "admitted": 669,
+   "skipped": 1467,
+   "forced": 80,
+   "admit_improved": 294,
+   "skip_would_improve": 8,
+   "learn": 749
+  }
+ },
+ {
+  "case": "case_033",
+  "scene": "B",
+  "screen": false,
+  "est_mk": 1067060.8666666667,
+  "est_added": 37436938.0,
+  "evals": 1504,
+  "tried": null,
+  "elapsed": 193.7353105545044,
+  "screen_stats": null
+ },
+ {
+  "case": "case_033",
+  "scene": "B",
+  "screen": true,
+  "est_mk": 1067060.8666666667,
+  "est_added": 37436938.0,
+  "evals": 1504,
+  "tried": 2669,
+  "elapsed": 220.4707236289978,
+  "screen_stats": {
+   "admitted": 627,
+   "skipped": 2042,
+   "forced": 122,
+   "admit_improved": 169,
+   "skip_would_improve": 28,
+   "learn": 749
+  }
+ }
+]

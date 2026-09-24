@@ -1,0 +1,10 @@
+{
+ "coefs": [
+  2.3086738630902213,
+  0.8614137753706161,
+  0.0,
+  0.0,
+  0.0
+ ],
+ "note": "spill_bytes = a*L1p+b*L1w+c*UBp+d*UBw+e, NNLS on official results"
+}

@@ -1,0 +1,45 @@
+# Python 运行缓存
+__pycache__/
+*.py[cod]
+*.pyd
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+
+# 本地环境和编辑器
+.venv/
+venv/
+env/
+.env
+.idea/
+.vscode/
+
+# 实验生成物：原始结果、日志、断点数据库和临时文件不进入 Git
+results/*
+!results/README.md
+!results/summary.csv
+!results/summary.md
+!results/report.md
+!results/evaluation.md
+!results/baseline_comparison.md
+!results/appendix.md
+!results/survey_gap_analysis.md
+!results/survey2_gap_analysis.md
+!results/ab_test.json
+!results/ab_test_900.json
+!results/improve_decisions.json
+
+# 官方评估器生成的超大 trace 和结果副本
+通用神经网络处理器下的多核调度问题附件/data/*_res.json
+通用神经网络处理器下的多核调度问题附件/data/*_trace.json
+通用神经网络处理器下的多核调度问题附件/other/
+
+# 论文附件保留在本地，仓库使用 Markdown 摘要代替二进制文档
+*.docx
+*.pdf
+
+# 本地运行日志
+*.log
+*.jsonl
+*.sqlite3
+*.tmp

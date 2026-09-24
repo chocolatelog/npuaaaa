@@ -1,0 +1,988 @@
+
+
+
+    
+    
+    
+    
+    
+近两年多核 NPU / AI 加速器调度与硬件感知编译研究综述
+    
+    
+执行摘要
+    
+你这道题与近两年研究前沿的重合度其实很高。赛题不是普通的“多核任务分配”，而是一个典型的 Graph Partition + Scheduling + Memory Planning + Bandwidth Contention + Pipeline Overlap 联合优化问题：场景 A 强调切图与 DDR 通信，场景 B 新增同核 L1/UB 驻留与缓存压力，场景 C 又加入 1 MB、250 bytes/cycle 的共享只读 L2；同时所有核共享 60 bytes/cycle DDR，核内有 Cube、Vector、MTE2、MTE3 多条可并行 Pipe。题目给出的商业芯片具体型号未指定，但硬件抽象与华为 Ascend/Da Vinci AI Core 非常接近；正式评价仍应以题目自带模拟器为唯一准绳。fileciteturn0file0
+    
+调研后的核心判断是：不要把主线押在“纯 GNN + 纯 RL”上。 2024–2026 年与这道题最贴近、而且最有工程说服力的工作，反而越来越强调：
+    
+DAG结构+显式Memory Cost+硬件Cost Model+约束搜索+Compute/DMA Overlap
+    
+2026 年针对 Da Vinci 风格 NPU 的 DAN-Scheduler / LATTICE 已经非常直接地证明：操作顺序、张量生命周期、L1/UB 峰值、spill/reload、DDR 流量以及 Cube/Vector/MTE 流水不能分开优化。其三阶段方法把峰值片上内存、额外 DDR 流量、spill 和 modeled makespan 相对最佳外部基线分别降低约 18.3%、20.4%、14.1% 和 16.3%。这与你们场景 B 几乎是“一一对应”的研究问题。需要注意，该工作目前是 2026 年 arXiv 预印本，而非我会优先当作已正式顶会录用结果来引用。[1]
+    
+第二个非常值得重视的结论来自 2026 年 ACM TACO 的 NPUMeter：它针对 Ascend 910B 建立 Cube、Vector、MTE、memory hierarchy 的白盒解析性能模型，平均时延预测误差低于 5%，将设计空间搜索由小时级降至分钟级，并获得最高 1.46× 的算子性能提升。它非常适合你们题目的“5–10 分钟求一个用例”限制，说明准确但便宜的 surrogate/cost model 很可能比直接用官方 evaluator 暴力搜索更重要。[2]
+    
+场景 C 最值得参考的是 CaMDN。它虽然研究的是多租户集成 NPU，而不是你们严格意义上的只读 FIFO L2，但实验明确说明共享 Cache 冲突与数据复用顺序会显著影响 NPU 性能；其 cache-aware mapping + dynamic allocation 平均减少 33.4% memory access，并实现平均 1.88×、最高 2.56× model speedup。对你们而言可借鉴的不是其硬件改造，而是“根据共享输入、reuse distance 和可用 cache capacity 做放置与调度”这一思想。[3]
+    
+GNN/RL 方向近两年确实活跃，但最贴近你们题目的结果主要来自通用 DAG / heterogeneous workflow scheduling，而不是多核 NPU 编译器。WeCAN、GrapheonRL 和 RELMAS 分别证明了 attention/GNN 表示、RL 策略以及 bandwidth-aware state 可以帮助调度，但将它们直接移植到本题仍有较大的训练、泛化和合法性风险。[4]
+    
+因此，我给你们的最终技术优先级是：
+    
+第一优先：Hardware-aware 图划分 + Critical-path/List Scheduling + 局部搜索。第二优先：Memory-pressure-aware 生命周期优化 + Cache-aware fusion。第三优先：共享 L2 reuse-distance-aware 调度。第四优先：训练一个快速 ΔMakespan Cost Model 加速搜索。第五优先：GNN/RL 只作为候选生成器或搜索引导器，而不是最终裁判。
+    
+从论文创新表达上，可以概括成：
+    
+“面向多核 NPU 的分层约束感知联合调度：联合优化计算图划分、缓存生命周期、共享带宽和异构流水并行。”
+    
+这比单纯写成“GNN 调度算法”更贴赛题、更像当前真正的 NPU compiler 研究。
+    
+
+    
+    
+    
+最值得读的论文与场景对应
+    
+    
+第一梯队：直接服务你们主方案
+    
+我建议真正开始做算法前，优先按下面顺序读前六篇。其中前三篇尤其重要。
+    
+优先级
+论文 / 资源
+一句话贡献
+与你们三个场景的关系
+S1
+DAN-Scheduler / LATTICE: Constraint-Directed Scheduling, Memory Planning, and Pipeline Refinement for NPUs, 2026，arXiv：链接
+把 NPU 拓扑排序、L1/UB memory planning、spill/reload、Compute-DMA overlap 做成三阶段联合优化。
+A：★★★；B：★★★★★；C：★★★★。几乎可以直接转化成你们问题 B 的算法骨架。[1]
+S2
+NPUMeter: Automatic Operator Optimization for Ascend NPU with Accurate Analytical Performance Models, ACM TACO 2026：链接
+针对 Ascend NPU 建立 Cube/Vector/MTE/memory 的白盒性能模型，并用快速 DSE 搜索。
+A：★★★★；B：★★★★★；C：★★★★。最值得借鉴的是 cost model，而不是它的算子 tiling 本身。[2]
+S3
+MAS-ATTENTION: Memory-Aware Stream Processing for Attention Acceleration on Resource-Constrained Edge Devices, MLSys 2025：链接
+联合调度 matrix/vector 两类单元，通过 tiling、双流并行和主动 cache overwrite 避免 spill。
+A：★★★；B：★★★★★；C：★★★★。与你们 Cube/Vector + 有限 L1/UB 模型高度相似。[5]
+S4
+HyperParallel-MoE: Multi-Core Interleaved Scheduling for Fast MoE Training on Ascend NPUs, 2026，arXiv：链接
+把 MoE 转成 tile-level heterogeneous taskflow，在 Ascend AIC/AIV 上做 event-driven 静态交错调度，实现计算、通信、矩阵和向量操作重叠。
+A：★★；B：★★★★★；C：★★。最直接的“Ascend + 多核/多执行单元 + 同步 + 静态调度”近期工作之一。[6]
+S5
+CaMDN: Enhancing Cache Efficiency for Multi-tenant DNNs on Integrated NPUs, 2025，arXiv：链接
+通过 cache-aware mapping 与动态 cache allocation 提高共享 Cache 的数据复用效率。
+A：★；B：★★★；C：★★★★★。场景 C 最直接的 cache scheduling 参考。[3]
+S6
+PipeThreader: Software-Defined Pipelining for Efficient DNN Execution, OSDI 2025：链接
+提出 sTask-graph、硬件层级抽象及软件调度 primitives，在异构执行单元间自动寻找 pipeline schedule。
+A：★★★；B：★★★★；C：★★★。主要对应你们 Cube/Vector/MTE overlap，而非多核切图。[7]
+    
+这里面 LATTICE → MAS-Attention → NPUMeter 是我认为对你们建模最有价值的三篇：第一篇解决“内存生命周期与调度顺序”，第二篇解决“Cube/Vector/I/O 怎么并起来”，第三篇解决“怎样快速预测一个方案好不好”。[8]
+    
+    
+    
+第二梯队：计算图、搜索空间与学习型调度
+    
+优先级
+论文
+一句话贡献
+场景价值
+A1
+nnScaler: Constraint-Guided Parallelization Plan Generation for Deep Learning Training, OSDI 2024：链接
+用 op-trans / op-assign / op-order 三类 primitive 表示“图变换、设备分配、执行顺序”，再加约束裁剪搜索空间。
+A/B 很有启发性：恰好对应你们“切图 + 分核 + 排序”三个决策层。其训练场景与本题不同，不应直接套性能数字。[9]
+A2
+Tensor Seeks Layout: Formalizing Layout Selection for ML Compilers, 2026，arXiv：链接
+将全图 tensor layout 与转换代价形式化为组合优化，并用最优求解器揭示“搜索误差”和“cost-model 误差”是两件不同的事。
+A：★★；B：★★★；C：★★★。非常适合支撑“好的优化器首先需要好的代价模型”这个论文论点。[10]
+A3
+RELMAS: Deep Reinforcement Learning based Online Scheduling Policy for DNN Multi-Tenant Multi-Accelerator Systems, 2024，arXiv：链接
+DRL 调度器同时考虑 accelerator dataflow heterogeneity 与 memory-bandwidth contention。
+A：★★★；B：★★；C：★★★。可借鉴 RL state/reward，问题本身不是单图切分。[11]
+A4
+WeCAN: A Learning Method with Gap-Aware Generation for Heterogeneous DAG Scheduling, 2026，arXiv：链接
+用 weighted cross-attention 编码 task-resource 关系，一次网络推理生成 schedule，避免多轮 neural scheduler 的推理开销。
+A：★★★★；B：★★；C：★。如果后面真做学习型 scheduler，这篇比盲目 PPO 更值得先读。[12]
+A5
+GrapheonRL: GNN and Reinforcement Learning for Workflow Mapping and Scheduling, 2025，arXiv：链接
+GNN 编码 DAG 依赖和资源信息，RL 负责资源映射/调度。
+A：★★★★；B/C：★★。最适合作为你们“GNN + RL”模块设计模板，但不是 NPU 专用工作。[13]
+A6
+Event Tensor: A Unified Abstraction for Compiling Dynamic Megakernel, MLSys 2026：链接
+将 tiled task 之间的依赖编码成 Event Tensor，用静态/动态调度生成 persistent megakernel。
+A：★★；B：★★★★；C：★★。对“同步信号如何暴露细粒度并行”非常值得借鉴。[14]
+    
+还有一篇可以作为“扩展阅读”——NVR: Vector Runahead on NPUs for Sparse Memory Access。它通过 NPU 预取机制平均降低约 90% cache misses，并在稀疏 workload 中得到显著性能提升，但其创新依赖硬件结构改变，而你们赛题只能改变切图与调度，因此更适合写 Related Work，不适合作为主算法。 arXiv 链接 [15]
+    
+    
+    
+时间脉络
+    
+
+    
+    
+    
+    
+方法横向比较
+    
+下面这张表把“论文到底解决了什么”和“能不能真的用到这个赛题”分开看。需要特别注意：这些论文的性能数字来自不同 workload、不同芯片和不同 baseline，绝对不能把 1.88×、2.75× 等数字直接当成你们比赛应达到的加速比；它们只用于判断方法是否有效。
+    
+论文
+年份
+解决的问题
+模型 / 算法
+优化目标
+数据集 / 硬件
+关键结果 / 指标
+DAN-Scheduler / LATTICE
+2026
+NPU command DAG 的顺序、片上内存、spill 与 pipeline 耦合
+MPAS memory-aware topo sort + DLR memory planning + CPE critical-path refinement
+Makespan ✓ 通信 ✓ Cache/Memory ✓ Bandwidth 间接 ✓
+6 个来自真实 Da Vinci NPU flow 的 trace DAG，在 generalized NPU model replay
+对最佳外部 baseline：峰值内存 −18.3%、额外 DDR −20.4%、spill −14.1%、makespan −16.3%；CPE 对 Freeze 再降低约 12.1% makespan。[1]
+NPUMeter
+2026
+Ascend NPU 算子性能预测和参数搜索
+解析式 Cube/Vector/Memory/Pipeline cost model + guided DSE
+Latency ✓ Memory/traffic ✓ Pipeline ✓
+Ascend 910B，GEMM、GeLU、GeGLU、FFN、Attention
+端到端预测平均误差 <5%；DSE 从数小时降至数分钟；较 Ascend C 默认配置最高 1.46×。[2]
+HyperParallel-MoE
+2026
+Ascend NPU MoE 中 AIC/AIV/通信串行化
+tile taskflow + event-driven static scheduling + one-sided communication
+Latency ✓ Communication ✓ overlap ✓
+Ascend A3 clusters，DeepSeek-style MoE
+Dispatch-to-Combine MoE-FFN latency 最多改善 1.58×。[6]
+CaMDN
+2025
+多租户 NPU 共享 Cache 冲突
+cache-aware mapping + model-exclusive regions + dynamic allocation
+Cache ✓ Memory traffic ✓ Latency ✓
+Integrated NPU，多 DNN co-location
+平均 memory access −33.4%；model speedup 平均 1.88×、最高 2.56×。[3]
+MAS-Attention
+2025
+Edge NPU 中 Vector/Matrix 两类单元和 cache 容量联合利用
+multi-tier tiling + two streams + proactive cache overwrite
+Latency ✓ Cache ✓ I/O ✓ Energy ✓
+开源模拟器 + 真实 edge NPU
+模拟最高 2.75×、能耗降低 54%；真实 NPU Attention 最高 1.76×。[5]
+PipeThreader
+2025
+异构 GPU unit 上自动构造软件流水
+sTask-graph + hierarchical hardware abstraction + scheduling primitives
+Latency ✓ pipeline overlap ✓
+现代 GPU；FlashAttention、Mamba2 等
+对 FlashAttention 达到可比或更优性能，并为 Mamba2 找到优于手工实现的 pipeline；公开摘要未给统一倍数。[7]
+nnScaler
+2024
+分布式 DNN 图变换、设备分配与执行顺序联合搜索
+op-trans + op-assign + op-order + constraints
+Latency/throughput ✓ Communication ✓
+SwinTransformer、AlphaFold2 等分布式训练 workload
+新搜索空间相较 DeepSpeed、Megatron-LM、Alpa 等方案最高 3.5×。[9]
+RELMAS
+2024
+异构多加速器在线 DNN 调度
+DRL scheduling policy
+Bandwidth ✓ SLA ✓ Energy ✓
+Simba/Eyeriss 多种 accelerator instance
+SLA satisfaction 最多 +173%，energy overhead <1.5%；并非单 DAG makespan 任务。[11]
+WeCAN
+2026
+异构 DAG 快速学习型调度
+weighted cross-attention + end-to-end RL + single-pass generation
+Makespan ✓
+TPC-H DAG、resource-intensive DAG、ML compiler computation graphs
+相对强 baseline 改善 makespan，推理时间与传统 heuristic 同量级；摘要未给统一改善百分比。[12]
+GrapheonRL
+2025
+异构 HPC workflow mapping + scheduling
+GNN encoder + RL policy
+Makespan ✓ resource constraints ✓
+多类 heterogeneous workflow dataset
+解质量接近 ILP，求解比 ILP 快 76%；运行时间约 OLB heuristic 的 3.85×。[13]
+Tensor Seeks Layout
+2026
+ML Compiler 全图 layout 选择与转换成本
+组合优化 + bounded-treewidth DP + weighted MaxSAT
+Data movement ✓ execution cost ✓
+AI accelerator production compiler
+某些 workload 上简单 heuristic 可使执行时间恶化至 5×；还展示了 cost-model error 可成为比 search error 更大的瓶颈。[10]
+    
+这里有一个很重要的研究趋势：
+    
+2024 的问题更多是“搜索哪个并行计划”；2025 开始明显转向“Memory + Heterogeneous Pipeline”；2026 则进一步走向“显式 Cost Model + Memory Plan + Schedule 联合约束”。
+    
+这也是为什么我现在不建议你们把“GNN+RL”放在论文最核心的位置。真正与题目结构最贴的 2026 工作，恰恰是 LATTICE 和 NPUMeter 这种白盒、约束感知、硬件感知的方案。[16]
+    
+    
+    
+工业编译器资源与可复用模块
+    
+    
+华为 Ascend / CANN：与你们模拟器最接近
+    
+华为官方 Ascend C 文档将 AI Core 描述为 Cube、Vector、Scalar 加 MTE DMA 和多级 Local Memory 的结构；MTE2 负责 GM 向片上存储搬入，MTE3 等负责搬出，不同指令队列可异步执行，并依赖显式同步信号保证跨队列正确性。这与你们题中 PIPE_M、PIPE_V、PIPE_MTE2、PIPE_MTE3 的抽象几乎可以直接对照。[17]
+    
+官方文档：Ascend C 基础硬件架构Ascend C 硬件架构抽象
+    
+特别建议认真看 Ascend 官方的 DoubleBuffer 文档：CopyIn/Compute/CopyOut 分别位于 MTE2、Vector/Cube、MTE3 队列，因此数据搬运可以与计算重叠；官方用一个简单例子说明，如果三阶段均耗时 t 且完全串行，Vector 有效利用率只有约 1/3。这正是你们应该纳入 subgraph score 的“pipeline overlap potential”。[18]
+    
+Ascend C DoubleBuffer 官方文档
+    
+更有价值的是官方 GroupedMatmul 性能调优案例：调整 AIC/AIV 比例后耗时由 218.1 μs 降至 154.2 μs；增加 workspace 以减少 Cube/Vector 相互等待进一步降至 131.8 μs；Vector double buffer 后降至 128.1 μs。这个案例说明“多给缓存空间”和“提高并行度”之间并不是简单单调关系，而是 workspace/caching 与 pipeline stall 的联合问题。[19]
+    
+GroupedMatmul 官方调优案例
+    
+    
+    
+OpenXLA：最值得抄的是 Cost Model
+    
+OpenXLA 的 Latency Hiding Scheduler 直接对 HLO DAG 做 wall-time-aware scheduling，其 cost model 不是一个单一黑盒模型，而是把实测 performance table 与 analytical model 混合：GEMM、collective 等可使用 profiling table，对网络和 fusion 则使用解析模型。这种“粗模型筛大量方案 + 精确 evaluator 验少量方案”的结构特别适合你们 5–10 分钟的时间限制。[20]
+    
+OpenXLA LHS Cost Model
+    
+XLA 还在 schedule 之后进行 buffer assignment，利用整个计算图的信息来控制 intermediate memory；这与场景 B 中“同样合法的拓扑序会造成不同 tensor lifetime 和不同 L1/UB 峰值”完全同方向。[21]
+    
+OpenXLA GPU Architecture / Buffer Assignment
+    
+    
+    
+Apache TVM：最值得抄的是 Fusion + 搜索框架
+    
+TVM Relax 的 FuseOps / FuseTIR 会在 dataflow graph 上进行自动 operator fusion，并通过 post-dominator 等图结构分析处理分支；fusion 的核心收益包括去掉中间 buffer 的 global-memory 写回/再读取。它与本题“合并强通信子图减少 DDR，但过度融合又损失并行性和加大 cache pressure”本质相同。[22]
+    
+TVM Operator Fusion
+    
+TVM MetaSchedule 则代表另一条非常值得借鉴的工业路线：用便宜的 cost model 对巨大调度空间排序，然后只测量部分候选；框架本身提供 XGBoost、MLP 等 cost model，以及有限 trial budget。[23]
+    
+TVM MetaSchedule
+    
+    
+    
+这些系统可以拆成哪些共同模块
+    
+模块
+你们可以怎么做
+优点
+主要风险
+DAG Encoder / Graph Feature Extractor
+不一定是 GNN；先计算 critical path、bottom-level、fan-out、tensor bytes、共享输入数、pipe 类型、L1/UB lifetime
+快、稳定、可解释
+人工特征可能遗漏复杂结构
+Graph Partitioner / Fusion
+按 communication-saving / cache-pressure / parallelism-loss 对边做 merge；再 split oversized partition
+直接针对 A/B，容易出成绩
+通用 METIS 只管 edge cut，不懂 DAG 顺序、Cache 和 Pipe，不能直接当最终算法
+HEFT / List Scheduler
+用 bottom-level / EFT 做 core assignment 和 order 的初值
+毫秒～秒级、可靠、非常适合 baseline
+只做一次 greedy 决策，容易陷入局部最优
+Memory/Lifetime Model
+维护 tensor birth、last use、L1/UB live bytes 和 spill-risk
+对 B 非常关键，也是 LATTICE 最有价值的思想之一
+精确模拟成本较高，需设计增量更新
+Hardware-aware Cost Model
+估计 compute critical path + DDR contention + synchronization + spill + pipeline overlap
+5–10 分钟预算下收益极高
+cost model 若错，搜索会稳定地跑向错误方向；NPUMeter 与 layout-selection 研究都说明模型质量很关键。[24]
+DMA / Pipe Overlap Model
+区分 PIPE_M、V、MTE2、MTE3，计算 overlap gain，而不是简单把 cycles 相加
+非常贴真实 Ascend/CANN，也能解释为什么有些大子图反而更快
+单纯理论重叠上界往往过于乐观
+L2 Reuse Model
+对共享 DDR input 建 consumer hyperedge，模拟 FIFO cache / reuse distance
+直接服务问题 C
+为提高 hit rate 强行延迟任务可能反而增大 makespan
+GNN Encoder
+异构节点 embedding：op/tensor/pipe/bytes/lifetime/criticality
+能捕获非局部图结构
+数据量和泛化是最大问题
+RL Agent
+只选择 merge/move/swap/order 等受约束动作，不直接生成任意 schedule
+有机会发现 heuristic 难发现的组合
+训练昂贵，合法 action mask 复杂，比赛风险最高
+    
+一个非常关键的设计原则是：
+    
+官方 Evaluator 是 Judge，不应该是每一步 Search 的 Cost Function
+    
+更实际的是：
+    
+104∼106 个候选→廉价 surrogate→Top-K→官方 evaluator
+    
+这与 NPUMeter 的解析模型 + DSE、XLA 的 profiling/analytical hybrid model，以及 TVM MetaSchedule 的 cost-model-guided search 都是一致的工程思想。[25]
+    
+    
+    
+    
+建议的技术路线与目标指标
+    
+这里的性能数字需要特别说明：题目没有公开一个“冠军 baseline”或完整测试数据分布，所以以下是项目内部验收目标，不是论文或赛题保证值。 而且题目明确说明单核基准是启发式核内调度结果，因此多核 speedup 甚至可能超过物理核数，不应该把 5× 当作硬上限。fileciteturn0file0
+    
+    
+稳妥路线：通信感知图划分 + Critical-Path List Scheduling + 局部搜索
+    
+这是我最建议你们先做出来的主干。
+    
+步骤一：图预处理。
+    
+把 Op-Tensor 二部图转成 Op DAG。对每个 Op 建立：
+    
+xv=[cycles, pipe, depth, bottomLevel, fanout,inputBytes, outputBytes]
+    
+对每条 Op→Op 逻辑边建立：
+    
+eij=[tensorSize, reuseCount, sharedInputFlag]
+    
+步骤二：生成初始子图。
+    
+定义 merge gain：
+    
+Gmerge(i,j)=α⋅SavedDDR(i,j)+β⋅SavedLaunchSync(i,j)−γ⋅ParallelLoss(i,j)−η⋅MemoryRisk(i,j)
+    
+场景 A 让 SavedDDR 权重大；场景 B 增大 MemoryRisk 权重。
+    
+步骤三：Core assignment。
+    
+用 critical-path/list scheduling：ready subgraph 中优先调 bottom-level 高的任务，对每个核心估计 earliest finish time：
+    
+EFT(s,c)=EST(s,c)+T(s,c)
+    
+这里的 T 至少应考虑当前核心负载、前驱通信、DDR congestion proxy，而不是只看 compute cycles。
+    
+步骤四：局部搜索。
+    
+只做四类动作：
+    
+Merge, Split, Move, Swap
+    
+每轮先用 surrogate 筛选，Top-K 再跑官方 evaluator。
+    
+步骤五：多起点。
+    
+至少生成：
+    
+critical-path-biased；
+    
+communication-biased；
+    
+load-balance-biased；
+    
+三个初始解，再统一 local search。
+    
+建议内部目标：
+    
+场景 A 指标
+基本可用
+做得不错
+冲击目标
+5 核平均 speedup
+≥2.5
+≥2.8–3.2
+≥3.4–3.6
+相对朴素切图 added-copy 降低
+≥15%
+≥25%
+≥35%
+2→5 核 speedup 曲线
+基本单调
+明显上升
+接近饱和而非提前塌陷
+    
+这些值需要第一轮全数据跑完后重新校准，不宜事先当作绝对门槛。
+    
+    
+    
+进阶路线：Memory-Pressure-Aware 场景 B
+    
+这条路线是最有可能成为你们论文核心创新的。
+    
+核心思想来自 LATTICE，但要改造成“多核切图版”：
+    
+Partition→Core Assignment→Lifetime-aware Ordering→Pipeline Refinement
+    
+LATTICE 的关键观察非常适用于本题：即使两个执行顺序都是合法拓扑序，不同顺序也会造成完全不同的张量 lifetime overlap、L1/UB 峰值和 spill 流量；其测试中不同合法顺序甚至导致很大的 memory-peak 与额外 DDR 流量差异。[1]
+    
+因此不能只判断：
+    
+“A、B 在同一核心，所以不需要 DDR，合并肯定好。”
+    
+而应判断：
+    
+NetBenefit=SavedCrossCoreDDR+SavedBoundaryCopy−PredictedSpill−ParallelismLoss
+    
+进一步建立 tensor lifetime：
+    
+Life(t)=[produce(t),lastUse(t)]
+    
+并估计：
+    
+PeakL1=maxkt:k∈Life(t),pos(t)=L1​size(t)
+    
+PeakUB=maxkt:k∈Life(t),pos(t)=UB​size(t)
+    
+当预测 peak 接近题目 L1=512 KiB 或 UB=128 KiB 时，显著增加 fusion penalty。题目本身明确规定这些容量，并会在不足时自动插入换出/换入。fileciteturn0file0
+    
+建议目标：
+    
+场景 B 指标
+建议目标
+5 核平均 speedup
+3.1–3.6 作为第一阶段目标
+B 相对 A 的平均 makespan 改善
+8–20%
+reuse-heavy case added-copy 相比 A
+降低 25–40% 值得追求
+因超大 Task 导致的 spill bytes
+相较“无 memory-aware”版本降低 ≥20%
+无效方案 / cache overflow
+0
+    
+这里“B 一定快于 A”也不能作为数学保证，因为过长 tensor residence 可能增加 spill；这一点题目自己也明确提醒了。fileciteturn0file0
+    
+    
+    
+进阶路线：Reuse-Distance-Aware L2 Scheduling
+    
+问题 C 不应该只写成：
+    
+“有 L2，所以访问更快。”
+    
+真正的决策变量是：
+    
+通过切图、分核、执行顺序改变共享输入的访问时间关系，从而改变 FIFO Cache 是否仍保存该 tensor。
+    
+先构造 shared-input hypergraph：
+    
+Tensor X ├── Subgraph A / Core 0 ├── Subgraph B / Core 1 ├── Subgraph C / Core 3 └── Subgraph D / Core 4
+    
+定义一个简化 reuse score：
+    
+ReuseScore(t)=size(t)×(#consumers(t)−1)×Phit(t)
+    
+其中 Phit 通过你们自己实现的 1 MB FIFO 模拟器预测。
+    
+真正应优化的是：
+    
+BenefitL2≃HitBytesBL2−HitBytesBDDR,eff−DelayCost
+    
+因为题目 L2 是 250 bytes/cycle，而 DDR 总带宽只有 60 bytes/cycle，并且两者独立；因此共享输入在 L2 命中不只是减少 DDR bytes，还能缓解其他 core 的 DDR contention。fileciteturn0file0
+    
+但要特别注意：
+    
+Cache hit rate 不是主目标，Makespan 才是。
+    
+一个方案可以把相关消费者都挤到一起使 hit rate 从 50% 提到 80%，却因为破坏并行度让 Makespan 变差。CaMDN 同样说明 cache placement/scheduling 的价值来自最终 memory-access 与 latency 改善，而非“命中率越高越好”。[3]
+    
+建议目标：
+    
+场景 C 指标
+项目目标
+L2 / no-L2 平均 speedup
+≥1.08 有明显效果
+较好的目标
+1.12–1.20
+全用例 byte hit rate
+40–60% 可以作为初始工程目标
+shared-input-heavy 子集
+≥60–70% 值得冲击
+L2 hit 提升但 Makespan 恶化的 case
+必须单独分析，不能只报平均 hit
+    
+如果正式数据本身共享输入很少，那么 70% hit rate 根本不应作为强制目标，应先按“每个图可理论复用的 COPY_IN bytes”计算一个 oracle upper bound。
+    
+    
+    
+进阶路线：Hardware-Aware ΔCost Model
+    
+这是我认为性价比甚至高于 GNN的一条路线。
+    
+与其训练一个模型直接回答：
+    
+“这个完整调度方案需要多少 cycles？”
+    
+不如训练：
+    
+f(s,a)→ΔMakespan
+    
+其中动作 a 是：
+    
+merge 两个 subgraph；
+    
+split；
+    
+move 到另一 core；
+    
+swap order。
+    
+特征只需要：
+    
+[ΔcomputeBalance,ΔcutBytes,ΔcriticalPath,ΔL1Peak,ΔUBPeak,Δreuse,ΔDDRConcurrency]
+    
+第一阶段可直接用 XGBoost / LightGBM 类回归模型，甚至线性模型；没必要一开始上 GNN。
+    
+训练数据可以自动从官方 evaluator 生成：
+    
+
+    
+建议评价 Cost Model 不只报 MSE，而报：
+    
+MAPE, SpearmanRank, TopKRecall
+    
+真正重要的是“能否把真正好的候选排进 Top-K”，而不是 cycle 预测绝对值是否极其精确。NPUMeter 的结果很好地说明，准确的硬件模型能够把设计空间搜索从小时级压到分钟级；OpenXLA 与 TVM 也都采用 cost model / measurement 辅助搜索。[25]
+    
+    
+    
+高风险高回报：GNN + Imitation Learning + RL
+    
+真要做 GNN/RL，我不建议：
+    
+DAG → PPO → 直接生成所有 sgid + core schedule
+    
+搜索空间太大，而且非法方案太多。
+    
+应该做成：
+    
+
+    
+节点特征至少应该包含：
+    
+[opType, pipe, cycles, tensorBytes,depth, bottomLevel, L1/UB, reuseCount]
+    
+边特征：
+    
+[tensorSize, crossSubgraphCost, sharedInput, criticalEdge]
+    
+训练步骤建议：
+    
+先 imitation，再 RL。
+    
+先让 heuristic + local search 产生几万条“较好动作轨迹”，训练 GNN 做：
+    
+P(action∣state)
+    
+然后 PPO 只进行 fine-tune。这样能显著降低从随机策略开始探索的困难。
+    
+WeCAN 的核心方向也是尽量把学习策略压缩为一次前向生成，而不是反复调用神经网络；GrapheonRL 则证明 GNN 可以编码 DAG 依赖和资源信息；RELMAS 表明 bandwidth contention 可以显式进入 RL 状态。因此这三篇更适合作为“学习型增强层”的理论来源，而不应覆盖整个 deterministic scheduler。[4]
+    
+我的风险评价是：
+    
+方案
+实现风险
+预期收益
+论文创新性
+比赛推荐度
+图划分 + List + Local Search
+低
+高
+★★★
+★★★★★
+Memory-aware 联合优化
+中
+很高
+★★★★★
+★★★★★
+L2 reuse-distance 调度
+中
+高
+★★★★★
+★★★★★
+Learned ΔCost Model
+中
+高
+★★★★☆
+★★★★☆
+GNN + RL 直接 Scheduler
+很高
+不确定
+★★★★★
+★★
+GNN 引导局部搜索
+中高
+潜在较高
+★★★★★
+★★★★
+    
+    
+    
+    
+实验、消融与可视化设计
+    
+    
+Baseline 不要只有一个
+    
+你们至少应该构造四层 baseline，才能证明创新究竟来自哪里：
+    
+Baseline
+作用
+B0：随机合法切图/分核
+最低参考，不适合做论文主要对手
+B1：Compute-only List Scheduling
+证明只做负载均衡不够
+B2：Communication-aware Partition + List
+证明 DDR-aware 的价值
+B3：Communication + Memory-aware
+验证场景 B 核心模块
+Full：+ Bandwidth + L2 + Pipeline + Local Search
+最终方法
+    
+对学习模型，再加：
+    
+Full − GNN；
+    
+Full − learned cost model；
+    
+heuristic only；
+    
+RL only；
+    
+否则最后即使性能好，也无法回答“到底是什么起作用”。
+    
+    
+    
+最重要的消融实验
+    
+通信权重消融。
+    
+Score=Tcompute+λcommTcomm
+    
+扫：
+    
+λcomm∈{0,0.25,0.5,1,2,4}
+    
+画出：
+    
+Speedup vs Added DDR Bytes
+    
+应该能够看到 Pareto frontier，而不是只给一个最终点。
+    
+缓存压力消融。
+    
+把：
+    
+λmem=0
+    
+与完整模型比较：
+    
+L1 peak；
+    
+UB peak；
+    
+spill bytes；
+    
+Makespan。
+    
+如果 memory-aware 模块真的有效，应该出现一个非常漂亮的链条：
+    
+更短 lifetime    ↓更低 peak L1/UB    ↓更少 spill/reload    ↓更低 DDR contention    ↓更短 Makespan
+    
+这与 LATTICE 的研究逻辑高度吻合。[1]
+    
+Pipeline overlap 消融。
+    
+比较：
+    
+cycles 简单求和；
+    
+M/V 分别建模；
+    
+M/V/MTE2/MTE3 全部建模。
+    
+最好报告：
+    
+UtilM, UtilV, UtilMTE2, UtilMTE3
+    
+以及：
+    
+OverlapRatio=1−Makespanpipes​BusyTime
+    
+这里的目的不是让这个公式成为正式评分，而是帮助解释为什么某些子图 fusion 会更快。Ascend 官方 DoubleBuffer 和 GroupedMatmul 案例已经表明独立 Pipe 的重叠会产生明显性能收益。[26]
+    
+L2 Cache 消融。
+    
+至少做：
+    
+No L2
+    
+L2 + 原 B schedule
+    
+L2 + Cache-aware reschedule
+    
+如果第二步已经有收益，而第三步又进一步有收益，你才能证明：
+    
+“性能提升不是题目免费加了 L2，而是调度算法主动提高了 L2 的利用效率。”
+    
+    
+    
+建议最终论文必须出现的图
+    
+平均多核加速比图。
+    
+横轴：
+    
+1,2,3,4,5 cores
+    
+纵轴：
+    
+Speedup
+    
+至少四条线：
+    
+Compute-onlyComm-awareMemory-awareFull
+    
+A、B 分别一张图，不建议全塞一张。
+    
+场景 C 图。
+    
+同样 1–5 核：
+    
+No-L2L2-naiveL2-cache-aware
+    
+同时另画：
+    
+Cache Hit Rate (%)
+    
+不能仅用 hit rate 代替 Makespan。
+    
+Pareto 散点图。
+    
+横轴：
+    
+Added DDR Bytes
+    
+纵轴：
+    
+Makespan
+    
+每一点是一个候选调度。
+    
+这一张图特别适合展示：
+    
+“不能只减少通信，因为通信最低的方案未必 Makespan 最低。”
+    
+Tensor lifetime / cache-pressure 图。
+    
+推荐用类似 Gantt：
+    
+Tensor A █████████Tensor B    █████████████Tensor C       ████Tensor D             ███████---------------------------------> timeL1 Usage  ▂▅████▇▅▃...
+    
+把 baseline 和 memory-aware 各放一张，能非常直观展示创新。
+    
+Pipe Gantt。
+    
+Core 0PIPE_M     | MATMUL |       | MATMUL |PIPE_V     |    ADD | MUL   |        |MTE2       |COPY_IN |   COPY_IN      |MTE3       |       COPY_OUT |        |Core 1PIPE_M     |     MATMUL      |PIPE_V     | ADD |      MUL  |...
+    
+赛题本身已经提供 Perfetto Trace JSON，因此最好直接利用 trace 生成几张代表性时间线，而不是自己猜 pipeline 行为。fileciteturn0file0
+    
+Roofline-style Bottleneck Breakdown。
+    
+不需要真正做传统 FLOP roofline，可以画：
+    
+Compute Critical PathDDR WaitingSync WaitingCache SpillPipeline Bubble
+    
+的 stacked bar：
+    
+Baseline      ████████▒▒▒▒▒▒░░░░Comm-aware    ████████▒▒▒░░Memory-aware  ████████▒░Full          ████████
+    
+这样论文的解释性会比单纯说“我们快了 15%”强很多。
+    
+    
+    
+实验统计还应该多做两件事
+    
+第一，不仅报告 average speedup，还应报告 median、P25/P75、worst-case regression。平均值可能被个别大型图拉高，而比赛要求算法对 2–5 核稳定地产生高质量结果。fileciteturn0file0
+    
+第二，把用例按图结构分组：
+    
+Compute-bound, DDR-bound, Reuse-heavy, Memory-pressure-heavy, Critical-path-heavy
+    
+然后回答“什么图适合什么策略”。这会让你们从“一个 heuristic”提升成“一个硬件感知模型”。
+    
+一个推荐的完整实验闭环是：
+    
+
+    
+    
+    
+    
+最终建议与阅读顺序
+    
+从“做比赛、写论文、控制风险”三个角度综合，我建议你们的最终方案不要命名成简单的 GNN Scheduler，而可以设计成类似：
+    
+HAMPS：Hardware-Aware Multi-core NPU Partitioning and Scheduling
+    
+整个算法分四层：
+    
+Communication-Aware Partition
+    
+⇓
+    
+Memory-Pressure-Aware Core Mapping
+    
+⇓
+    
+Bandwidth / Cache-Aware Ordering
+    
+⇓
+    
+Pipeline-Aware Local Refinement
+    
+然后学习模块是可插拔的：
+    
+Learned Cost Model / GNN Search Guide
+    
+而不是让神经网络取代整个系统。
+    
+三个问题因此可以统一写成一个多目标约束优化：
+    
+minΠ,P,C,O Tmakespan+λ1DDDR+λ2Sspill+λ3Pcache+λ4Iimbalance
+    
+其中：
+    
+Π：图切分；
+    
+P：subgraph → core placement；
+    
+O：core 内顺序；
+    
+C：cache / data-residency 行为；
+    
+$D_{\rm DDR}$：额外 DDR 通信；
+    
+$S_{\rm spill}$：L1/UB overflow 的 spill 风险；
+    
+$P_{\rm cache}$：L2 miss / reuse-distance penalty；
+    
+$I_{\rm imbalance}$：多核和 Cube/Vector 负载不均。
+    
+最终真正由官方 evaluator 给出的：
+    
+Tmakespan
+    
+仍是主目标，其余项只是搜索 surrogate。这个区分非常重要。
+    
+实际阅读顺序，我建议如下：
+    
+第一篇：DAN-Scheduler / LATTICE。先建立“为什么 order、cache、spill、DMA 必须联合优化”的完整认识。这篇与你们题目 B 的结构相似度最高。 arXiv [1]
+    
+第二篇：NPUMeter。重点读 performance model，而不是算子优化细节。你们可以直接仿照其思路做“比赛 evaluator 的廉价代理模型”。 ACM [2]
+    
+第三篇：MAS-Attention。重点看 matrix/vector 两流怎么划分、tiling 怎样兼顾 I/O、为什么主动控制 cache overwrite 能避免 spill。 MLSys [5]
+    
+第四篇：HyperParallel-MoE。重点看 Ascend NPU 上的 event-driven static taskflow 和 AIC/AIV 并行，帮助你们设计场景 B 的同步/流水调度表述。 arXiv [6]
+    
+第五篇：CaMDN。专门为问题 C 服务，重点看 shared cache contention、cache-aware mapping、reuse。 arXiv [3]
+    
+第六篇：PipeThreader。用来完善“Task graph + heterogeneous execution unit + software pipeline”这一层。 OSDI 2025 [7]
+    
+之后才是 WeCAN → GrapheonRL → RELMAS。它们适合解决“我们还想再加一个 GNN/RL 创新点”的问题，而不是解决“基础调度到底怎么才能做好”的问题。[4]
+    
+综合最近两年的文献与工业实现，我认为这道题最值得做成的创新不是：
+    
+“我们使用强化学习替代传统算法。”
+    
+而是：
+    
+“我们提出一个面向多核 NPU 的分层硬件感知联合优化框架，以通信收益驱动计算图划分，以 tensor lifetime 驱动核内复用，以共享带宽与 L2 reuse distance 驱动跨核排序，并通过多 Pipe critical-path refinement 恢复计算—搬运并行；进一步利用学习型 cost model 加速 5–10 分钟预算内的组合搜索。”
+    
+这个表述同时能覆盖 A、B、C 三个问题，而且与 2024–2026 年真正有代表性的 NPU compiler / accelerator scheduling 研究趋势是对齐的。[27]
+    
+    
+    
+    
+
+    
+    
+[1] [8] [16] [27] https://arxiv.org/abs/2607.17422
+    
+https://arxiv.org/abs/2607.17422
+    
+[2] [24] [25] https://doi.org/10.1145/3820380
+    
+https://doi.org/10.1145/3820380
+    
+[3] https://arxiv.org/abs/2505.06625
+    
+https://arxiv.org/abs/2505.06625
+    
+[4] [12] https://arxiv.org/abs/2603.23249
+    
+https://arxiv.org/abs/2603.23249
+    
+[5] https://proceedings.mlsys.org/paper_files/paper/2025/hash/d3cf1559a8795eb1ed2b3ad52409ac7d-Abstract-Conference.html
+    
+https://proceedings.mlsys.org/paper_files/paper/2025/hash/d3cf1559a8795eb1ed2b3ad52409ac7d-Abstract-Conference.html
+    
+[6] https://arxiv.org/abs/2605.23764
+    
+https://arxiv.org/abs/2605.23764
+    
+[7] https://www.usenix.org/conference/osdi25/presentation/cheng
+    
+https://www.usenix.org/conference/osdi25/presentation/cheng
+    
+[9] https://www.usenix.org/conference/osdi24/presentation/lin-zhiqi
+    
+https://www.usenix.org/conference/osdi24/presentation/lin-zhiqi
+    
+[10] https://arxiv.org/abs/2608.21555
+    
+https://arxiv.org/abs/2608.21555
+    
+[11] https://arxiv.org/abs/2404.08950
+    
+https://arxiv.org/abs/2404.08950
+    
+[13] https://arxiv.org/abs/2506.00260
+    
+https://arxiv.org/abs/2506.00260
+    
+[14] https://proceedings.mlsys.org/paper_files/paper/2026/hash/53d3f45797970d323bd8a0d379c525aa-Abstract-Conference.html
+    
+https://proceedings.mlsys.org/paper_files/paper/2026/hash/53d3f45797970d323bd8a0d379c525aa-Abstract-Conference.html
+    
+[15] https://arxiv.org/abs/2502.13873
+    
+https://arxiv.org/abs/2502.13873
+    
+[17] https://www.hiascend.com/document/detail/en/CANNCommunityEdition/910/programug/Ascendcopdevg/docs/en/guide/programming_guide/advanced_programming/hardware_implementation/basic_architecture.md
+    
+https://www.hiascend.com/document/detail/en/CANNCommunityEdition/910/programug/Ascendcopdevg/docs/en/guide/programming_guide/advanced_programming/hardware_implementation/basic_architecture.md
+    
+[18] [26] https://www.hiascend.com/document/detail/zh/CANNCommunityEdition/850alpha001/opdevg/Ascendcopdevg/atlas_ascendc_10_0090.html
+    
+https://www.hiascend.com/document/detail/zh/CANNCommunityEdition/850alpha001/opdevg/Ascendcopdevg/atlas_ascendc_10_0090.html
+    
+[19] https://www.hiascend.com/document/detail/zh/CANNCommunityEdition/82RC1/opdevg/ascendcbestP/atlas_ascendc_best_practices_10_0042.html
+    
+https://www.hiascend.com/document/detail/zh/CANNCommunityEdition/82RC1/opdevg/ascendcbestP/atlas_ascendc_best_practices_10_0042.html
+    
+[20] https://openxla.org/xla/lhs_cost_model
+    
+https://openxla.org/xla/lhs_cost_model
+    
+[21] https://openxla.org/xla/gpu_architecture
+    
+https://openxla.org/xla/gpu_architecture
+    
+[22] https://tvm.apache.org/docs/arch/fusion.html
+    
+https://tvm.apache.org/docs/arch/fusion.html
+    
+[23] https://tvm.apache.org/docs/deep_dive/tensor_ir/tutorials/meta_schedule.html
+    
+https://tvm.apache.org/docs/deep_dive/tensor_ir/tutorials/meta_schedule.html
+    
+    
+      
+        
+                
+        
+        
+              
+      
+    
+  
+
