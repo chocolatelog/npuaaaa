@@ -323,6 +323,29 @@ class Model:
                                 + (in_b[b] + out_b[b]) / BW
                                 for b in range(nb)]
 
+    def lower_bounds(self, num_cores):
+        """Optimistic work, dependency and mandatory I/O bounds in cycles.
+
+        These omit synchronization, partition copies and spills, so they can
+        diagnose headroom without claiming that a schedule is attainable.
+        """
+        if num_cores < 1:
+            raise ValueError('num_cores must be positive')
+        path = {}
+        for op in self.topo:
+            duration = self.work_m[op] + self.work_v[op]
+            path[op] = duration + max(
+                (path[p] for p in self.eligible_preds.get(op, ())),
+                default=0.0)
+        parts = {
+            'pipe_m_work': sum(self.work_m.values()) / num_cores,
+            'pipe_v_work': sum(self.work_v.values()) / num_cores,
+            'dependency_path': max(path.values(), default=0.0),
+            'mandatory_ddr': self.original_copy_bytes / BW,
+        }
+        parts['overall'] = max(parts.values(), default=0.0)
+        return parts
+
     def _spill_from_signals(self, sig):
         """由四路信号映射 spill 字节数/时间。
         默认启发式：每池取(峰值超限, 内部总量超限)之大者×2；
@@ -442,13 +465,13 @@ class Model:
 
     # ---------------------------------------------------------------- 评估
     def evaluate(self, sg_of_block, core_of_sg, scene, num_cores,
-                 use_cache=True, orders_override=None):
+                 use_cache=True, orders_override=None, diagnostics=False):
         """返回 (est_makespan, est_added_bytes, info)。scene: 'A'|'B'|'C'.
 
         orders_override 给定时按该每核顺序仿真（绕过缓存），用于
         Tessel 式顺序精修；顺序必须拓扑可行。"""
         key = None
-        if use_cache and orders_override is None:
+        if use_cache and orders_override is None and not diagnostics:
             key = (tuple(sg_of_block), tuple(core_of_sg), scene, num_cores)
             hit = self._eval_cache.get(key)
             if hit is not None:
@@ -760,7 +783,14 @@ class Model:
         else:
             added = max(0.0, added_b - self.original_copy_bytes + spill_bytes)
         info = {'orders': orders, 'K': K, 'durs': durs,
-                'sg_wm': sg_wm, 'sg_wv': sg_wv, 'spill_sig': sig}
+                'sg_wm': sg_wm, 'sg_wv': sg_wv, 'spill_sig': sig,
+                'spill_bytes': spill_bytes}
+        if diagnostics:
+            info.update({'sg_preds': sg_preds, 'end_time': end_time,
+                         'schedule_makespan': max(end_time, default=0.0),
+                         'copy_bytes': total_copy_bytes,
+                         'bandwidth_bound': (bw_bound if scene == 'C'
+                                             else total_copy_bytes / BW)})
         result = (makespan, added, info)
         if use_cache and key is not None:
             if len(self._eval_cache) > 8192:

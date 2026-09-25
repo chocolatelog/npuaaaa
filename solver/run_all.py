@@ -5,6 +5,7 @@
                     [--workers 8] [--time-budget auto]
 """
 import argparse
+import hashlib
 import json
 import os
 import sys
@@ -34,6 +35,13 @@ def block_cap_for(n_eligible):
     return int(max(24, min(240, n_eligible // 400)))
 
 
+def stable_seed(case, scene, n, base_seed=0):
+    """Return the same search seed across Python processes and runs."""
+    payload = f'{base_seed}:{case}:{scene}:{n}'.encode('utf-8')
+    return int.from_bytes(hashlib.blake2b(payload, digest_size=8).digest(),
+                          'little')
+
+
 def solve_task(task):
     from model import load_graph
     from pipeline import solve_case
@@ -43,14 +51,26 @@ def solve_task(task):
     n_ops = len(graph['ops'])
     n_eligible = sum(1 for o in graph['ops']
                      if o['op'] not in ('COPY_IN', 'COPY_OUT'))
+    warm_plan = None
+    if task.get('warm_start_dir'):
+        warm_path = os.path.join(task['warm_start_dir'],
+                                 f'{case}_{scene}_N{n}.json')
+        if os.path.isfile(warm_path):
+            with open(warm_path, encoding='utf-8') as f:
+                warm_plan = json.load(f)
     res = solve_case(graph, N=n, scene=scene,
                      time_budget=task.get('budget') or budget_for(n_ops),
-                     seed=task.get('seed', hash((case, scene, n)) & 0xffff),
-                     block_ops_cap=block_cap_for(n_eligible))
-    out_plan = os.path.join(OUT_PLANS, f'{case}_{scene}_N{n}.json')
+                     seed=task.get('seed', stable_seed(case, scene, n)),
+                     verify_k=task.get('verify_k', 16),
+                     block_ops_cap=block_cap_for(n_eligible),
+                     warm_plan=warm_plan,
+                     use_mcts=task.get('use_mcts', False))
+    out_plan = os.path.join(task.get('out_plans', OUT_PLANS),
+                            f'{case}_{scene}_N{n}.json')
     with open(out_plan, 'w', encoding='utf-8') as f:
         json.dump(res['plan'], f)
     entry = {'case': case, 'scene': scene, 'N': n,
+             'seed': task.get('seed', stable_seed(case, scene, n)),
              'est_mk': res['est'][0], 'est_added': res['est'][1],
              'real': res['real'], 'log': res['log'],
              'elapsed': round(res['elapsed'], 1), 'n_ops': n_ops}
@@ -69,14 +89,33 @@ def parse_cases(spec):
 
 
 def main():
+    global OUT_PLANS, OUT_LOG
     parser = argparse.ArgumentParser()
     parser.add_argument('--cases', default='1-100')
     parser.add_argument('--cores', default='2,3,4,5')
     parser.add_argument('--scenes', default='A,B')
     parser.add_argument('--workers', type=int, default=8)
     parser.add_argument('--budget', type=float, default=None)
+    parser.add_argument('--seed', type=int, default=0)
+    parser.add_argument('--verify-k', type=int, default=16,
+                        help='最多送官方评估器核验的候选数（小图 16-32）')
+    parser.add_argument('--mcts', action='store_true',
+                        help='启用有界 PUCT 调度树搜索实验')
+    parser.add_argument('--warm-start-dir', default=None)
+    parser.add_argument('--output-dir', default=OUT_PLANS)
+    parser.add_argument('--log-file', default=OUT_LOG)
     args = parser.parse_args()
 
+    OUT_PLANS = os.path.abspath(args.output_dir)
+    OUT_LOG = os.path.abspath(args.log_file)
+    warm_start_dir = (os.path.abspath(args.warm_start_dir)
+                      if args.warm_start_dir else None)
+    if (warm_start_dir and
+            os.path.normcase(warm_start_dir) ==
+            os.path.normcase(OUT_PLANS)):
+        parser.error('--warm-start-dir must differ from --output-dir')
+    if warm_start_dir and not os.path.isdir(warm_start_dir):
+        parser.error('--warm-start-dir does not exist')
     os.makedirs(OUT_PLANS, exist_ok=True)
     cases = parse_cases(args.cases)
     cores = [int(x) for x in args.cores.split(',')]
@@ -98,7 +137,13 @@ def main():
             for n in cores:
                 if (case, scene, n) not in done:
                     tasks.append({'case': case, 'scene': scene, 'n': n,
-                                  'budget': args.budget})
+                                  'budget': args.budget,
+                                  'seed': stable_seed(case, scene, n,
+                                                      args.seed),
+                                  'verify_k': args.verify_k,
+                                  'use_mcts': args.mcts,
+                                  'warm_start_dir': warm_start_dir,
+                                  'out_plans': OUT_PLANS})
     print(f'{len(tasks)} tasks to solve '
           f'({len(done)} already done), workers={args.workers}')
     t0 = time.time()

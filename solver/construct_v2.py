@@ -91,7 +91,10 @@ def netbenefit_construct(model, num_cores, scene, max_sg_ops=240,
     def merge_gain(a, b):
         wma, wva, sza = stats(a)
         wmb, wvb, szb = stats(b)
-        if sza + szb > max_sg_ops:
+        # max_sg_ops 的单位是算子数；不能用 block 数与 HEFT/CHAIN 混用。
+        ops_a = sum(len(model.blocks[x]) for x in cl_members[a])
+        ops_b = sum(len(model.blocks[x]) for x in cl_members[b])
+        if ops_a + ops_b > max_sg_ops:
             return None
         saved = ext_traffic(a, b) / BW
         wg = wait if has_edge(a, b) else 0.0

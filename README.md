@@ -8,6 +8,11 @@
 - `通用神经网络处理器下的多核调度问题附件/code/`：题目官方评估器与验证代码。
 - `通用神经网络处理器下的多核调度问题附件/data/`：可复现实验输入。官方生成的超大结果和 trace 不纳入 Git。
 - `技术文档.md`：算法设计、模块职责和实验结论。
+- `技术路线_主分支最佳流程_v1.0.md`：当前主分支的唯一完整技术路线。
+- `实验记录_主分支_fix_v1.0.md`：当前最佳流程的实验命令、结果和限制。
+- `技术路线_H分支_v2.0.md`：H 分支最新流程、候选扩展和可选 MCTS 模块说明。
+- `实验记录_H分支_800全量_v1.0.md`：800 项全量实验与 96 项代表集结果。
+- `主分支上传规范_v1.0.md`：W/Y/H 三分支的代码与文档提交要求。
 - `results/`：只保留可审阅的汇总文档和指标摘要；完整原始结果保存在本地实验目录。
 
 ## 环境
@@ -24,6 +29,23 @@ cd /d J:\数学建模\改进 && python -m solver.run_all --cases 1-100 --cores 2
 ```
 
 实验入口带有断点恢复，日志写入 `results/solve_log.jsonl`。完整结果不应提交到 Git，建议使用本地磁盘或对象存储保存。
+
+## 可复现的调度优化实验
+
+若要启用关键路径窗口的精确顺序优化，在独立 Python 环境中安装可选依赖：
+
+```cmd
+python -m venv .venv
+.venv\Scripts\python.exe -m pip install -r requirements-optimization.txt "pytest>=8,<9"
+.venv\Scripts\python.exe -m pytest tests -q
+.venv\Scripts\python.exe -m solver.run_all --cases 1,7,15,23,42,44,49,63,67,78,82,97 --cores 2,3,4,5 --scenes A,B --workers 8 --seed 0 --output-dir results/plans_optimized_trial --log-file results/solve_log_optimized_trial.jsonl
+```
+
+`--seed` 与算例、场景、核数共同决定每项任务的固定随机种子；任务日志记录实际种子。对于官方评估器可处理的算例，流程会用张量生命周期模型复核候选，并用官方结果选出最终方案。日志中的 `diagnostics` 给出计算/带宽下界、核空闲时间和代理关键路径；`exact_refine` 记录精确顺序优化的窗口数。不安装 OR-Tools 时，精确顺序优化会跳过，其他步骤照常运行。超过 12000 个操作的算例仍按现有超大图兜底流程处理。
+
+已有正式评估过的方案时，可加 `--warm-start-dir results/plans_baseline_stable`。求解器会再次用官方评估器核验已有方案，并与新候选比较完成时间；日志记录 `warm_start_makespan` 及是否采用已有方案。该目录应与新输出目录分开，避免覆盖输入方案。
+
+两次运行完成后，可用 `python -m solver.compare_optimizer_runs 旧日志.jsonl 新日志.jsonl` 对同一任务和随机种子的官方结果做成对比较；默认从 `results/summary.csv` 读取单核基准。
 
 ## 指标口径
 

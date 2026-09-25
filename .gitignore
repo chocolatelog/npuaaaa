@@ -29,6 +29,7 @@ results/*
 !results/ab_test.json
 !results/ab_test_900.json
 !results/improve_decisions.json
+!results/optimization_test_report.md
 
 # 官方评估器生成的超大 trace 和结果副本
 通用神经网络处理器下的多核调度问题附件/data/*_res.json
