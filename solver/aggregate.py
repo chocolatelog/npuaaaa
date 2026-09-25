@@ -1,167 +1,114 @@
-"""汇总官方评估结果：summary.csv + 加速比曲线 + 附录逐用例表。"""
+"""从唯一、经过绑定验证的清单生成表格、汇总和实验报告。"""
+import argparse
 import csv
-import glob
 import json
-import os
+import statistics
 from collections import defaultdict
+from pathlib import Path
 
-HERE = os.path.dirname(os.path.abspath(__file__))
-RESULTS = os.path.normpath(os.path.join(HERE, '..', 'results'))
-OFFICIAL = os.path.join(RESULTS, 'official')
-PLOTS = os.path.join(RESULTS, 'plots')
+from official_protocol import read_ledger, verified_record, job_key, digest
 
 
-def load_official():
-    rows = {}
-    for path in glob.glob(os.path.join(OFFICIAL, '*_res.json')):
-        name = os.path.basename(path)[:-len('_res.json')]
-        with open(path, encoding='utf-8') as f:
-            r = json.load(f)
-        dm = r.get('data_movement_bytes', {})
-        row = {
-            'makespan': r.get('makespan'),
-            'added_bytes': dm.get('added_copy_bytes'),
-            'scheduled_bytes': dm.get('scheduled_copy_bytes'),
-            'original_bytes': dm.get('original_graph_copy_bytes'),
-            'partition_added': dm.get('partition_added_copy_bytes'),
-            'spill_added': dm.get('spill_added_copy_bytes'),
-        }
-        cs = r.get('cache_stats')
-        if cs:
-            total = cs.get('hit_bytes', 0) + cs.get('miss_bytes', 0)
-            row['cache_hit_rate'] = (cs.get('hit_bytes', 0) / total
-                                     if total else 0.0)
-        rows[name] = row
-    return rows
+def three_way(rows):
+    groups = defaultdict(dict)
+    for r in rows:
+        groups[(r['case'], r['N'])][(r['kind'], r['plan_scene'])] = r
+    result = []
+    for (case, n), group in sorted(groups.items()):
+        a, b, c = [group.get(key) for key in [('problem_2','B'),('problem_3','B'),('problem_3','C')]]
+        if not all((a,b,c)):
+            continue
+        if a['plan_sha256'] != b['plan_sha256']:
+            continue
+        if any(len({r.get(field) for r in (a,b,c)}) != 1 or a.get(field) is None
+               for field in ('input_sha256','config_sha256','evaluator_sha256')):
+            continue
+        ma, mb, mc = [r['real']['makespan'] for r in (a,b,c)]
+        result.append({'case': case, 'N': n, 'b_problem2': ma, 'b_problem3': mb,
+                       'c_problem3': mc, 'hardware_speedup': ma/mb, 'algorithm_speedup': mb/mc,
+                       'combined_speedup': ma/mc})
+    return result
 
 
-def parse_key(name):
-    # case_XXX_problem_1_N4 / case_XXX_singlecore
-    parts = name.split('_')
-    case = '_'.join(parts[:2])
-    if 'singlecore' in name:
-        return case, 'singlecore', 1
-    prob = parts[2] + '_' + parts[3]
-    n = int(parts[-1][1:])
-    return case, prob, n
+def build_summary(ledger):
+    ledger = Path(ledger)
+    latest, malformed = read_ledger(ledger)
+    manifest = ledger.with_suffix('.manifest.json')
+    expected = None
+    if manifest.exists():
+        settings = json.loads(manifest.read_text(encoding='utf-8'))['settings']
+        if 'jobs' in settings:
+            expected = {job_key(j) for j in settings['jobs']}
+            latest = {k:v for k,v in latest.items() if k in expected}
+    rows = [r for _,r in sorted(latest.items()) if verified_record(r)]
+    baseline = {r['case']:r for r in rows if r['kind']=='singlecore'}
+    flat = []
+    for r in rows:
+        item = {k:r.get(k) for k in ('case','N','kind','plan_scene','plan_sha256','fingerprint','record_id')}
+        item.update(r['real'])
+        single = baseline.get(r['case'])
+        item['speedup'] = None
+        if single and all(single.get(k)==r.get(k) for k in ('input_sha256','config_sha256','evaluator_sha256')):
+            item['speedup'] = single['real']['makespan']/r['real']['makespan']
+        flat.append(item)
+    groups = defaultdict(list)
+    for r in flat:
+        if r['kind'] != 'singlecore':
+            groups[(r['kind'],r['plan_scene'],r['N'])].append(r)
+    means=[]
+    for (kind,scene,n), group in sorted(groups.items()):
+        values=[r['speedup'] for r in group if r['speedup'] is not None]
+        means.append({'kind':kind,'plan_scene':scene,'N':n,'official_count':len(group),
+                      'comparable_count':len(values),'mean_speedup':statistics.mean(values) if values else None,
+                      'mean_makespan':statistics.mean(r['makespan'] for r in group)})
+    return {'schema_version':3,'source':str(ledger.resolve()),'source_sha256':digest(ledger),
+            'updated_at':max((r.get('updated_at','') for r in latest.values()),default='未运行'),
+            'expected':len(expected) if expected is not None else len(latest),
+            'official_success':len(rows),'pending':len(expected-set(latest)) if expected else 0,
+            'failed_or_invalid':len(latest)-len(rows),'malformed_lines':malformed,
+            'rows':flat,'groups':means,'three_way':three_way(rows)}
+
+
+def write_reports(ledger, output_dir):
+    summary=build_summary(ledger)
+    folder=Path(output_dir); folder.mkdir(parents=True,exist_ok=True)
+    (folder/'summary.json').write_text(json.dumps(summary,ensure_ascii=False,indent=2),encoding='utf-8')
+    fields=['case','N','kind','plan_scene','makespan','added_copy_bytes','scheduled_copy_bytes',
+            'partition_added','spill_added','cache_hit_bytes','cache_miss_bytes','cache_hit_rate','speedup',
+            'plan_sha256','fingerprint','record_id']
+    with (folder/'summary.csv').open('w',encoding='utf-8-sig',newline='') as f:
+        w=csv.DictWriter(f,fieldnames=fields);w.writeheader();w.writerows(summary['rows'])
+    lines=['# 官方实验统一汇总','', '所属分支：main（主分支本地工作区）  ',
+           '结果协议版本：3；代码版本见各条记录的源码内容指纹  ',
+           '更新时间：'+summary['updated_at'],'',
+           f"清单内容摘要：{summary['source_sha256']}", '',
+           f"预期 {summary['expected']} 项；官方有效 {summary['official_success']} 项；未运行 {summary['pending']} 项；失败或失效 {summary['failed_or_invalid']} 项。",
+           '', '表格、本文和实验报告来自同一份已验证清单。没有有效单核对照时不填加速比，不将代理结果混入官方统计。', '',
+           '| 问题 | 方案场景 | 核数 | 官方数 | 可比数 | 平均加速比 | 平均耗时 |',
+           '|---|---|---:|---:|---:|---:|---:|']
+    for r in summary['groups']:
+        speed='未评单核' if r['mean_speedup'] is None else f"{r['mean_speedup']:.6f}"
+        lines.append(f"| {r['kind'].replace('problem_', '问题')} | {r['plan_scene']} | {r['N']} | {r['official_count']} | {r['comparable_count']} | {speed} | {r['mean_makespan']:.6f} |")
+    lines += ['', '## 问题三归因', '',
+              '硬件收益使用同一 B 方案比较问题二与问题三；算法收益比较问题三内 B 与 C 方案。只有三份记录的图、配置和评估代码一致，且前两份方案摘要相同，才计算。', '',
+              '| 案例 | 核数 | 硬件加速比 | 算法加速比 | 综合加速比 |', '|---|---:|---:|---:|---:|']
+    for r in summary['three_way']:
+        lines.append(f"| {r['case']} | {r['N']} | {r['hardware_speedup']:.6f} | {r['algorithm_speedup']:.6f} | {r['combined_speedup']:.6f} |")
+    if not summary['three_way']:
+        lines += ['', '暂无完整且可比的三组结果，不能进行硬件/算法归因。']
+    text='\n'.join(lines)+'\n'
+    (folder/'summary.md').write_text(text,encoding='utf-8')
+    (folder/'experiment_report.md').write_text(text+'\n## 验证范围\n\n本报告只描述清单内的方案评估，不证明完整求解器重复搜索确定性，也不代表全量算法提升。\n',encoding='utf-8')
+    print(f"统一汇总：官方有效 {len(summary['rows'])} 项，三组可比 {len(summary['three_way'])} 组",flush=True)
+    return summary
 
 
 def main():
-    rows = load_official()
-    data = defaultdict(dict)   # case -> (prob,N) -> row
-    for name, row in rows.items():
-        case, prob, n = parse_key(name)
-        data[case][f'{prob}_N{n}' if prob != 'singlecore' else 'singlecore'] = row
-
-    cases = sorted(data)
-    # ---- summary CSV ----
-    csv_path = os.path.join(RESULTS, 'summary.csv')
-    fields = ['case', 'singlecore_makespan']
-    for prob in ('problem_1', 'problem_2', 'problem_3'):
-        for n in (2, 3, 4, 5):
-            fields += [f'{prob}_N{n}_makespan', f'{prob}_N{n}_added_bytes',
-                       f'{prob}_N{n}_speedup']
-    fields += [f'problem_3_N{n}_cache_hit' for n in (2, 3, 4, 5)]
-    with open(csv_path, 'w', newline='', encoding='utf-8') as f:
-        w = csv.writer(f)
-        w.writerow(fields)
-        for case in cases:
-            sc = data[case].get('singlecore', {}).get('makespan')
-            row = [case, sc]
-            for prob in ('problem_1', 'problem_2', 'problem_3'):
-                for n in (2, 3, 4, 5):
-                    r = data[case].get(f'{prob}_N{n}', {})
-                    mk = r.get('makespan')
-                    sp = round(sc / mk, 4) if (sc and mk) else ''
-                    row += [mk, r.get('added_bytes'), sp]
-            for n in (2, 3, 4, 5):
-                r = data[case].get(f'problem_3_N{n}', {})
-                row.append(round(r['cache_hit_rate'], 4)
-                           if 'cache_hit_rate' in r else '')
-            w.writerow(row)
-
-    # ---- 平均加速比 ----
-    avg = defaultdict(list)
-    for case in cases:
-        sc = data[case].get('singlecore', {}).get('makespan')
-        if not sc:
-            continue
-        for prob in ('problem_1', 'problem_2', 'problem_3'):
-            for n in (2, 3, 4, 5):
-                mk = data[case].get(f'{prob}_N{n}', {}).get('makespan')
-                if mk:
-                    avg[(prob, n)].append(sc / mk)
-    summary_md = ['# 官方评估汇总\n']
-    summary_md.append('## 平均加速比（单核基准）\n')
-    summary_md.append('| 核数 | 问题1(场景A) | 问题2(场景B) | 问题3(场景B+L2) |')
-    summary_md.append('|---|---|---|---|')
-    for n in (2, 3, 4, 5):
-        summary_md.append('| {} | {:.3f} | {:.3f} | {:.3f} |'.format(
-            n,
-            *[_mean(avg[(p, n)]) for p in
-              ('problem_1', 'problem_2', 'problem_3')]))
-    l2sp = defaultdict(list)
-    for case in cases:
-        for n in (2, 3, 4, 5):
-            m2 = data[case].get(f'problem_2_N{n}', {}).get('makespan')
-            m3 = data[case].get(f'problem_3_N{n}', {}).get('makespan')
-            if m2 and m3:
-                l2sp[n].append(m2 / m3)
-    summary_md.append('\n## 问题3 只读 Cache 相对无 L2 的加速比\n')
-    summary_md.append('| 核数 | L2加速比 |')
-    summary_md.append('|---|---|')
-    for n in (2, 3, 4, 5):
-        summary_md.append(f'| {n} | {_mean(l2sp[n]):.4f} |')
-    with open(os.path.join(RESULTS, 'summary.md'), 'w',
-              encoding='utf-8') as f:
-        f.write('\n'.join(summary_md) + '\n')
-    print('cases:', len(cases))
-    for n in (2, 3, 4, 5):
-        print(f'N={n}: P1 {_mean(avg[("problem_1", n)]):.3f} '
-              f'P2 {_mean(avg[("problem_2", n)]):.3f} '
-              f'P3 {_mean(avg[("problem_3", n)]):.3f} '
-              f'L2speedup {_mean(l2sp[n]):.4f}')
-
-    # ---- 曲线 ----
-    try:
-        import matplotlib
-        matplotlib.use('Agg')
-        import matplotlib.pyplot as plt
-        os.makedirs(PLOTS, exist_ok=True)
-        ns = [2, 3, 4, 5]
-        plt.figure(figsize=(7, 4.5))
-        for prob, label, color in (('problem_1', 'Problem 1 (Scene A)', 'tab:blue'),
-                                   ('problem_2', 'Problem 2 (Scene B)', 'tab:orange'),
-                                   ('problem_3', 'Problem 3 (Scene B + L2)', 'tab:green')):
-            ys = [_mean(avg[(prob, n)]) for n in ns]
-            plt.plot([1] + ns, [1.0] + ys, marker='o', label=label, color=color)
-        plt.xlabel('Number of cores')
-        plt.ylabel('Average speedup vs single-core')
-        plt.title('Average speedup (100 cases, official evaluator)')
-        plt.grid(alpha=0.3)
-        plt.legend()
-        plt.tight_layout()
-        plt.savefig(os.path.join(PLOTS, 'speedup.png'), dpi=150)
-        plt.close()
-
-        plt.figure(figsize=(6, 4))
-        ys = [_mean(l2sp[n]) for n in ns]
-        plt.plot(ns, ys, marker='s', color='tab:red')
-        plt.xlabel('Number of cores')
-        plt.ylabel('L2 cache speedup (no-L2 / with-L2)')
-        plt.title('Problem 3: read-only L2 benefit')
-        plt.grid(alpha=0.3)
-        plt.tight_layout()
-        plt.savefig(os.path.join(PLOTS, 'l2_speedup.png'), dpi=150)
-        plt.close()
-        print('plots written to', PLOTS)
-    except ImportError:
-        print('matplotlib unavailable, skip plots')
-
-
-def _mean(xs):
-    xs = list(xs)
-    return sum(xs) / len(xs) if xs else float('nan')
+    parser=argparse.ArgumentParser()
+    parser.add_argument('--ledger',required=True,help='唯一官方结果清单；旧无指纹目录不自动混入')
+    parser.add_argument('--output-dir',required=True)
+    args=parser.parse_args()
+    write_reports(args.ledger,args.output_dir)
 
 
 if __name__ == '__main__':

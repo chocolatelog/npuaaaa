@@ -134,9 +134,11 @@ class Model:
 
         self.block_ops_cap = block_ops_cap
         self.spill_coefs = None      # NNLS 校准系数（默认启发式）
+        self.spill_calibration_blend = 1.0
         self.use_lru_spill = False   # op 级 LRU spill 仿真开关
         self.use_overlap = False     # overlap 因子开关
         self.op_lifetimes = None     # 惰性构建
+        self.block_step_span = None  # 块在 op 全局步号中的闭区间
         self._build_blocks()
         self._build_tensor_groups()
         self._build_block_topo()
@@ -331,13 +333,21 @@ class Model:
         if self.use_lru_spill:
             b = 2.0 * (sig.get('L1l', 0.0) + sig.get('UBl', 0.0))
             return b, b / BW
+        heuristic = 2.0 * (max(sig['L1p'], sig['L1w'])
+                           + max(sig['UBp'], sig['UBw']))
         if self.spill_coefs is not None:
             a, b2, c, d, e = self.spill_coefs
-            bytes_ = max(0.0, a * sig['L1p'] + b2 * sig['L1w']
-                         + c * sig['UBp'] + d * sig['UBw'] + e)
+            calibrated = max(0.0, a * sig['L1p'] + b2 * sig['L1w']
+                             + c * sig['UBp'] + d * sig['UBw'] + e)
+            alpha = min(1.0, max(0.0, self.spill_calibration_blend))
+            # 校准模型只负责消除原启发式的系统性高估；若校准值更大，
+            # 不把不确定的 spill 惩罚传给搜索，避免破坏并行候选排序。
+            if calibrated < heuristic:
+                bytes_ = (1.0 - alpha) * heuristic + alpha * calibrated
+            else:
+                bytes_ = heuristic
         else:
-            bytes_ = 2.0 * (max(sig['L1p'], sig['L1w'])
-                            + max(sig['UBp'], sig['UBw']))
+            bytes_ = heuristic
         return bytes_, bytes_ / BW
 
     def _build_op_lifetimes(self):
@@ -352,6 +362,10 @@ class Model:
             for op in block_ops_sorted[bi]:
                 step_of[op] = step
                 step += 1
+        self.block_step_span = {}
+        for bi, ops in enumerate(block_ops_sorted):
+            if ops:
+                self.block_step_span[bi] = (step_of[ops[0]], step_of[ops[-1]])
         lives = []
         pool_idx = {'L1': 0, 'UB': 1}
         for tid, t in self.tensor_by_id.items():
@@ -405,10 +419,12 @@ class Model:
                     overs[pi] += sz
         return overs
 
-    def set_spill_coefs(self, coefs):
+    def set_spill_coefs(self, coefs, blend=1.0):
         """coefs = (a, b, c, d, e)：spill_bytes = a·L1p + b·L1w + c·UBp
-        + d·UBw + e（NNLS 非负拟合，单位字节）。"""
+        + d·UBw + e（NNLS 非负拟合，单位字节）；blend 控制校准与原启发式
+        的融合比例。"""
         self.spill_coefs = coefs
+        self.spill_calibration_blend = float(blend)
 
     def _tensor_eligible_producers(self, tid):
         return [p for p in self._producers_raw.get(tid, ())
@@ -608,6 +624,7 @@ class Model:
                         wint_per_unit[c][pi] += size
         CAPS = (L1_CAP, UB_CAP)
         sig = {'L1p': 0.0, 'L1w': 0.0, 'UBp': 0.0, 'UBw': 0.0}
+        peak_memory = {'L1': 0.0, 'UB': 0.0}
         keys = ('L1p', 'L1w', 'UBp', 'UBw')
         for u, spans in enumerate(spans_per_unit):
             if not spans:
@@ -625,26 +642,30 @@ class Model:
                                 live += sz
                         if live > peak:
                             peak = live
+                pool_name = 'L1' if pi == 0 else 'UB'
+                peak_memory[pool_name] = max(peak_memory[pool_name], peak)
                 sig[keys[2 * pi]] += max(0.0, peak - 0.85 * cap)
                 sig[keys[2 * pi + 1]] += max(
                     0.0, wint_per_unit[u][pi] - 0.85 * cap)
         spill_bytes, spill_time = self._spill_from_signals(sig)
         if self.use_lru_spill:
             # op 级 LRU 仿真：按执行单元的块位置区间筛选生命周期
+            self._build_op_lifetimes()
             if scene == 'A':
                 unit_spans = [[] for _ in range(K)]
                 for bi in range(nb):
                     s = sg_of_block[bi]
-                    unit_spans[s].append((self.block_pos[bi],
-                                          self.block_pos[bi]))
+                    unit_spans[s].append(self.block_step_span[bi])
                 spans_flat = [(min(f for f, _ in sp), max(l for _, l in sp))
                               for sp in unit_spans if sp]
             else:
                 core_blocks = [[] for _ in range(num_cores)]
                 for bi in range(nb):
                     core_blocks[core_of_sg[sg_of_block[bi]]].append(
-                        self.block_pos[bi])
-                spans_flat = [(min(cb), max(cb)) for cb in core_blocks if cb]
+                        self.block_step_span[bi])
+                spans_flat = [(min(f for f, _ in cb),
+                                max(l for _, l in cb))
+                               for cb in core_blocks if cb]
             l1o, ubo = self._lru_spill_bytes(spans_flat)
             sig = dict(sig)
             sig['L1l'], sig['UBl'] = l1o, ubo
@@ -759,9 +780,21 @@ class Model:
             added = max(0.0, added_a - self.original_copy_bytes + spill_bytes)
         else:
             added = max(0.0, added_b - self.original_copy_bytes + spill_bytes)
-        info = {'orders': orders, 'K': K, 'durs': durs,
-                'sg_wm': sg_wm, 'sg_wv': sg_wv, 'spill_sig': sig,
-                'spill_bytes': spill_bytes}
+        partition_raw_bytes = (added_a if scene == 'A' else added_b)
+        partition_added_bytes = max(
+            0.0, partition_raw_bytes - self.original_copy_bytes)
+        info = {
+            'orders': orders, 'K': K, 'durs': durs,
+            'sg_wm': sg_wm, 'sg_wv': sg_wv,
+            'spill_sig': sig,
+            'spill_bytes': spill_bytes,
+            'partition_added_bytes': partition_added_bytes,
+            'partition_raw_bytes': partition_raw_bytes,
+            'total_added_bytes': added,
+            'original_copy_bytes': self.original_copy_bytes,
+            'peak_memory_bytes': peak_memory,
+            'memory_overage': dict(sig),
+        }
         result = (makespan, added, info)
         if use_cache and key is not None:
             if len(self._eval_cache) > 8192:

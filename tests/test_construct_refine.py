@@ -18,6 +18,9 @@ from construct_refine import (  # noqa: E402
 )
 from solution import Sol  # noqa: E402
 from construct import chain_construct  # noqa: E402
+from model import Model  # noqa: E402
+from calibrate_spill import (feature_vector, scene_from_parts, segment_key,
+                             split_by_case)  # noqa: E402
 
 
 class TinyModel:
@@ -98,6 +101,34 @@ def test_evaluate_reads_spill_signal_and_runs_refinement(monkeypatch):
     assert all(item.metrics["spill_bytes"] == 10.0 for item in items)
 
 
+def test_construct_reservoir_keeps_pruned_granularity_and_clones(monkeypatch):
+    import construct_refine
+    originals = [
+        construct_refine._candidate('chain', 'coarse', 'A', Sol([0, 0, 0], [0])),
+        construct_refine._candidate('chain', 'balanced', 'A', Sol([0, 1, 1], [0, 1])),
+        construct_refine._candidate('chain', 'fine', 'A', Sol([0, 1, 2], [0, 1, 0]))]
+    monkeypatch.setattr(construct_refine, 'generate_base_candidates', lambda *args: originals)
+    ctx = FakeContext()
+    ctx.retain_constructs = True
+    selected = build_construct_candidates(TinyModel(), 2, 'A', ctx=ctx,
+                                         max_r1=0, max_r2=0, max_r3=0, final_seeds=1)
+    assert len(selected) == 1
+    assert {x.granularity for x in ctx.construct_reservoir} == {'coarse', 'balanced', 'fine'}
+    assert len({x.signature for x in ctx.construct_reservoir}) == len(ctx.construct_reservoir)
+    frozen = list(ctx.construct_reservoir[0].sol.core_of_sg)
+    originals[0].sol.core_of_sg[0] = 1
+    assert ctx.construct_reservoir[0].sol.core_of_sg == frozen
+
+
+def test_construct_reservoir_is_opt_in(monkeypatch):
+    import construct_refine
+    for name in ('heft_construct', 'strip_construct', 'chain_construct', 'netbenefit_construct'):
+        monkeypatch.setattr(construct_refine, name, _fake_builder)
+    ctx = FakeContext()
+    build_construct_candidates(TinyModel(), 2, 'A', ctx=ctx)
+    assert not hasattr(ctx, 'construct_reservoir')
+
+
 def test_boundary_refinement_uses_graph_edge_and_changes_partition():
     parent = ConstructCandidate("heft", "balanced", "A", "R1",
                                 Sol([0, 1, 2], [0, 0, 1]))
@@ -148,3 +179,46 @@ def test_coarsen_solution_limits_all_paradigms():
     sol = Sol(list(range(6)), [0, 0, 0, 0, 0, 0])
     out = _coarsen_solution(ChainModel(), sol, 2)
     assert out.num_used_sg() <= 2
+
+
+def test_spill_calibration_does_not_amplify_heuristic():
+    model = Model.__new__(Model)
+    model.use_lru_spill = False
+    model.spill_coefs = (10.0, 10.0, 10.0, 10.0, 0.0)
+    model.spill_calibration_blend = 0.25
+    sig = {'L1p': 100.0, 'L1w': 0.0, 'UBp': 0.0, 'UBw': 0.0}
+    heuristic = 2.0 * (100.0 + 0.0)
+    value, _ = model._spill_from_signals(sig)
+    assert value == heuristic
+
+
+def test_model_evaluate_exports_proxy_transfer_breakdown():
+    graph = {
+        "ops": [{"id": 0, "op": "MATMUL", "pipe": "PIPE_M", "cycles": 10}],
+        "tensors": [],
+        "edges": [],
+    }
+    model = Model(graph, block_ops_cap=120)
+    _mk, _added, info = model.evaluate([0], [0], "A", 1)
+    assert {"partition_added_bytes", "partition_raw_bytes", "spill_bytes",
+            "total_added_bytes", "peak_memory_bytes", "memory_overage",
+            "spill_sig"}.issubset(info)
+    assert info["partition_added_bytes"] <= info["partition_raw_bytes"]
+
+
+def test_spill_calibration_splits_by_case_and_forces_failures_to_holdout():
+    rows = []
+    for case in ("case_001", "case_044", "case_067", "case_078", "case_099"):
+        rows.append({"case": case, "scene": "A", "N": 4, "n_ops": 1500,
+                     "sig": {"L1p": 1.0, "L1w": 0.0, "UBp": 0.0, "UBw": 0.0},
+                     "peak": {"L1": 500000.0, "UB": 0.0},
+                     "partition_added": 1e6, "real": 10.0})
+    train, test, holdout = split_by_case(rows)
+    assert "case_044" in holdout and "case_067" in holdout
+    assert {row["case"] for row in train}.isdisjoint(
+        {row["case"] for row in test})
+    assert len(feature_vector(rows[0])) == 9
+    assert segment_key(rows[0]).startswith("A|small|")
+    assert scene_from_parts(["case", "001", "problem", "1", "N2"]) == "A"
+    assert scene_from_parts(["case", "001", "problem", "2", "N2"]) == "B"
+    assert scene_from_parts(["case", "001", "problem", "3", "N2"]) == "C"

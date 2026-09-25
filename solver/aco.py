@@ -15,7 +15,7 @@ from solution import Sol
 
 def aco_search(ctx, time_budget, n_ants=6, m_open=6, rho=0.15,
                alpha=1.0, beta=2.0, archive=None, deadline=None,
-               polish_moves=30, rng=None):
+               polish_moves=30, rng=None, max_rounds=None):
     """返回 (best_sol, best_fitness, best_mk, best_added)。"""
     rng = rng or random.Random()
     t_end = deadline if deadline is not None else time.time() + time_budget
@@ -26,7 +26,9 @@ def aco_search(ctx, time_budget, n_ants=6, m_open=6, rho=0.15,
     tau_core = [[1.0] * N for _ in range(nb)]
     best, f_best, best_mk, best_ad = None, None, None, None
     topo_order = list(ctx.model.block_topo)
-    while time.time() < t_end:
+    rounds = 0
+    while (rounds < max_rounds if max_rounds is not None else time.time() < t_end):
+        rounds += 1
         iter_solutions = []
         for _ in range(n_ants):
             sol = _construct(ctx, topo_order, tau_attach, tau_core,

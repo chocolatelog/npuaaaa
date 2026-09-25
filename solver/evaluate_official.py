@@ -1,108 +1,89 @@
-"""官方评估器全量评估：单核基线 + P1/P2/P3 × 核数，结果写入 results/official/。"""
+"""官方评估：内容指纹复用、独立尝试、三组对照和统一清单。"""
 import argparse
-import json
-import os
-import subprocess
-import sys
 from concurrent.futures import ProcessPoolExecutor, as_completed
+from pathlib import Path
 
-HERE = os.path.dirname(os.path.abspath(__file__))
-ATTACH = os.path.normpath(os.path.join(
-    HERE, '..', '通用神经网络处理器下的多核调度问题附件'))
-DATA = os.path.join(ATTACH, 'data')
-OUT = os.path.normpath(os.path.join(HERE, '..', 'results', 'official'))
-PLANS = os.path.normpath(os.path.join(HERE, '..', 'results', 'plans'))
-PY = sys.executable
+from official_protocol import evaluate_job, read_ledger, verified_record, ATTACHMENT, SCENES
+from run_all import append_run_row, parse_cases
+
+ROOT = Path(__file__).resolve().parents[1]
 
 
-def run_one(job):
-    kind, case, n = job
-    graph = os.path.join(DATA, f'{case}.json')
-    stem = os.path.join(OUT, f'{case}_{kind}_N{n}' if n else f'{case}_{kind}')
-    if os.path.exists(stem + '_res.json'):
-        return (job, 'cached', None)
-    if kind == 'singlecore':
-        cmd = [PY, '-X', 'utf8', 'code/singlecore_evaluate.py', graph,
-               '--config', 'data/config.txt',
-               '-o', stem + '_res.json',
-               '--trace-output', stem + '_trace.json',
-               '--log-output', stem + '_log.txt']
-    else:
-        scene = {'problem_1': 'A', 'problem_2': 'B', 'problem_3': 'C'}[kind]
-        plan = os.path.normpath(os.path.join(
-            PLANS, f'{case}_{scene}_N{n}.json'))
-        if not os.path.exists(plan):
-            return (job, 'missing_plan', plan)
-        cmd = [PY, '-X', 'utf8', f'code/multicore_cut_evaluate_{kind}.py',
-               graph, plan, '--config', 'data/config.txt',
-               '-o', stem + '_res.json',
-               '--trace-output', stem + '_trace.json',
-               '--log-output', stem + '_log.txt']
-    try:
-        r = subprocess.run(cmd, cwd=ATTACH, capture_output=True, text=True,
-                           encoding='utf-8', errors='replace', timeout=3600)
-        ok = r.returncode == 0 and os.path.exists(stem + '_res.json')
-        return (job, 'ok' if ok else 'fail',
-                None if ok else (r.stderr or r.stdout)[-500:])
-    except subprocess.TimeoutExpired:
-        return (job, 'timeout', None)
-
-
-def parse_cases(spec):
-    out = []
-    for part in spec.split(','):
-        if '-' in part:
-            lo, hi = part.split('-')
-            out.extend(f'case_{i:03d}' for i in range(int(lo), int(hi) + 1))
-        else:
-            out.append(f'case_{int(part):03d}')
-    return out
+def build_jobs(cases, cores, problems, three_way=False, include_singlecore=True):
+    jobs = []
+    for case in cases:
+        if include_singlecore:
+            jobs.append({'case': case, 'kind': 'singlecore', 'N': 1, 'plan_scene': None})
+        for n in cores:
+            for kind in problems:
+                scenes = ['B', 'C'] if three_way and kind == 'problem_3' else [SCENES[kind]]
+                jobs += [{'case': case, 'kind': kind, 'N': n, 'plan_scene': scene} for scene in scenes]
+    return jobs
 
 
 def main():
-    global OUT, PLANS
     parser = argparse.ArgumentParser()
     parser.add_argument('--cases', default='1-100')
     parser.add_argument('--cores', default='2,3,4,5')
-    parser.add_argument('--workers', type=int, default=6)
+    parser.add_argument('--workers', type=int, default=4)
     parser.add_argument('--skip-singlecore', action='store_true')
-    parser.add_argument('--plans-dir', default=os.path.normpath(os.path.join(HERE, '..', 'results', 'plans')))
-    parser.add_argument('--output-dir', default=OUT)
+    parser.add_argument('--problems', default='1,2,3')
+    parser.add_argument('--three-way', action='store_true', help='问题三额外评估同一 B 方案，分离硬件与算法收益')
+    parser.add_argument('--plans-dir', default=str(ROOT/'results/plans'))
+    parser.add_argument('--output-dir', default=str(ROOT/'results/official_verified'))
+    parser.add_argument('--timeout', type=int, default=3600)
+    parser.add_argument('--max-tasks', type=int, default=0)
     args = parser.parse_args()
-
-    OUT = os.path.abspath(args.output_dir)
-    PLANS = os.path.abspath(args.plans_dir)
-    os.makedirs(OUT, exist_ok=True)
-    cases = parse_cases(args.cases)
-    cores = [int(x) for x in args.cores.split(',')]
-    jobs = []
-    if not args.skip_singlecore:
-        for case in cases:
-            jobs.append(('singlecore', case, 0))
-    for case in cases:
-        for n in cores:
-            jobs.append(('problem_1', case, n))
-            jobs.append(('problem_2', case, n))
-            jobs.append(('problem_3', case, n))
-    print(f'{len(jobs)} official evaluations, workers={args.workers}')
-    stats = {}
-    with ProcessPoolExecutor(max_workers=args.workers) as ex:
-        futs = {ex.submit(run_one, j): j for j in jobs}
-        done = 0
-        for fut in as_completed(futs):
-            j = futs[fut]
+    cores = list(dict.fromkeys(map(int, args.cores.split(','))))
+    problems = list(dict.fromkeys('problem_'+p for p in args.problems.split(',')))
+    if (any(n not in (2,3,4,5) for n in cores) or any(p not in SCENES or p == 'singlecore' for p in problems)
+            or args.workers < 1 or args.timeout < 1 or args.max_tasks < 0):
+        parser.error('核数、问题编号、并发数、超时或分批上限非法')
+    jobs = build_jobs(parse_cases(args.cases), cores, problems, args.three_way, not args.skip_singlecore)
+    out = Path(args.output_dir).resolve()
+    out.mkdir(parents=True, exist_ok=True)
+    ledger = out/'results.jsonl'
+    # 必须记录预期集合，汇总才能识别尚未执行的任务；参数变化使用新目录。
+    from run_all import ensure_run_manifest
+    ensure_run_manifest(ledger, [Path(__file__).resolve(), Path(__file__).with_name('official_protocol.py')],
+                        {'jobs': jobs, 'plans_dir': str(Path(args.plans_dir).resolve()), 'timeout': args.timeout})
+    previous, warnings = read_ledger(ledger)
+    known = {r['record_id'] for r in previous.values()}
+    # 工作进程重新计算输入内容指纹后才判断可复用；不能仅凭旧清单跳过。
+    if args.max_tasks:
+        from official_protocol import input_context, object_digest, job_key
+        pending = []
+        for job in jobs:
+            old = previous.get(job_key(job), {})
             try:
-                job, status, err = fut.result()
-            except Exception as e:
-                job, status, err = futs[fut], 'exception', repr(e)
-            stats[status] = stats.get(status, 0) + 1
-            done += 1
-            if status not in ('ok', 'cached'):
-                print(f'[{done}/{len(jobs)}] {job} -> {status}: {err}',
-                      flush=True)
-            elif done % 50 == 0:
-                print(f'[{done}/{len(jobs)}] running... {stats}', flush=True)
-    print('done:', stats)
+                current = object_digest(input_context(job, args.plans_dir, ATTACHMENT)[0])
+                done = old.get('fingerprint') == current and verified_record(old)
+            except (OSError, ValueError, KeyError):
+                done = False
+            if not done:
+                pending.append(job)
+        jobs = pending[:args.max_tasks]
+    print(f'[0/{len(jobs)}] 官方核验；并发 {args.workers}；损坏日志行 {warnings}', flush=True)
+    failures, executed, reused = 0, 0, 0
+    with ProcessPoolExecutor(max_workers=args.workers) as pool:
+        futures = {pool.submit(evaluate_job, job, str(out), str(Path(args.plans_dir).resolve()),
+                               timeout=args.timeout): job for job in jobs}
+        for i, future in enumerate(as_completed(futures), 1):
+            row = future.result()
+            if row['record_id'] not in known:
+                append_run_row(ledger, row)
+                known.add(row['record_id'])
+                executed += 1
+            else:
+                reused += 1
+            failures += row['status'] != 'official_success'
+            print(f"[{i}/{len(jobs)}] {row['job_id']}：{row['status']}；新增 {executed}，复用 {reused}", flush=True)
+            if row['status'] != 'official_success':
+                print(row.get('error'), flush=True)
+    from aggregate import write_reports
+    write_reports(ledger, out)
+    if failures:
+        raise SystemExit(1)
 
 
 if __name__ == '__main__':

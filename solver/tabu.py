@@ -4,7 +4,7 @@ import time
 
 
 def tabu_search(ctx, sol, time_budget, deadline=None, tenure_factor=0.6,
-                n_samples=12, archive=None, rng=None, max_evals=None):
+                n_samples=12, archive=None, rng=None, max_evals=None, max_rounds=None):
     """返回 (best_sol, best_fitness, best_mk, best_added)。
     max_evals 给定时按完整仿真次数（而非墙钟）停止。"""
     rng = rng or random.Random()
@@ -21,7 +21,7 @@ def tabu_search(ctx, sol, time_budget, deadline=None, tenure_factor=0.6,
     tabu = {}
     it = 0
     tenure = max(4, int(tenure_factor * (ctx.nb ** 0.5)))
-    while time.time() < t_end:
+    while (it < max_rounds if max_rounds is not None else time.time() < t_end):
         if max_evals is not None and ctx.n_evals - evals0 >= max_evals:
             break
         it += 1

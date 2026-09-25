@@ -39,7 +39,7 @@ def _mismatch(work_m, work_v):
 
 
 def netbenefit_construct(model, num_cores, scene, max_sg_ops=240,
-                         mem_budget=0.85):
+                         mem_budget=0.85, corrected=False):
     """返回 (sg_of_block, core_of_sg)。scene: 'A'|'B'（等待成本不同）。"""
     nb = len(model.blocks)
     traffic = _block_pool_traffic(model)
@@ -122,6 +122,14 @@ def netbenefit_construct(model, num_cores, scene, max_sg_ops=240,
             continue
         if cid_of[a] != a or cid_of[b] != b:
             continue
+        if corrected:
+            # 合并会改变簇大小、并行损失与通信收益，旧堆条目必须重新验算。
+            current_gain = merge_gain(a, b)
+            if current_gain is None:
+                continue
+            if current_gain != -_neg:
+                heapq.heappush(heap, (-current_gain, a, b))
+                continue
         if bpos[cl_head[a]] > bpos[cl_head[b]]:
             a, b = b, a
         cl_members[a] = cl_members[a] | cl_members[b]
@@ -200,10 +208,11 @@ def netbenefit_construct(model, num_cores, scene, max_sg_ops=240,
         cs_c = {cmap[b] for b in cb}
         for cs in cs_c - cs_p:
             cl_in_traffic[cs] += size
-    cl_work = [sum(work_m[b] + work_v[b] for b in cl_members[ci])
+    placement_members = ([cl_members[cid] for cid in clusters] if corrected else cl_members)
+    cl_work = [sum(work_m[b] + work_v[b] for b in placement_members[ci])
                for ci in range(K)]
-    cl_m = [sum(work_m[b] for b in cl_members[ci]) for ci in range(K)]
-    cl_v = [sum(work_v[b] for b in cl_members[ci]) for ci in range(K)]
+    cl_m = [sum(work_m[b] for b in placement_members[ci]) for ci in range(K)]
+    cl_v = [sum(work_v[b] for b in placement_members[ci]) for ci in range(K)]
     # bottom-level（K 很小，直接 relax）
     bl = [0.0] * K
     for ci in reversed(range(K)):
@@ -243,7 +252,7 @@ def netbenefit_construct(model, num_cores, scene, max_sg_ops=240,
         core_free[best_c] += cl_work[ci] + cl_in_traffic.get(ci, 0.0) / BW
         core_m[best_c] += cl_m[ci]
         core_v[best_c] += cl_v[ci]
-        for blk in cl_members[ci]:
+        for blk in placement_members[ci]:
             sg_of_block[blk] = sg
         for cj in range(K):
             if ci in cl_preds[cj]:
