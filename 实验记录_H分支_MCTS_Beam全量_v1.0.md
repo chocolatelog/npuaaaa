@@ -93,14 +93,174 @@
 
 目标调整为 B/5 平均加速比 3.8x，A/5 先达到 3.6x 并继续向 3.8x 推进。
 当前正式基线来自 `results/solve_log_n5_expanded_full.jsonl`：A/5=`3.440593x`，
-B/5=`3.551604x`，81 个官方可比案例中相对上一轮为 29 胜、52 平、0 负。
+B/5=`3.551604x`。每个场景有 81 个官方可比案例，A/B 合计 162 项，
+相对 `solve_log_n5_portfolio_full.jsonl` 为 29 胜、133 平、0 负：
+A 为 10 胜、71 平、0 负，B 为 19 胜、62 平、0 负。
+另外 38 项只有代理结果，不纳入上述官方均值。
 
 新增 wavefront 候选生成器后，28 项高失衡案例门槛相对该基线为 6 胜、22 平、0 负；
 收益全部出现在 B 场景，门槛 B 子集平均由 `1.501099x` 提升到 `1.505026x`，
-A 子集无变化。当前不扩大为全量，后续优先改进 warm portfolio 的重新分区和活跃核约束。
+A 子集无变化。该门槛结束时暂未扩大为全量；后续结果见第 8 节起。
+重新分区、成对交换和强制活跃核均不属于当前 wavefront 的实现。
 
 ## 7. Active-fill 门槛（2026-09-25）
 
-在 wavefront 邻域中加入空核填充候选，并将重点任务的 wavefront 官方核验配额提高到 8。
+本轮将重点任务的 wavefront 官方核验配额从 4 提高到 8，
+并显式列出空核目标。空核原本通常已包含在 light 目标列表中，
+因此不能把收益单独归因为新增空核动作；实际邻域仍是整子图迁核。
 12 项 A/B 重点任务相对 `solve_log_n5_expanded_full.jsonl` 为 4 胜、8 平、0 负，未出现退化。
 B/48、B/51、B/56 分别减少 3352、2704、3903 周期；A 子集保持不变。
+
+## 8. Active-fill 扩展门槛与 B/5 全量（2026-09-25）
+
+统计口径为各案例 `singlecore_makespan / real.makespan` 的算术平均。
+单核参照取自 `results/summary.csv`，仅纳入有有效官方结果的同一案例集合。
+
+### 8.1 gate38
+
+- 日志：`results/solve_log_n5_activefill_gate38.jsonl`。
+- 范围：19 个案例 × A/B，共 38 项，不是 24 个案例。
+- 案例：5,24,26,35,40,48,51,56,61,64,68,69,71,75,82,86,88,96,100。
+- 相对 expanded_full：8 胜、30 平、0 负；A 的 19 项全部持平。
+- B 子集均值：`1.632590x -> 1.640381x`；墙钟时间约 190 秒。
+- B/82 官方 makespan：`571881 -> 534902`。
+
+### 8.2 B/5 全量 bfull
+
+- 日志：`results/solve_log_n5_activefill_bfull.jsonl`。
+- 完成 100/100，其中 81 项有官方结果，19 个超大图只有代理结果。
+- 官方均值：`3.5775138996952944x`；相对 expanded_full 为 23 胜、58 平、0 负。
+- 相对前轮 `3.55160393215588x` 增加 `0.0259099675394144x`；墙钟约 442 秒。
+- 注意：该轮未将 gate38 计划加入 warm 输入，因此“零退化”仅针对 expanded_full，
+  不能解释为优于所有历史门槛最优。B/82 回到 571881，B/48 为 211781。
+
+## 9. 扩大候选覆盖：wide19（2026-09-25）
+
+- 日志：`results/solve_log_n5_activefill_wide19.jsonl`。
+- 修改：warm 邻域起点上限 `8 -> 24`；重点任务 wavefront 官方配额 `8 -> 16`。
+- B/5 案例：2,5,10,19,24,40,48,49,50,51,56,59,64,71,78,80,82,83,97。
+- 参数：`--workers 8 --budget 0.5 --verify-k 48 --mcts --beam --warm-portfolio`。
+- 19/19 完成，相对 bfull 的同一子集为 **11 胜、8 平、0 负**。
+- 子集均值：`2.529929293211461x -> 2.5582103565717884x`，不是 81 项全量均值。
+- 官方核验：搜索候选 677 次，warm 261 次，合计 938 次；19 条日志均无错误字段。
+- 墙钟约 189 秒；任务耗时总和 641.3 秒（8 并行，不能与墙钟混用）。
+
+| 案例 | bfull makespan | wide19 makespan |
+|---|---:|---:|
+| B/005 | 85925 | 81707 |
+| B/010 | 25701 | 24157 |
+| B/019 | 18460 | 18388 |
+| B/024 | 2543755 | 2542340 |
+| B/048 | 211781 | 208381 |
+| B/049 | 125931 | 122894 |
+| B/051 | 582899 | 581232 |
+| B/056 | 229436 | 225349 |
+| B/080 | 87364 | 86351 |
+| B/082 | 571881 | 534902 |
+| B/083 | 309200 | 305724 |
+
+该轮同时扩大 warm 覆盖与官方配额，而且使用已有结果作为新起点，
+不属于单参数消融实验，不能把全部收益归因给单一机制。
+`--verify-k 48` 实际仍受 base 配额上限约束：不超过 6000 op 时最多 32，
+更大但可官方评估的任务最多 24；wavefront 16 次为独立追加配额。
+日志 `wavefront.warm_candidates` 表示累计生成的候选数量，不是 warm 起点数。
+
+## 10. B/5 扩大全量 widefull（2026-09-25）
+
+### 10.1 完成情况与正式结果
+
+- 日志：`results/solve_log_n5_activefill_widefull.jsonl`。
+- 方案：`results/plans_n5_activefill_widefull`，100 份 JSON 与 100 条唯一任务日志。
+- 81 项有有效官方结果；19 个超大图仅有代理结果，不混入官方均值。
+- 相对 bfull：**16 胜、65 平、0 负**，官方平均加速比
+  `3.5775138996952944x -> 3.589868342418228x`。
+- 均值绝对增量 `0.0123544427229336x`，均值相对增幅 `0.345336%`；
+  逐案例配对加速比增幅的算术平均为 `0.60925%`，两者不可混用。
+- 距离 3.6x 仍差 `0.0101316575817720x`，距离 3.8x 差 `0.2101316575817718x`；
+  本轮尚未达标。A/5 本轮未重跑，最新完整均值仍为 `3.440593x`。
+- 搜索候选官方核验 2721 次，warm 核验 1204 次，共 3925 次。
+- 未发现 real.error、搜索模块 error 或 warm_start_errors 字段。
+- 墙钟 559 秒；任务耗时总和 3573.0 秒。官方 81 项平均求解耗时
+  由 34.10 秒升至 42.88 秒，约增加 25.7%；不能把加速比提升等同于求解更快。
+
+本轮同时扩大搜索配额并纳入历史最优方案，属于组合实验。相对 bfull 改善的
+16 个输出来源标签均为 wavefront，但不能据此将所有收益解释为独立算法的因果增益。
+最终 81 项来源分布：base 27、legacy_main 2、MCTS 3、Beam 1、wavefront 29、
+warm_portfolio 19；持平时的来源标签也不代表对最终 makespan 有提升。
+
+| 案例 | bfull makespan | widefull makespan |
+|---|---:|---:|
+| B/005 | 85925 | 79636 |
+| B/010 | 25701 | 24157 |
+| B/019 | 18460 | 18388 |
+| B/024 | 2543755 | 2541293 |
+| B/048 | 211781 | 207990 |
+| B/049 | 125931 | 118844 |
+| B/051 | 582899 | 579137 |
+| B/056 | 229436 | 221769 |
+| B/066 | 239355 | 239189 |
+| B/075 | 1392433 | 1378781 |
+| B/080 | 87364 | 81050 |
+| B/082 | 571881 | 531914 |
+| B/083 | 309200 | 303500 |
+| B/086 | 93701 | 92408 |
+| B/088 | 191965 | 190727 |
+| B/098 | 69464 | 67843 |
+
+### 10.2 复现配置与保底顺序
+
+`python solver/run_all.py --cases 1-100 --cores 5 --scenes B --workers 8
+--budget 0.5 --seed 0 --verify-k 48 --mcts --beam --warm-portfolio`。
+独立输出参数：`--output-dir results/plans_n5_activefill_widefull
+--log-file results/solve_log_n5_activefill_widefull.jsonl`。
+以下目录均加 `results/` 前缀，并按顺序分别作为 `--warm-start-dir`：
+
+1. plans_n5_activefill_wide19
+2. plans_n5_activefill_gate38
+3. plans_n5_activefill_gate12
+4. plans_n5_activefill_bfull
+5. plans_n5_target38_gate28
+6. plans_n5_expanded_full
+7. plans_n5_portfolio_full
+8. plans_n5_expanded_gate24
+9. plans_guided_full
+10. plans_verify24_full
+11. plans_optimized_full
+12. plans
+13. plans_guided_trial1
+14. plans_optimized_stable
+15. plans_baseline_stable
+
+求解源码在本轮运行前后 SHA-256 一致，没有中途换版本：
+
+- `solver/pipeline.py`：`191f1c7f3a5985c7f19390e08f661c56f7826abc6d3319ba16cf5537998f1dab`。
+- `solver/wavefront_schedule.py`：`a25cc19db7841ec59250bdf56e0d807d7e12fd8947a5fd44abf1c62227c39458`。
+- `solver/run_all.py`：`b3176e699fd98275b92a1a26a96c4b75d89f19cfb5064f7ad2edc4019e3387b1`。
+
+固定随机种子不消除时间截止和并发负载带来的搜索差异。
+原始结果及 warm 输入依仓库规则保存在本地，不随 Git 上传；仅凭源码及摘要
+不能完整复现本轮历史 portfolio，复现时需保留上述目录和完整日志。
+
+### 10.3 独立复核、历史遗漏恢复及测试
+
+- 重新读取 widefull 的全部 81 份官方可比方案，逐一重新调用官方评估器；
+  全部 real 字段与原日志一致，0 不匹配。100 条任务唯一，100 份方案齐全。
+- 汇总本地全部历史 `solve_log_n5_*.jsonl` 的 B/5 官方逐案最优，
+  widefull 为 14 胜、66 平、1 负。唯一遗漏是 `case_023`：
+  `plans_n5_portfolio_gate24_v2` 曾得到 26045，widefull 为 26069。
+- 已单独运行 `solve_log_n5_wide_recovery23.jsonl`，将该历史目录与 widefull
+  一起作为 warm 输入；官方输出恢复为 26045，新增搬运量 157824，
+  来源 warm_portfolio，求解 4.9 秒，无错误。输出目录为
+  `results/plans_n5_wide_recovery23`，再次独立官方复核也一致。
+- 保留 widefull 原始日志和输出不变。仅将 recovery23 作为替代输入时，
+  **组合结果**的 81 例均值为 `3.5899218502742154x`；这不是另一轮完整全量。
+  组合结果相对全部上述历史逐案最优为 14 胜、67 平、0 负，
+  相对 bfull 为 17 胜、64 平、0 负。
+- 新增 `tests/test_wavefront_schedule.py`，覆盖候选上限、无重复、
+  迁核合法性、输入不变、均衡/非 5 核路径及真实 Model 小图冒烟。
+- `python -m pytest tests -q`：**27 passed, 1 skipped**；
+  跳过项需要可选 OR-Tools。`py_compile` 通过，`git diff --check` 通过。
+
+结论：保留本轮改动和所有已验证最优输出。扩大配额有收益，但仍未达到 3.8x，
+且求解成本增加约 26%；下一轮应优先修复候选覆盖与预算分配，
+而不是仅继续放大串接候选池。

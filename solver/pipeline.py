@@ -629,7 +629,7 @@ def solve_case(graph_json, N, scene, time_budget=10.0, seed=0,
         if N == 5 and warm_candidates:
             try:
                 from wavefront_schedule import generate_candidates
-                for warm_candidate in warm_candidates[:8]:
+                for warm_candidate in warm_candidates[:24]:
                     warm_plan0 = (warm_candidate.get('plan')
                                   if isinstance(warm_candidate, dict)
                                   else warm_candidate)
@@ -644,7 +644,7 @@ def solve_case(graph_json, N, scene, time_budget=10.0, seed=0,
                     log.setdefault('wavefront', {})['warm_candidates'] = len(wavefront_candidates)
             except Exception as exc:
                 log['wavefront_warm_error'] = repr(exc)
-        wavefront_limit = 8 if wavefront_candidates and guided_high_yield else (4 if wavefront_candidates else 0)
+        wavefront_limit = 16 if wavefront_candidates and guided_high_yield else (4 if wavefront_candidates else 0)
         wavefront_verified = verify_group(
             wavefront_candidates, wavefront_limit, 'wavefront') if wavefront_limit else 0
         for warm_index, candidate in enumerate(warm_candidates):
