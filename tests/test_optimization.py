@@ -60,7 +60,7 @@ def test_search_seed_is_stable_and_task_specific():
 
 
 def test_mcts_search_returns_valid_schedule():
-    from mcts_schedule import mcts_search
+    from mcts_schedule import mcts_search, _normalized_reward
 
     model = Model(_toy_graph(), block_ops_cap=10)
     ctx = Context(model, 2, 'A', seed=3)
@@ -73,3 +73,22 @@ def test_mcts_search_returns_valid_schedule():
     assert makespan >= 0
     assert added >= 0
     assert stats['iterations'] >= 1
+    assert stats['evaluated_states'] <= 128
+    assert -1.0 <= stats['reward_min'] <= stats['reward_max'] <= 1.0
+    assert _normalized_reward(100.0, 90.0) == pytest.approx(0.1)
+    assert _normalized_reward(100.0, 300.0) == -1.0
+
+
+def test_mcts_stops_after_neighborhood_is_exhausted():
+    from mcts_schedule import mcts_search
+
+    model = Model(_toy_graph(), block_ops_cap=10)
+    ctx = Context(model, 2, 'A', seed=5)
+    root = Sol([0, 1, 2, 3], [0, 0, 1, 1])
+    _best, _fitness, _makespan, _added, stats = mcts_search(
+        ctx, root, time_budget=2.0, max_depth=3, branching=8,
+        max_evals=8, stall_limit=12,
+        rng=__import__('random').Random(5))
+    assert stats['evaluated_states'] <= 8
+    assert stats['iterations'] < 1000
+    assert stats['stop_reason'] in {'max_evals', 'stalled'}

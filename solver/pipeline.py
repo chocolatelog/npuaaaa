@@ -215,15 +215,7 @@ def solve_case(graph_json, N, scene, time_budget=10.0, seed=0,
     # 2. 元启发式串联（共享归档）
     total_budget = max(0.5, time_budget)
     deadline = t0 + total_budget
-    # Reserve a fixed slice for MCTS.  The earlier searches all receive the
-    # shortened deadline; otherwise they can consume the entire wall-clock
-    # budget and leave no time for the requested tree search.
-    search_deadline = deadline
-    mcts_reserve = 0.0
-    if use_mcts:
-        mcts_reserve = max(0.75, min(total_budget * 0.25, 6.0))
-        search_deadline = deadline - mcts_reserve
-    t_left = max(0.0, search_deadline - time.time())
+    t_left = max(0.0, deadline - time.time())
     budget = min(t_left * 0.25, max(0.05, t_left))
     per_seed = budget / max(1, len(seed_solutions))
     for seed_sol in seed_solutions:
@@ -231,12 +223,12 @@ def solve_case(graph_json, N, scene, time_budget=10.0, seed=0,
             break
         sol, f, mk, ad = tabu_search(ctx, seed_sol.clone(), per_seed,
                                      archive=archive, rng=rng,
-                                     deadline=search_deadline)
+                                     deadline=deadline)
         if f is not None and f < f_best:
             best_sol, f_best, mk_best, ad_best = sol.clone(), f, mk, ad
     log['after_tabu'] = [mk_best, ad_best]
 
-    t_left = max(0.0, search_deadline - time.time())
+    t_left = max(0.0, deadline - time.time())
     budget = min(t_left * 0.40, max(0.05, t_left))
     per_seed = budget / max(1, len(seed_solutions))
     for seed_sol in seed_solutions:
@@ -245,41 +237,53 @@ def solve_case(graph_json, N, scene, time_budget=10.0, seed=0,
         start_sol = seed_sol.clone()
         sol, f, mk, ad = sa_search(ctx, start_sol, per_seed,
                                    archive=archive, rng=rng,
-                                   deadline=search_deadline)
+                                   deadline=deadline)
         if f is not None and f < f_best:
             best_sol, f_best, mk_best, ad_best = sol.clone(), f, mk, ad
     log['after_sa'] = [mk_best, ad_best]
 
-    t_left = max(0.0, search_deadline - time.time())
+    t_left = max(0.0, deadline - time.time())
     budget = min(t_left * 0.25, max(0.05, t_left))
     sol, f, mk, ad = aco_search(ctx, budget, archive=archive,
-                                rng=rng, deadline=search_deadline)
+                                rng=rng, deadline=deadline)
     if f is not None and f < f_best:
         best_sol, f_best, mk_best, ad_best = sol.clone(), f, mk, ad
     log['after_aco'] = [mk_best, ad_best]
 
-    t_left = max(0.0, search_deadline - time.time())
+    t_left = max(0.0, deadline - time.time())
     budget = min(t_left * 0.25, max(0.05, t_left))
     sol, f, mk, ad = mopso_search(ctx, budget, archive=archive,
-                                  rng=rng, deadline=search_deadline)
+                                  rng=rng, deadline=deadline)
     if f is not None and f < f_best:
         best_sol, f_best, mk_best, ad_best = sol.clone(), f, mk, ad
     log['after_mopso'] = [mk_best, ad_best]
 
-    if use_mcts and time.time() < deadline:
+    # MCTS is an additive candidate generator.  It gets a small extra budget
+    # and a separate archive, so it cannot consume the original search time or
+    # evict candidates produced by the established pipeline.
+    mcts_candidates = []
+    if use_mcts:
         try:
             from mcts_schedule import mcts_search
-            t_left = max(0.0, deadline - time.time())
-            mcts_budget = min(t_left, max(0.05, mcts_reserve))
+            mcts_budget = min(4.0, max(2.0, total_budget * 0.20))
+            mcts_deadline = time.time() + mcts_budget
+            mcts_archive = ParetoArchive(cap=24)
+            mcts_ranked = []
             mcts_sol, mcts_f, mcts_mk, mcts_ad, mcts_stats = mcts_search(
-                ctx, best_sol, mcts_budget, deadline=deadline, rng=rng,
-                archive=archive, max_depth=3, branching=16)
+                ctx, best_sol, mcts_budget, deadline=mcts_deadline, rng=rng,
+                archive=mcts_archive, max_depth=3, branching=16,
+                max_evals=128, stall_limit=256,
+                candidate_pool=mcts_ranked, candidate_cap=32)
             log['mcts'] = mcts_stats
             log['mcts']['budget'] = mcts_budget
-            if mcts_f < f_best:
-                best_sol, f_best, mk_best, ad_best = (
-                    mcts_sol.clone(), mcts_f, mcts_mk, mcts_ad)
-            log['after_mcts'] = [mk_best, ad_best]
+            log['mcts']['proxy_improved'] = mcts_f < f_best
+            log['after_mcts'] = [mcts_mk, mcts_ad]
+            mcts_candidates.append(mcts_sol.clone())
+            mcts_candidates.extend(
+                item[2].clone() for item in sorted(
+                    mcts_archive.items,
+                    key=lambda it: ctx.fitness(it[0], it[1])))
+            mcts_candidates.extend(item[3].clone() for item in mcts_ranked)
         except Exception as exc:
             log['mcts_error'] = repr(exc)
 
@@ -367,17 +371,17 @@ def solve_case(graph_json, N, scene, time_budget=10.0, seed=0,
         log['order_refine_error'] = repr(exc)
     plan = model.plan_from(best_sol.sg_of_block, info['orders'])
     real = None
-    cands = [best_sol, unrefined_best_sol, cheap_best_sol]
+    base_cands = [best_sol, unrefined_best_sol, cheap_best_sol]
     if archive.items:
         # 歧义裁决：归档中标量分接近 best_sol（<5%）的候选也送真值校验
         # （仅小图，大图由 2.5 的逐案校正覆盖）
         _mk2, _ad2, sol2 = archive.best_by_scalar(traffic_weight)
         if sol2 is not None:
             sol2.compact()
-            cands.append(sol2)
-    cands.extend(entry[1] for entry in scored[:max(3, len(seed_rows))]
-                 if entry[1] is not None)
-    cands.extend(lru_ranked)
+            base_cands.append(sol2)
+    base_cands.extend(entry[1] for entry in scored[:max(3, len(seed_rows))]
+                      if entry[1] is not None)
+    base_cands.extend(lru_ranked)
     n_ops = len(graph_json['ops'])
     VERIFY_CAP = 12000
     if n_ops > VERIFY_CAP:
@@ -396,29 +400,43 @@ def solve_case(graph_json, N, scene, time_budget=10.0, seed=0,
             """Speedup uses makespan, so compare it before copy traffic."""
             return (mk_a, ad_a or 0) < (mk_b, ad_b or 0)
 
-        for solx in cands:
-            if len(seen) >= max_verify:
-                break
-            solx.compact()
-            mkx, adx, infox = ctx.evaluate(solx)
-            # best_sol 用精修后的顺序
-            planx = model.plan_from(
-                solx.sg_of_block,
-                refined_orders if (solx is best_sol and refined_orders)
-                else infox['orders'])
-            sig = json.dumps({'n': planx['node_to_subgraph'],
-                              'c': planx['core_schedules']}, sort_keys=True)
-            if sig in seen:
-                continue
-            seen.add(sig)
-            rx = real_evaluate(graph_json, planx, scene)
-            if rx is None or rx.get('error'):
-                continue
-            if best_key is None or lexi_better(
-                    rx['makespan'], rx['added_copy_bytes'],
-                    best_key[0], best_key[1]):
-                best_key = (rx['makespan'], rx['added_copy_bytes'])
-                best_plan, real = planx, rx
+        best_source = None
+
+        def verify_group(candidates, limit, source):
+            nonlocal best_key, best_plan, real, best_source
+            verified = 0
+            for solx in candidates:
+                if verified >= limit:
+                    break
+                solx.compact()
+                _mkx, _adx, infox = ctx.evaluate(solx)
+                planx = model.plan_from(
+                    solx.sg_of_block,
+                    refined_orders if (solx is best_sol and refined_orders)
+                    else infox['orders'])
+                sig = json.dumps({'n': planx['node_to_subgraph'],
+                                  'c': planx['core_schedules']},
+                                 sort_keys=True)
+                if sig in seen:
+                    continue
+                seen.add(sig)
+                verified += 1
+                rx = real_evaluate(graph_json, planx, scene)
+                if rx is None or rx.get('error'):
+                    continue
+                if best_key is None or lexi_better(
+                        rx['makespan'], rx['added_copy_bytes'],
+                        best_key[0], best_key[1]):
+                    best_key = (rx['makespan'], rx['added_copy_bytes'])
+                    best_plan, real, best_source = planx, rx, source
+            return verified
+
+        base_verified = verify_group(base_cands, max_verify, 'base')
+        mcts_limit = 0
+        if use_mcts and mcts_candidates:
+            mcts_limit = 4 if n_ops > 6000 else 8
+        mcts_verified = verify_group(
+            mcts_candidates, mcts_limit, 'mcts') if mcts_limit else 0
         if warm_plan is not None:
             warm_real = real_evaluate(graph_json, warm_plan, scene)
             if warm_real is not None and not warm_real.get('error'):
@@ -427,12 +445,16 @@ def solve_case(graph_json, N, scene, time_budget=10.0, seed=0,
                         warm_real['makespan'], warm_real['added_copy_bytes'],
                         best_key[0], best_key[1]):
                     best_plan, real = warm_plan, warm_real
+                    best_source = 'warm_start'
                     log['warm_start_used'] = True
             else:
                 log['warm_start_error'] = (
                     warm_real.get('error') if warm_real else 'unavailable')
         plan = best_plan
         log['official_verified_candidates'] = len(seen)
+        log['official_verified_base_candidates'] = base_verified
+        log['official_verified_mcts_candidates'] = mcts_verified
+        log['official_selected_source'] = best_source
     log['final_est'] = [mk_final, ad_final]
     log['n_evals'] = ctx.n_evals
     log['pareto_size'] = len(archive.items)
