@@ -62,10 +62,17 @@ def generate_candidates(ctx, root_sol, max_actions=24):
     heavy = [c for c in range(5) if loads[c] > mean * 1.05]
     light = [c for c in range(5) if loads[c] < mean * 0.95]
     actions = []
+    occupied = {c for c, value in enumerate(loads) if value > 0}
+    # A source core can be split only when the moved unit is not the sole
+    # occupant. This keeps a one-chain plan from being changed blindly.
+    allow_empty_fill = len(occupied) < 5
     for score, s, source, index, release in rank:
         if source not in heavy:
             continue
         targets = sorted(light, key=lambda c: (max(tails[c], release), loads[c], c))
+        if allow_empty_fill:
+            targets = sorted(set(targets) | {c for c in range(5) if loads[c] == 0},
+                             key=lambda c: (max(tails[c], release), loads[c], c))
         for target in targets[:3]:
             if target == source:
                 continue
@@ -92,6 +99,7 @@ def generate_candidates(ctx, root_sol, max_actions=24):
             unique.append(row)
     return unique[:max_actions], {"status": "ok", "base_makespan": base_mk,
                                   "loads": loads, "heavy": heavy,
+                                  "occupied": sorted(occupied),
                                   "candidates": len(unique)}
 
 
