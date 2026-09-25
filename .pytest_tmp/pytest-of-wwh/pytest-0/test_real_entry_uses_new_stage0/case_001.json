@@ -1,1 +1,0 @@
-{"ops": [{"id": 1, "op": "MATMUL", "pipe": "PIPE_M", "cycles": 100}, {"id": 2, "op": "MATMUL", "pipe": "PIPE_M", "cycles": 100}], "edges": [], "tensors": []}
