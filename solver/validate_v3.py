@@ -21,14 +21,14 @@ N = 4
 def solve_one(task):
     from model import load_graph
     from pipeline import solve_case
-    from run_all import budget_for, block_cap_for
+    from run_all import budget_for, block_cap_for, stable_seed
     case, scene = task
     g = load_graph(os.path.join(ATTACH, 'data', f'{case}.json'))
     n_ops = len(g['ops'])
     n_el = sum(1 for o in g['ops']
                if o['op'] not in ('COPY_IN', 'COPY_OUT'))
     r = solve_case(g, N=N, scene=scene, time_budget=budget_for(n_ops),
-                   seed=hash((case, scene, N, 'v3')) & 0xffff,
+                   seed=stable_seed(case, scene, N, seed_base=3),
                    block_ops_cap=block_cap_for(n_el))
     return {'case': case, 'scene': scene,
             'new_mk': r['real']['makespan'] if r['real'] else None,
@@ -43,7 +43,12 @@ def old_official(case, scene):
     return json.load(open(p, encoding='utf-8'))['makespan']
 
 
+def legacy_disabled():
+    raise SystemExit('旧实验入口已停用：请使用 run_all.py 的新日志/方案目录及 evaluate_official.py；历史结果保留。')
+
+
 def main():
+    legacy_disabled()
     tasks = [(c, s) for s in ('A', 'B') for c in CASES]
     res = []
     with ProcessPoolExecutor(max_workers=10) as ex:

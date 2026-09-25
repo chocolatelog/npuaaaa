@@ -48,11 +48,22 @@ def heft_construct(model, num_cores, scene, max_sg_ops=400, balance=1.0):
     proc_order = sorted(range(nb),
                         key=lambda b: (-rank[b], model.block_pos[b]))
     core_free = [0.0] * num_cores
+    core_mv = [[0.0, 0.0] for _ in range(num_cores)]   # [Σwm, Σwv]
     end_time = {}
     core_of_block = [0] * nb
     seq_by_core = [[] for _ in range(num_cores)]
+    # W2 H=2 后继前瞻表：每块预取流量前 2 的后继
+    top_succ = {}
+    out_bytes = defaultdict(float)
+    for b in range(nb):
+        sl = sorted(((traffic.get((b, s), 0.0), s)
+                     for s in succs.get(b, ())), reverse=True)[:2]
+        top_succ[b] = sl
+        for _w, s in sl:
+            out_bytes[b] += _w
 
     for b in proc_order:
+        bwm, bvv = model.block_work_m[b], model.block_work_v[b]
         best_c, best_cost = None, None
         for c in range(num_cores):
             start = core_free[c]
@@ -66,10 +77,22 @@ def heft_construct(model, num_cores, scene, max_sg_ops=400, balance=1.0):
                     start = max(start, end_time[p] +
                                 (WAIT_CROSS if scene == 'A' else DELAY_B))
                     remote_traffic += traffic.get((p, b), 0.0)
-            fin = start + dur[b] + balance * remote_traffic / BW
+            eft = start + dur[b] + balance * remote_traffic / BW
+            # 增益1 M/V 互补：核内双管道失衡惩罚
+            nm = core_mv[c][0] + bwm
+            nv = core_mv[c][1] + bvv
+            fin = eft + 0.25 * abs(nm - nv)
+            # 增益2 W2 后继前瞻：后继时长按流量占比折进代价
+            if top_succ[b]:
+                look = sum((tw / max(1.0, out_bytes[b]))
+                           * (dur[s] if s < len(dur) else 0.0)
+                           for tw, s in top_succ[b])
+                fin += 0.5 * look
             if best_cost is None or fin < best_cost:
                 best_cost, best_c = fin, c
         c = best_c
+        core_mv[c][0] += bwm
+        core_mv[c][1] += bvv
         start = core_free[c]
         if scene == 'A' and seq_by_core[c]:
             start += WAIT_SAME
@@ -149,7 +172,46 @@ def strip_construct(model, num_cores, scene, num_strips):
     return sg_of_block, core_of_sg
 
 
-def chain_construct(model, num_cores, scene):
+def _coarsen_chains(model, chains, max_subgraphs):
+    """按真实块边合并链，限制最终子图数量并保持商图可拓扑化。"""
+    if max_subgraphs is None:
+        return chains
+    limit = max(1, int(max_subgraphs))
+    chains = [list(ch) for ch in chains]
+    dur = [max(model.block_work_m[b], model.block_work_v[b])
+           for b in range(len(model.blocks))]
+    while len(chains) > limit:
+        owner = {b: i for i, ch in enumerate(chains) for b in ch}
+        edges = set()
+        for edge in getattr(model, "block_edges", ()):
+            if len(edge) == 2 and isinstance(edge[0], (tuple, list)):
+                u, v = edge[0]
+            else:
+                u, v = edge[:2]
+            a, b = owner.get(u), owner.get(v)
+            if a is not None and b is not None and a != b:
+                edges.add((a, b))
+        if edges:
+            pair = min(edges, key=lambda p: (
+                sum(dur[b] for b in chains[p[0]]) +
+                sum(dur[b] for b in chains[p[1]]),
+                p[0], p[1]))
+        else:
+            pair = min(((i, i + 1) for i in range(len(chains) - 1)),
+                       key=lambda p: (
+                           sum(dur[b] for b in chains[p[0]]) +
+                           sum(dur[b] for b in chains[p[1]]),
+                           p[0]))
+        a, b = pair
+        merged = chains[a] + chains[b]
+        merged.sort(key=lambda x: model.block_pos[x])
+        chains[a] = merged
+        chains.pop(b)
+    return chains
+
+
+def chain_construct(model, num_cores, scene, max_sg_ops=None,
+                    max_subgraphs=None):
     """面向宽图的构造：每条块链尽量独占，均匀摊到各核。"""
     succs, preds, traffic = block_graph(model)
     nb = len(model.blocks)
@@ -161,6 +223,7 @@ def chain_construct(model, num_cores, scene):
         if b in assigned:
             continue
         chain = [b]
+        chain_ops = len(model.blocks[b])
         assigned[b] = len(chains)
         cur = b
         while True:
@@ -173,10 +236,14 @@ def chain_construct(model, num_cores, scene):
                     nxt, w = s, tw
             if nxt is None:
                 break
+            if max_sg_ops is not None and chain_ops + len(model.blocks[nxt]) > max_sg_ops:
+                break
             chain.append(nxt)
+            chain_ops += len(model.blocks[nxt])
             assigned[nxt] = len(chains)
             cur = nxt
         chains.append(chain)
+    chains = _coarsen_chains(model, chains, max_subgraphs)
     # 链按工作量大到小，LPT 分核
     cdur = []
     for ch in chains:

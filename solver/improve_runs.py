@@ -1,11 +1,6 @@
-"""单调改进协议：用校准 spill 模型作为多样性种子重解全部任务，
-按官方真值逐任务保留最优方案（结果只升不降）。
-
-Phase A: 800 任务重解（校准模型 + 新种子）；<=1.2万op 用例用 in-run
-         真值与旧官方结果比较，直接替换优胜者；大用例候选待官方评估。
-Phase B: 大用例候选官方评估 -> 替换优胜者。
-Phase C: 方案变化过的 (case,scene,N) 重新生成官方结果（删 res 后由
-         evaluate_official.py 续跑补齐，P3 跟随 B 方案更新）。
+"""历史改进实现，仅保留用于阅读；命令行入口已停用。
+替代流程：run_all.py 独立求解，evaluate_official.py 内容绑定评估。
+旧修改时间清理和问题三跟随 B 的流程已取消，不删除历史文件。
 """
 import json
 import os
@@ -52,7 +47,7 @@ def lexi_better(mk_a, ad_a, mk_b, ad_b, tol=0.003):
 def solve_one(task):
     from model import load_graph, BW
     from pipeline import solve_case
-    from run_all import budget_for, block_cap_for
+    from run_all import budget_for, block_cap_for, stable_seed
     case, scene, n, phase = task
     graph = load_graph(os.path.join(ATTACH, 'data', f'{case}.json'))
     n_ops = len(graph['ops'])
@@ -61,7 +56,7 @@ def solve_one(task):
     t0 = time.time()
     r = solve_case(graph, N=n, scene=scene,
                    time_budget=budget_for(n_ops),
-                   seed=hash((case, scene, n, phase)) & 0xffff,
+                   seed=stable_seed(case, scene + '|' + phase, n),
                    block_ops_cap=block_cap_for(n_el),
                    spill_calibrated=True)
     elapsed = time.time() - t0
@@ -118,7 +113,12 @@ def eval_big(rec):
     return rec
 
 
+def legacy_disabled():
+    raise SystemExit('旧实验入口已停用：请使用 run_all.py 的新日志/方案目录及 evaluate_official.py；历史结果保留。')
+
+
 def main():
+    legacy_disabled()
     import argparse
     parser = argparse.ArgumentParser()
     parser.add_argument('--cores', default='2,3,4,5')
@@ -186,31 +186,8 @@ def main():
 
 
 def regenerate_changed():
-    """方案文件比备份新 => 该条目被替换 => 删除其官方 res（P1 或 P2+P3）。"""
-    backup = os.path.join(RESULTS, 'plans_v1_backup')
-    plans = os.path.join(RESULTS, 'plans')
-    removed = 0
-    for name in os.listdir(backup):
-        pb = os.path.join(backup, name)
-        pp = os.path.join(plans, name)
-        if not os.path.exists(pp):
-            continue
-        if os.path.getmtime(pp) <= os.path.getmtime(pb) + 1:
-            continue
-        stem = name[:-len('.json')]
-        case, scene, ntag = stem.rsplit('_', 2)
-        probs = ['problem_1'] if scene == 'A' else ['problem_2', 'problem_3']
-        for prob in probs:
-            res = os.path.join(RESULTS, 'official',
-                               f'{case}_{prob}_{ntag}_res.json')
-            for suffix in ('_res.json', '_trace.json', '_log.txt'):
-                p = os.path.join(RESULTS, 'official',
-                                 f'{case}_{prob}_{ntag}{suffix}')
-                if os.path.exists(p):
-                    os.remove(p)
-                    if suffix == '_res.json':
-                        removed += 1
-    return removed
+    """旧修改时间失效入口已停用；不删除任何历史文件。"""
+    legacy_disabled()
 
 
 if __name__ == '__main__':

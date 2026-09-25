@@ -5,6 +5,8 @@
 标量化选解；小图用官方评估器对 top-k 候选做真值校验。
 """
 import json
+import copy
+import hashlib
 import os
 import random
 import sys
@@ -14,6 +16,7 @@ from model import Model, load_graph, BW, MEM_CAP
 from solution import Sol, Context
 from archive import ParetoArchive
 import construct
+from construct_refine import build_construct_candidates
 from tabu import tabu_search
 from sa import sa_search
 from aco import aco_search
@@ -25,13 +28,16 @@ SPILL_COEFS = os.path.join(os.path.dirname(os.path.abspath(__file__)),
                            'spill_coefs.json')
 
 
-def _apply_spill_coefs(model):
-    """若存在 NNLS 校准系数则启用（否则用默认启发式）。"""
+def _apply_spill_coefs(model, num_cores):
+    """仅用 NNLS 校准系数修正原 spill 启发式的高估部分。"""
     if os.path.exists(SPILL_COEFS):
         try:
             with open(SPILL_COEFS, encoding='utf-8') as f:
                 coefs = json.load(f)['coefs']
-            model.set_spill_coefs(tuple(float(x) for x in coefs))
+            # 2 核样本的 spill/并行度关系与多核不同，保持原启发式；
+            # 3 核以上只下调高估，避免不稳定的放大项改变候选排序。
+            blend = 0.0 if int(num_cores) <= 2 else 0.25
+            model.set_spill_coefs(tuple(float(x) for x in coefs), blend=blend)
         except Exception:
             pass
 
@@ -70,90 +76,262 @@ def real_evaluate(graph_json, plan, scene, verify_cap=12000):
     return out
 
 
-def build_construct_pool(model, N, scene):
-    """多个构造式初始解（不同子图规模/策略）。"""
-    pool = []
-    nb = len(model.blocks)
-    for max_ops in (80, 160, 320, 640, 1280):
-        if max_ops * N > nb * 8 and max_ops > 80:
-            continue
-        pool.append(construct.heft_construct(model, N, scene, max_sg_ops=max_ops))
-    for ns in (2 * N, 4 * N, 8 * N):
-        pool.append(construct.strip_construct(model, N, scene, num_strips=ns))
-    pool.append(construct.chain_construct(model, N, scene))
-    # v2：EFT 容量装箱 + M/V 互补分核（接在多粒度 heft 凝聚上）
+def fast_evaluate(graph_json, plan, scene, verify_cap=12000):
+    """仅供候选复核的计数式副本；最终结果仍需原官方确认。"""
+    if scene != 'A' or len(graph_json['ops']) > verify_cap:
+        return real_evaluate(graph_json, plan, scene, verify_cap)
     try:
-        from construct_v2 import eft_place_core
-        for max_ops in (80, 240):
-            sg0, _ = construct.heft_construct(model, N, scene,
-                                              max_sg_ops=max_ops)
-            _core, sg_fixed = eft_place_core(model, sg0, N, scene)
-            pool.append((sg_fixed, _core))
-    except Exception:
-        pass
-    # 单子图整图基线（核数 1 时退化为串行）
-    pool.append(([0] * nb, [0]))
-    return [(Sol(sg, core)) for sg, core in pool]
+        from scene_a_fast import evaluate_scene_a_fast
+        r = evaluate_scene_a_fast(graph_json, plan, 60.0,
+                                  {'L1': 524288, 'UB': 131072}, 1000, 100)
+        dm = r['data_movement_bytes']
+        return {'makespan': r['makespan'], 'added_copy_bytes': dm['added_copy_bytes'],
+                'scheduled_copy_bytes': dm['scheduled_copy_bytes'],
+                'partition_added': dm.get('partition_added_copy_bytes'),
+                'spill_added': dm.get('spill_added_copy_bytes')}
+    except Exception as exc:
+        return {'error': repr(exc)}
+
+
+def _cached_candidate_evaluator():
+    """每次末端精化独占局部模板；最终确认仍调用 real_evaluate。"""
+    from local_template_cache import TemplateCache
+    cache = TemplateCache(max_entries=128, max_bytes=64 * 1024 * 1024)
+    evaluate = None
+
+    def candidate(graph_json, plan, scene):
+        nonlocal evaluate
+        if scene != 'A' or len(graph_json['ops']) > 12000:
+            return {'error': '末端模板仅用于场景 A 的官方可评规模'}
+        try:
+            if evaluate is None:
+                from scene_a_fast import build_counter_evaluator
+                evaluate = build_counter_evaluator(template_cache=cache)
+            result = evaluate(graph_json, plan, 60.0,
+                              {'L1': 524288, 'UB': 131072}, 1000, 100)
+            dm = result['data_movement_bytes']
+            return {'makespan': result['makespan'],
+                    'added_copy_bytes': dm['added_copy_bytes'],
+                    'scheduled_copy_bytes': dm['scheduled_copy_bytes'],
+                    'partition_added': dm.get('partition_added_copy_bytes'),
+                    'spill_added': dm.get('spill_added_copy_bytes')}
+        except Exception as exc:
+            return {'error': repr(exc)}
+
+    return candidate, cache
+
+
+def build_construct_pool(model, N, scene, ctx=None, return_candidates=False):
+    """兼容入口：返回新构造池中的方案对象。"""
+    items = build_construct_candidates(model, N, scene, ctx=ctx)
+    return items if return_candidates else [item.sol for item in items]
+
+
+def _select_seed_solutions(scored, limit=6):
+    """按范式、粒度和结构签名保留多样化种子。"""
+    if not scored:
+        return []
+    ranked = sorted(scored, key=lambda x: x[0])
+    selected = []
+    seen_sig = set()
+    # 第一轮保证范式覆盖，第二轮保证粒度覆盖，最后按代理适应度补齐。
+    for key_index in ("paradigm", "granularity"):
+        keys = []
+        for row in ranked:
+            meta = row[4] if len(row) > 4 else None
+            key = getattr(meta, key_index, None)
+            if key is not None and key not in keys:
+                keys.append(key)
+        for key in keys:
+            row = next((r for r in ranked
+                        if getattr(r[4], key_index, None) == key
+                        and id(r[1]) not in seen_sig), None)
+            if row is not None and len(selected) < limit:
+                selected.append(row)
+                seen_sig.add(id(row[1]))
+    for row in ranked:
+        if len(selected) >= limit:
+            break
+        if id(row[1]) not in seen_sig:
+            selected.append(row)
+            seen_sig.add(id(row[1]))
+    return selected[:limit]
+
+
+def _proxy_for_plan(model, plan, scene, num_cores):
+    sg = [plan['node_to_subgraph'][str(block[0])] for block in model.blocks]
+    cores = [0] * (max(sg) + 1)
+    for c, order in enumerate(plan['core_schedules']):
+        for s in order:
+            cores[s] = c
+    if model.plan_from(sg, plan['core_schedules']) != plan:
+        raise ValueError('后处理方案不能无损映射回块模型')
+    return model.evaluate(sg, cores, scene, num_cores, use_cache=False,
+                          orders_override=plan['core_schedules'])
+
+
+def _record_postprocess(model, proposed, audit, source, scene, num_cores, log):
+    """统一记录固定切分和变切分后处理，确保最终摘要能追溯到候选。"""
+    from terminal_refine import plan_signature
+    final_metrics = _proxy_for_plan(model, proposed, scene, num_cores)
+    for candidate in audit['candidates']:
+        candidate_plan = candidate.get('plan')
+        if candidate_plan is None:
+            candidate_plan = {**proposed, 'core_schedules': candidate['orders']}
+        mk, ad, info = _proxy_for_plan(model, candidate_plan, scene, num_cores)
+        candidate_id = hashlib.sha256(plan_signature(candidate_plan).encode('utf-8')).hexdigest()
+        candidate['plan_id'] = candidate_id
+        log['official_candidates'].append({
+            'plan_id': candidate_id, 'source': source,
+            'proxy_makespan': mk, 'proxy_total_added_bytes': ad,
+            'proxy_partition_added_bytes': info.get('partition_added_bytes'),
+            'proxy_spill_added_bytes': info.get('spill_bytes'),
+            'precise_makespan': candidate['estimate'], 'official': candidate['official']})
+    log['selected_plan_id'] = hashlib.sha256(plan_signature(proposed).encode('utf-8')).hexdigest()
+    return final_metrics
 
 
 def solve_case(graph_json, N, scene, time_budget=10.0, seed=0,
                verify_k=3, block_ops_cap=120, traffic_weight=0.2,
-               use_screen=False, spill_calibrated=False):
+               use_screen=False, spill_calibrated=False,
+               use_lru_spill=False, event_rerank=False, task_order_refine=False,
+               partition_polish=False, construct_reservoir=False,
+               fast_candidate_eval=False, search_rounds=None,
+               terminal_swaps=False, terminal_cache=False):
     """求解一个 (用例, 核数, 场景)。use_screen=True 时 SA/TS 启用
     Mamba 式 SSM 粗筛层；spill_calibrated=True 时启用 NNLS 校准的
     spill 系数（默认启发式）。返回 dict。"""
+    if terminal_cache and not terminal_swaps:
+        raise ValueError('terminal_cache 必须与 terminal_swaps 同时启用')
+    if search_rounds is not None:
+        if isinstance(search_rounds, bool) or not isinstance(search_rounds, int) or search_rounds < 1:
+            raise ValueError('固定轮数必须为正整数')
+        if any((use_screen, event_rerank, task_order_refine, partition_polish,
+                construct_reservoir, fast_candidate_eval)):
+            raise ValueError('固定轮数模式暂不支持额外限时后处理或学习筛选；请独立进行固定候选消融')
     t0 = time.time()
     model = Model(graph_json, block_ops_cap=block_ops_cap)
-    if spill_calibrated:
-        _apply_spill_coefs(model)
+    model.use_lru_spill = bool(use_lru_spill)
+    if spill_calibrated and scene in ('A', 'B'):
+        _apply_spill_coefs(model, N)
     ctx = Context(model, N, scene, traffic_weight=traffic_weight,
                   screen_enabled=use_screen, seed=seed)
+    ctx.retain_constructs = bool(construct_reservoir and event_rerank and scene == 'A')
     rng = random.Random(seed)
     archive = ParetoArchive(cap=48)
 
     # 1. 构造池
-    pool = build_construct_pool(model, N, scene)
+    # 大图的官方真值评估本身受 verify_cap 限制，构造池按方案中的
+    # 时间预算降级规则只保留 R0，避免精化层吞掉主搜索预算。
+    if len(graph_json['ops']) > 12000:
+        # 超大图的边界流量矩阵构造会超过总预算；按方案的超时兜底规则
+        # 使用单个 HEFT 代表进入搜索，专项构造池验证仍覆盖完整 R0 矩阵。
+        sg, core = construct.heft_construct(model, N, scene,
+                                             max_sg_ops=1280)
+        pool = [Sol(sg, core)]
+    else:
+        items = build_construct_pool(model, N, scene, ctx=ctx,
+                                     return_candidates=True)
+        pool = [item.sol for item in items]
     scored = []
-    for sol in pool:
+    for index, sol in enumerate(pool):
         sol.compact()
         mk, ad, _ = ctx.evaluate(sol)
         archive.insert(mk, ad, sol)
-        scored.append((ctx.fitness(mk, ad), sol, mk, ad))
+        meta = (items[index] if len(graph_json['ops']) <= 12000 and
+                'items' in locals() else None)
+        scored.append((ctx.fitness(mk, ad), sol, mk, ad, meta))
     scored.sort(key=lambda x: x[0])
-    best_sol, f_best, mk_best, ad_best = (scored[0][1].clone(), scored[0][0],
-                                          scored[0][2], scored[0][3])
-    log = {'construct_best': [mk_best, ad_best]}
+    seed_rows = _select_seed_solutions(scored, min(6, len(scored)))
+    seed_solutions = [row[1].clone() for row in seed_rows]
+    best_row = scored[0]
+    best_sol, f_best, mk_best, ad_best = (best_row[1].clone(), best_row[0],
+                                          best_row[2], best_row[3])
+    log = {'search_mode': 'fixed_rounds' if search_rounds is not None else 'wall_clock',
+           'search_rounds': search_rounds, 'construct_best': [mk_best, ad_best],
+           'construct_seed_count': len(seed_solutions),
+           'construct_seed_paradigms': [getattr(row[4], 'paradigm', None)
+                                        for row in seed_rows]}
+
+    # 超大图的邻域搜索会使单个任务远超总预算；保留构造解代理结果，
+    # 由全量统计单独标记为时间预算兜底。官方真值评估对这类图也受限。
+    if len(graph_json['ops']) > 12000:
+        best_sol.compact()
+        mk_final, ad_final, info = ctx.evaluate(best_sol)
+        plan = model.plan_from(best_sol.sg_of_block, info['orders'])
+        log['large_case_fallback'] = True
+        if terminal_swaps:
+            log['terminal_swaps'] = {'skipped': '大图尚无原官方保底，末端交换未执行'}
+        log['final_est'] = [mk_final, ad_final]
+        log['n_evals'] = ctx.n_evals
+        return {'plan': plan, 'est': (mk_final, ad_final), 'real': None,
+                'log': log, 'elapsed': time.time() - t0}
 
     # 2. 元启发式串联（共享归档）
-    t_left = time_budget - (time.time() - t0)
-    budget = max(1.0, t_left * 0.25)
-    sol, f, mk, ad = tabu_search(ctx, best_sol.clone(), budget,
-                                 archive=archive, rng=rng)
-    if f is not None and f < f_best:
-        best_sol, f_best, mk_best, ad_best = sol.clone(), f, mk, ad
-    log['after_tabu'] = [mk_best, ad_best]
+    if search_rounds is not None:
+        # 每个构造种子固定禁忌/退火轮数；蚁群和粒子群固定代数。
+        # 各算法每轮候选数不同，分别记评估数，不能宣称等评估次数预算。
+        log['fixed_stage_evals'] = {}
+        for name, search in (('tabu', tabu_search), ('sa', sa_search)):
+            count_before = ctx.n_evals
+            for seed_sol in seed_solutions:
+                sol, f, mk, ad = search(ctx, seed_sol.clone(), 0, archive=archive,
+                                       rng=rng, max_rounds=search_rounds)
+                if f is not None and f < f_best:
+                    best_sol, f_best, mk_best, ad_best = sol.clone(), f, mk, ad
+            log['after_'+name] = [mk_best, ad_best]
+            log['fixed_stage_evals'][name] = ctx.n_evals-count_before
+        for name, search in (('aco', aco_search), ('mopso', mopso_search)):
+            count_before = ctx.n_evals
+            sol, f, mk, ad = search(ctx, 0, archive=archive, rng=rng, max_rounds=search_rounds)
+            if f is not None and f < f_best:
+                best_sol, f_best, mk_best, ad_best = sol.clone(), f, mk, ad
+            log['after_'+name] = [mk_best, ad_best]
+            log['fixed_stage_evals'][name] = ctx.n_evals-count_before
+    else:
+        deadline = t0 + max(0.5, time_budget)
+        t_left = max(0.0, deadline - time.time())
+        budget = min(t_left * 0.25, max(0.05, t_left))
+        per_seed = budget / max(1, len(seed_solutions))
+        for seed_sol in seed_solutions:
+            if time.time() >= deadline:
+                break
+            sol, f, mk, ad = tabu_search(ctx, seed_sol.clone(), per_seed,
+                                         archive=archive, rng=rng,
+                                         deadline=deadline)
+            if f is not None and f < f_best:
+                best_sol, f_best, mk_best, ad_best = sol.clone(), f, mk, ad
+        log['after_tabu'] = [mk_best, ad_best]
 
-    t_left = time_budget - (time.time() - t0)
-    budget = max(1.0, t_left * 0.40)
-    sol, f, mk, ad = sa_search(ctx, best_sol.clone(), budget,
-                               archive=archive, rng=rng)
-    if f is not None and f < f_best:
-        best_sol, f_best, mk_best, ad_best = sol.clone(), f, mk, ad
-    log['after_sa'] = [mk_best, ad_best]
+        t_left = max(0.0, deadline - time.time())
+        budget = min(t_left * 0.40, max(0.05, t_left))
+        per_seed = budget / max(1, len(seed_solutions))
+        for seed_sol in seed_solutions:
+            if time.time() >= deadline:
+                break
+            start_sol = seed_sol.clone()
+            sol, f, mk, ad = sa_search(ctx, start_sol, per_seed,
+                                       archive=archive, rng=rng,
+                                       deadline=deadline)
+            if f is not None and f < f_best:
+                best_sol, f_best, mk_best, ad_best = sol.clone(), f, mk, ad
+        log['after_sa'] = [mk_best, ad_best]
 
-    t_left = time_budget - (time.time() - t0)
-    budget = max(1.0, t_left * 0.45)
-    sol, f, mk, ad = aco_search(ctx, budget, archive=archive, rng=rng)
-    if f is not None and f < f_best:
-        best_sol, f_best, mk_best, ad_best = sol.clone(), f, mk, ad
-    log['after_aco'] = [mk_best, ad_best]
+        t_left = max(0.0, deadline - time.time())
+        budget = min(t_left * 0.25, max(0.05, t_left))
+        sol, f, mk, ad = aco_search(ctx, budget, archive=archive,
+                                    rng=rng, deadline=deadline)
+        if f is not None and f < f_best:
+            best_sol, f_best, mk_best, ad_best = sol.clone(), f, mk, ad
+        log['after_aco'] = [mk_best, ad_best]
 
-    t_left = time_budget - (time.time() - t0)
-    budget = max(0.5, t_left * 0.95)
-    sol, f, mk, ad = mopso_search(ctx, budget, archive=archive, rng=rng)
-    if f is not None and f < f_best:
-        best_sol, f_best, mk_best, ad_best = sol.clone(), f, mk, ad
-    log['after_mopso'] = [mk_best, ad_best]
+        t_left = max(0.0, deadline - time.time())
+        budget = min(t_left * 0.25, max(0.05, t_left))
+        sol, f, mk, ad = mopso_search(ctx, budget, archive=archive,
+                                      rng=rng, deadline=deadline)
+        if f is not None and f < f_best:
+            best_sol, f_best, mk_best, ad_best = sol.clone(), f, mk, ad
+        log['after_mopso'] = [mk_best, ad_best]
 
     # 2.5 大用例专属：逐案真值在线校正 + 歧义裁决。
     # 小用例最终会全量真值校验，无需此处；大用例（>1.2万op）搜索完全
@@ -203,16 +381,18 @@ def solve_case(graph_json, N, scene, time_budget=10.0, seed=0,
         t_left = time_budget - (time.time() - t0)
         cand_orders, base_mk, ref_mk = refine_orders(
             ctx, best_sol, info['orders'], rounds=3,
-            deadline=time.time() + max(1.0, t_left * 0.2))
+            deadline=float("inf") if search_rounds is not None else time.time() + max(1.0, t_left * 0.2))
         if ref_mk < base_mk - 1e-9:
             refined_orders = cand_orders
-            info = dict(info)
-            info['orders'] = cand_orders
-            mk_final = ref_mk
+            mk_final, ad_final, info = model.evaluate(
+                best_sol.sg_of_block, best_sol.core_of_sg, scene, N,
+                use_cache=False, orders_override=cand_orders)
             log['order_refine'] = [base_mk, ref_mk]
     except Exception:
         pass
     plan = model.plan_from(best_sol.sg_of_block, info['orders'])
+    log['search_best_est'] = [mk_final, ad_final]
+    log['official_candidates'] = []
     real = None
     cands = [best_sol]
     if archive.items:
@@ -222,7 +402,7 @@ def solve_case(graph_json, N, scene, time_budget=10.0, seed=0,
         if sol2 is not None:
             sol2.compact()
             cands.append(sol2)
-    for entry in scored[:3]:
+    for entry in scored[:max(3, len(seed_rows))]:
         if entry[1] is not None and all(
                 entry[1].sg_of_block != c.sg_of_block for c in cands):
             cands.append(entry[1])
@@ -232,6 +412,22 @@ def solve_case(graph_json, N, scene, time_budget=10.0, seed=0,
         cands = cands[:1]
     elif n_ops > 6000:
         cands = cands[:3]
+    # 增益3（我方验证）：小图（<=5000op）加 K 网格种子——代理对 K 敏感区
+    # 排序失真（est 赢真值输），官方评估毫秒级直接真值裁决
+    if n_ops <= 5000:
+        from construct import heft_construct as _hc
+        _n_el = len(model.eligible)
+        for kx in (N, int(1.5 * N), 2 * N, int(2.5 * N), 3 * N, 4 * N):
+            try:
+                sgk, corek = _hc(model, N, scene,
+                                 max_sg_ops=max(1, _n_el // kx))
+                ksol = Sol(sgk, corek)
+                ksol.compact()
+                if all(ksol.sg_of_block != c.sg_of_block for c in cands):
+                    cands.append(ksol)
+            except Exception:
+                pass
+        cands = cands[:16]
     if n_ops <= VERIFY_CAP:
         best_key, best_plan, real = None, plan, None
         seen = set()
@@ -247,6 +443,10 @@ def solve_case(graph_json, N, scene, time_budget=10.0, seed=0,
         for solx in cands:
             solx.compact()
             mkx, adx, infox = ctx.evaluate(solx)
+            if solx is best_sol and refined_orders:
+                mkx, adx, infox = model.evaluate(
+                    solx.sg_of_block, solx.core_of_sg, scene, N,
+                    use_cache=False, orders_override=refined_orders)
             # best_sol 用精修后的顺序
             planx = model.plan_from(
                 solx.sg_of_block,
@@ -258,6 +458,13 @@ def solve_case(graph_json, N, scene, time_budget=10.0, seed=0,
                 continue
             seen.add(sig)
             rx = real_evaluate(graph_json, planx, scene)
+            plan_id = hashlib.sha256(sig.encode('utf-8')).hexdigest()
+            log['official_candidates'].append({
+                'plan_id': plan_id, 'proxy_makespan': mkx,
+                'proxy_total_added_bytes': adx,
+                'proxy_partition_added_bytes': infox.get('partition_added_bytes'),
+                'proxy_spill_added_bytes': infox.get('spill_bytes'),
+                'official': rx})
             if rx is None or rx.get('error'):
                 continue
             if best_key is None or lexi_better(
@@ -265,8 +472,198 @@ def solve_case(graph_json, N, scene, time_budget=10.0, seed=0,
                     best_key[0], best_key[1]):
                 best_key = (rx['makespan'], rx['added_copy_bytes'])
                 best_plan, real = planx, rx
+                mk_final, ad_final, info = mkx, adx, infox
+                log['selected_plan_id'] = plan_id
         plan = best_plan
+        baseline = copy.deepcopy((plan, real, mk_final, ad_final, info,
+                                  log.get('selected_plan_id')))
+        accelerated = bool(fast_candidate_eval and scene == 'A' and
+                           real is not None and not real.get('error'))
+        base_candidate_count = len(log['official_candidates'])
+        baseline_seconds = time.perf_counter()
+        for candidate in log['official_candidates']:
+            candidate['evaluation_source'] = 'original_official'
+        candidate_evaluate = fast_evaluate if accelerated else real_evaluate
+        if event_rerank and scene == 'A':
+            from terminal_refine import recommend_challengers
+            extra_started = time.perf_counter()
+            sources = [('construct', row[1]) for row in scored]
+            sources.extend(('archive', row[2]) for row in archive.items)
+            challengers, audit = recommend_challengers(graph_json, ctx, sources, seen)
+            audit['baseline_official'] = real
+            audit['baseline_plan_id'] = log.get('selected_plan_id')
+            for row in challengers:
+                rx = candidate_evaluate(graph_json, row['plan'], scene)
+                audit['official_count'] += 1
+                log['official_candidates'].append({
+                    'plan_id': row['plan_id'], 'source': 'event_challenger',
+                    'proxy_makespan': row['mk'], 'proxy_total_added_bytes': row['ad'],
+                    'precise_makespan': row['precise_makespan'],
+                    'precise_added': row['precise_added'], 'official': rx})
+                if rx is None or rx.get('error'):
+                    continue
+                # 挑战者必须严格不降低耗时；原流程的容差比较不向扩展传播。
+                if real is None or (rx['makespan'], rx['added_copy_bytes']) < (
+                        real['makespan'], real['added_copy_bytes']):
+                    plan, real = row['plan'], rx
+                    mk_final, ad_final, info = row['mk'], row['ad'], row['info']
+                    log['selected_plan_id'] = row['plan_id']
+            audit['final_official'] = real
+            audit['selected_plan_id'] = log.get('selected_plan_id')
+            audit['extra_seconds'] = time.perf_counter() - extra_started
+            log['event_rerank'] = audit
+        if task_order_refine and scene == 'A' and real is not None:
+            from task_order_search import refine_plan_orders
+            extra_started = time.perf_counter()
+            try:
+                proposed, proposed_real, audit = refine_plan_orders(
+                    graph_json, plan, real, candidate_evaluate)
+                metrics = _record_postprocess(model, proposed, audit, 'task_order_challenger', scene, N, log)
+                plan, real = proposed, proposed_real
+                mk_final, ad_final, info = metrics
+                audit['extra_seconds'] = time.perf_counter() - extra_started
+                log['task_order_refine'] = audit
+            except Exception as exc:
+                log['task_order_refine'] = {'error': repr(exc)}
+        if partition_polish and scene == 'A' and real is not None:
+            from partition_polish import polish_partition
+            extra_started = time.perf_counter()
+            try:
+                proposed, proposed_real, audit = polish_partition(
+                    graph_json, plan, real, candidate_evaluate, model=model)
+                metrics = _record_postprocess(model, proposed, audit, 'partition_challenger', scene, N, log)
+                plan, real = proposed, proposed_real
+                mk_final, ad_final, info = metrics
+                audit['extra_seconds'] = time.perf_counter() - extra_started
+                log['partition_polish'] = audit
+            except Exception as exc:
+                log['partition_polish'] = {'error': repr(exc)}
+        if construct_reservoir and event_rerank and scene == 'A' and real is not None:
+            from terminal_refine import refine_reservoir_branch, plan_signature
+            extra_started = time.perf_counter()
+            try:
+                excluded_ids = {c['plan_id'] for c in log['official_candidates']}
+                proposed, proposed_real, audit = refine_reservoir_branch(
+                    graph_json, ctx, plan, real, seen | {plan_signature(plan)},
+                    excluded_ids, candidate_evaluate)
+                audit['baseline_plan_id'] = log['selected_plan_id']
+                metrics = _record_postprocess(model, proposed, audit, 'reservoir_challenger', scene, N, log)
+                plan, real = proposed, proposed_real
+                mk_final, ad_final, info = metrics
+                audit['extra_seconds'] = time.perf_counter() - extra_started
+                log['construct_reservoir'] = audit
+            except Exception as exc:
+                log['construct_reservoir'] = {'error': repr(exc)}
+        source = 'counter_replica' if accelerated else 'original_official'
+        for candidate in log['official_candidates'][base_candidate_count:]:
+            candidate['evaluation_source'] = source
+        for stage in ('event_rerank', 'task_order_refine', 'partition_polish', 'construct_reservoir'):
+            if stage in log:
+                log[stage]['candidate_evaluation_source'] = source
+        if accelerated:
+            audit = {'enabled': True, 'fallback_used': False, 'final_verified': False,
+                     'baseline_plan_id': baseline[5], 'baseline_official': baseline[1],
+                     'candidate_evaluation_source': source,
+                     'final_validation_seconds': 0.0}
+            if plan != baseline[0]:
+                started = time.perf_counter()
+                validated = real_evaluate(graph_json, plan, scene)
+                audit['final_validation_seconds'] = time.perf_counter() - started
+                audit['replica_final'] = real
+                audit['original_final'] = validated
+                audit['attempted_plan_id'] = log.get('selected_plan_id')
+                fields = ('makespan', 'added_copy_bytes', 'scheduled_copy_bytes',
+                          'partition_added', 'spill_added')
+                matches = (validated is not None and not validated.get('error') and
+                           all(k in validated and k in real and validated[k] == real[k]
+                               for k in fields))
+                audit['final_verified'] = bool(matches)
+                log['official_candidates'].append({
+                    'plan_id': log.get('selected_plan_id'), 'source': 'final_validation',
+                    'evaluation_source': 'original_official', 'official': validated,
+                    'proxy_makespan': mk_final, 'proxy_total_added_bytes': ad_final})
+                if matches:
+                    real = validated
+                else:
+                    plan, real, mk_final, ad_final, info, selected_id = baseline
+                    log['selected_plan_id'] = selected_id
+                    audit['fallback_used'] = True
+                    audit['reason'] = '最终原官方结果与副本不一致或验证失败'
+            else:
+                real = baseline[1]
+                audit['final_verified'] = True
+                audit['validation_reused_baseline'] = True
+            audit['total_postprocess_seconds'] = time.perf_counter() - baseline_seconds
+            log['fast_candidate_eval'] = audit
+        # E03/E04 的输入是完整旧流程最终方案，必须在上面的原官方守卫之后。
+        if terminal_swaps:
+            from run_all import valid_official
+            if scene != 'A' or not valid_official(real):
+                log['terminal_swaps'] = {'skipped': '只处理具有有效原官方保底的场景 A'}
+            else:
+                from task_order_search import refine_plan_orders
+                extra_started = time.perf_counter()
+                cache = None
+                search_seconds = None if search_rounds is not None else 2.0
+                try:
+                    screen_evaluate = fast_evaluate
+                    if terminal_cache:
+                        screen_evaluate, cache = _cached_candidate_evaluator()
+                    proposed, proposed_real, audit = refine_plan_orders(
+                        graph_json, plan, real, real_evaluate, enable_swaps=True,
+                        search_seconds=search_seconds, max_evals=4000,
+                        candidate_evaluator=screen_evaluate, rerank_keep=8)
+                    # 指标与候选记录先写入临时容器，异常不能留下半次选中记录。
+                    stage_log = {'official_candidates': []}
+                    metrics = _record_postprocess(model, proposed, audit,
+                        'terminal_swap_challenger', scene, N, stage_log)
+                    for row in stage_log['official_candidates']:
+                        row['evaluation_source'] = 'original_official'
+                    audit['baseline_plan_id'] = log.get('selected_plan_id')
+                    audit['selected_plan_id'] = stage_log['selected_plan_id']
+                    audit['candidate_evaluation_source'] = 'original_official'
+                    audit['screening_source'] = ('cached_counter_replica' if terminal_cache
+                                                 else 'counter_replica')
+                    audit['search_seconds_limit'] = search_seconds
+                    audit['cache_stats'] = dict(cache.stats) if cache is not None else None
+                    audit['extra_seconds'] = time.perf_counter() - extra_started
+                    plan, real = proposed, proposed_real
+                    mk_final, ad_final, info = metrics
+                    log['official_candidates'].extend(stage_log['official_candidates'])
+                    log['selected_plan_id'] = stage_log['selected_plan_id']
+                    log['terminal_swaps'] = audit
+                except Exception as exc:
+                    log['terminal_swaps'] = {'error': repr(exc), 'fallback_used': True,
+                        'baseline_plan_id': log.get('selected_plan_id'),
+                        'search_seconds_limit': search_seconds,
+                        'cache_stats': dict(cache.stats) if cache is not None else None,
+                        'extra_seconds': time.perf_counter() - extra_started}
     log['final_est'] = [mk_final, ad_final]
+    log['spill_calibration_requested'] = bool(spill_calibrated)
+    log['spill_calibrated'] = bool(model.spill_coefs is not None
+                                  and model.spill_calibration_blend > 0
+                                  and not use_lru_spill)
+    log['spill_mode'] = ('lru' if use_lru_spill else
+                         'calibrated_gated' if log['spill_calibrated'] else 'heuristic')
+    log['spill_calibration_blend'] = (float(model.spill_calibration_blend)
+                                     if log['spill_calibrated'] else 0.0)
+    log['proxy_partition_raw_bytes'] = float(
+        info.get('partition_raw_bytes', 0.0))
+    log['proxy_partition_added_bytes'] = float(
+        info.get('partition_added_bytes', 0.0))
+    log['proxy_spill_added_bytes'] = float(info.get('spill_bytes', 0.0))
+    log['proxy_total_added_bytes'] = float(
+        info.get('total_added_bytes', ad_final))
+    log['proxy_memory_overage'] = {
+        key: float(value) for key, value in
+        (info.get('memory_overage') or {}).items()
+        if key in ('L1p', 'L1w', 'UBp', 'UBw', 'L1l', 'UBl')
+    }
+    log['proxy_peak_memory_bytes'] = {
+        key: float(value) for key, value in
+        (info.get('peak_memory_bytes') or {}).items()
+        if key in ('L1', 'UB')
+    }
     log['n_evals'] = ctx.n_evals
     log['pareto_size'] = len(archive.items)
     if ctx.screen is not None:

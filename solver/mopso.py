@@ -90,7 +90,7 @@ def _update_local_front(front, item, cap=24):
 
 
 def mopso_search(ctx, time_budget, n_particles=12, kmin=None, kmax=None,
-                 w=0.5, c1=1.2, c2=1.2, archive=None, deadline=None, rng=None):
+                 w=0.5, c1=1.2, c2=1.2, archive=None, deadline=None, rng=None, max_rounds=None):
     """返回 (best_sol, best_fitness, best_mk, best_added)，并向 archive 供解。"""
     rng = rng or random.Random()
     t_end = deadline if deadline is not None else time.time() + time_budget
@@ -106,7 +106,9 @@ def mopso_search(ctx, time_budget, n_particles=12, kmin=None, kmax=None,
     def scalar(mk, ad):
         return mk + 0.2 * ad / 60.0
 
-    while time.time() < t_end:
+    rounds = 0
+    while (rounds < max_rounds if max_rounds is not None else time.time() < t_end):
+        rounds += 1
         leaders = None
         for i in range(n_particles):
             x = X[i]

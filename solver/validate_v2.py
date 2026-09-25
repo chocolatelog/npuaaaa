@@ -24,13 +24,13 @@ N = 4
 def solve_one(task):
     from model import load_graph
     from pipeline import solve_case
-    from run_all import budget_for, block_cap_for
+    from run_all import budget_for, block_cap_for, stable_seed
     case, scene = task
     g = load_graph(os.path.join(ATTACH, 'data', f'{case}.json'))
     n_ops = len(g['ops'])
     n_el = sum(1 for o in g['ops'] if o['op'] not in ('COPY_IN', 'COPY_OUT'))
     r = solve_case(g, N=N, scene=scene, time_budget=budget_for(n_ops),
-                   seed=hash((case, scene, N, 'v2')) & 0xffff,
+                   seed=stable_seed(case, scene, N, seed_base=2),
                    block_ops_cap=block_cap_for(n_el))
     out = os.path.join(RESULTS, 'plans_v2', f'{case}_{scene}_N{N}.json')
     os.makedirs(os.path.dirname(out), exist_ok=True)
@@ -58,7 +58,12 @@ def eval_one(task):
     return case, scene, (r.returncode == 0), (r.stderr or '')[-200:]
 
 
+def legacy_disabled():
+    raise SystemExit('旧实验入口已停用：请使用 run_all.py 的新日志/方案目录及 evaluate_official.py；历史结果保留。')
+
+
 def main():
+    legacy_disabled()
     tasks = [(c, s) for s in ('A', 'B') for c in CASES]
     print('=== 重求解（校准后模型） ===')
     solved = []
