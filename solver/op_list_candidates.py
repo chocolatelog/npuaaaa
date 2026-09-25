@@ -61,6 +61,36 @@ def _schedule(ops,preds,topo,durations,n,delay,traffic,policy):
             'core_schedules':[[rank[i] for i in ordered if core[i]==c] for c in range(n)]}
 
 
+def _cache_affinity_traffic(graph_json):
+    """Return a conservative bonus for grouping consumers of cacheable tensors.
+
+    This only changes candidate priority. The official evaluator remains the
+    authority for FIFO state, capacity, and timing.
+    """
+    tensors = {t['id']: t for t in graph_json.get('tensors', [])}
+    producers, consumers = defaultdict(set), defaultdict(set)
+    for edge in graph_json.get('edges', []):
+        u, v = edge['source'], edge['target']
+        if u in tensors and isinstance(v, str):
+            consumers[u].add(v)
+        if isinstance(u, str) and v in tensors:
+            producers[v].add(u)
+    affinity = defaultdict(float)
+    for tid, users in consumers.items():
+        size = max(0, tensors[tid].get('size', 0))
+        if not size or size > 1048576 or len(users) < 2:
+            continue
+        # A bounded weight favors reusable tensors without overwhelming DAG
+        # height or communication costs.
+        weight = min(4.0, 1.0 + size / 262144.0) * min(3, len(users) - 1)
+        for a in users:
+            for b in users:
+                if a < b:
+                    affinity[a, b] += weight
+                    affinity[b, a] += weight
+    return affinity
+
+
 def generate_op_candidates(graph_json,plan,num_cores=5,max_candidates=12,**kwargs):
     started=time.monotonic()
     ops,preds,topo,durations=build_compute_dag(graph_json)
@@ -82,6 +112,7 @@ def generate_op_candidates(graph_json,plan,num_cores=5,max_candidates=12,**kwarg
                 traffic[u,v]+=2*max(0,tensors[t]['size'])/60
     out=[]
     seen={json.dumps(plan,sort_keys=True)}
+    affinity = _cache_affinity_traffic(graph_json)
     configs=[(policy,delay) for delay in (0,100,500,1000)
              for policy in ('height','depth','fanout')]
     for policy,delay in configs[:max_candidates]:

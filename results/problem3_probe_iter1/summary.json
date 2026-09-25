@@ -1,0 +1,56 @@
+[
+  {
+    "case": "case_001",
+    "cores": 5,
+    "source": "B_warm_start",
+    "makespan": 47502,
+    "added_copy_bytes": 4608,
+    "cache_hit_rate": 0.0,
+    "error": null
+  },
+  {
+    "case": "case_001",
+    "cores": 5,
+    "source": "op_list_height_delay0",
+    "makespan": 47502,
+    "added_copy_bytes": 4608,
+    "cache_hit_rate": 0.0,
+    "error": null
+  },
+  {
+    "case": "case_002",
+    "cores": 5,
+    "source": "B_warm_start",
+    "makespan": 54257,
+    "added_copy_bytes": 552960,
+    "cache_hit_rate": 0.0,
+    "error": null
+  },
+  {
+    "case": "case_002",
+    "cores": 5,
+    "source": "op_list_height_delay0",
+    "makespan": 73568,
+    "added_copy_bytes": 2370048,
+    "cache_hit_rate": 0.2335423197492163,
+    "error": null
+  },
+  {
+    "case": "case_002",
+    "cores": 5,
+    "source": "op_list_depth_delay0",
+    "makespan": 63303,
+    "added_copy_bytes": 549888,
+    "cache_hit_rate": 0.0,
+    "error": null
+  },
+  {
+    "case": "case_002",
+    "cores": 5,
+    "source": "op_list_height_delay100",
+    "makespan": 65093,
+    "added_copy_bytes": 2317824,
+    "cache_hit_rate": 0.23721665788086452,
+    "error": null
+  }
+]

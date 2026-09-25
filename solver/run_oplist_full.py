@@ -86,16 +86,20 @@ def valid_real(value):
 def run_task(task):
     started = time.monotonic()
     case, scene, cores = task['case'], task['scene'], task['N']
-    if scene not in ('A', 'B') or cores not in (2, 3, 4, 5):
-        raise ValueError('only A/B with 2--5 cores are supported')
+    if scene not in ('A', 'B', 'C') or cores not in (2, 3, 4, 5):
+        raise ValueError('only A/B/C with 2--5 cores are supported')
     graph = load_graph(str(Path(DATA) / (case + '.json')))
     large = len(graph['ops']) > 12000
     filename = f'{case}_{scene}_N{cores}.json'
     seen, baseline_trace, traces = set(), [], []
     incumbent = initial_real = fallback = source = fallback_source = None
+    baseline_names = [filename]
+    if scene == 'C':
+        baseline_names.append(f'{case}_B_N{cores}.json')
     for directory in task['baseline_dirs']:
-        path = Path(directory) / filename
-        if not path.is_file():
+        paths = [Path(directory) / name for name in baseline_names]
+        path = next((p for p in paths if p.is_file()), None)
+        if path is None:
             continue
         plan = json.loads(path.read_text(encoding='utf-8'))
         if len(plan.get('core_schedules', [])) != cores:
@@ -242,8 +246,8 @@ def main():
     cases, scenes, cores = parse_cases(args.cases), args.scenes.split(','), [int(n) for n in args.cores.split(',')]
     if len(set(cases)) != len(cases) or len(set(scenes)) != len(scenes) or len(set(cores)) != len(cores):
         parser.error('duplicate task dimensions')
-    if not set(scenes) <= {'A','B'} or not set(cores) <= {2,3,4,5}:
-        parser.error('only A/B and 2--5 cores are supported')
+    if not set(scenes) <= {'A','B','C'} or not set(cores) <= {2,3,4,5}:
+        parser.error('only A/B/C and 2--5 cores are supported')
     if not 1 <= args.max_candidates <= 12 or args.workers < 1 or any(
             not math.isfinite(v) or v <= 0 for v in (args.evaluation_seconds,args.generation_seconds,args.candidate_seconds)):
         parser.error('invalid budgets')
@@ -255,14 +259,23 @@ def main():
         parser.error('baseline directory missing')
     reference, singlecore = read_log(args.reference_log), read_singlecore(args.singlecore)
     expected = [(case,scene,n) for case in cases for scene in scenes for n in cores]
-    if any(key not in reference for key in expected):
+    # C has no historical reference rows in the A/B archive. For C runs the
+    # input B plan is the warm start; baseline comparison is performed against
+    # the freshly evaluated C incumbent inside each task.
+    missing_reference = [key for key in expected if key not in reference]
+    if missing_reference and any(scene != 'C' for scene in scenes):
         parser.error('reference log is missing requested tasks')
     files = list(HERE.glob('*.py'))
     files += list((HERE.parent/'通用神经网络处理器下的多核调度问题附件'/'code').glob('*.py'))
     files += [Path(DATA)/(case+'.json') for case in cases]
     files += [Path(args.reference_log),Path(args.singlecore)]
     for case,scene,n in expected:
-        paths = [Path(d)/f'{case}_{scene}_N{n}.json' for d in baselines]
+        names = [f'{case}_{scene}_N{n}.json']
+        if scene == 'C':
+            # No archived C plans exist yet; use the corresponding B plan as
+            # a warm start and evaluate it under the official C evaluator.
+            names.append(f'{case}_B_N{n}.json')
+        paths = [Path(d) / name for d in baselines for name in names]
         if not any(p.is_file() for p in paths):
             parser.error(f'missing baseline: {case}/{scene}/{n}')
         if not math.isfinite(singlecore.get(case,0)) or singlecore.get(case,0) <= 0:

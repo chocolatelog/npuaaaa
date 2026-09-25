@@ -57,3 +57,11 @@ results/*
 !results/plans/*.json
 !results/legacy_20260923/
 !results/legacy_20260923/*
+
+# 2026-09-26 H 第三问记录补充：仅保留两次探针的原始摘要。
+!results/problem3_probe/
+!results/problem3_probe/summary.json
+!results/problem3_probe/summary.csv
+!results/problem3_probe_iter1/
+!results/problem3_probe_iter1/summary.json
+!results/problem3_probe_iter1/summary.csv

@@ -1,0 +1,7 @@
+﻿case,cores,source,makespan,added_copy_bytes,cache_hit_rate,error
+case_001,5,B_warm_start,47502,4608,0.0,
+case_001,5,op_list_height_delay0,47502,4608,0.0,
+case_002,5,B_warm_start,54257,552960,0.0,
+case_002,5,op_list_height_delay0,73568,2370048,0.2335423197492163,
+case_002,5,op_list_depth_delay0,63303,549888,0.0,
+case_002,5,op_list_height_delay100,65093,2317824,0.23721665788086452,

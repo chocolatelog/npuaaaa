@@ -1,0 +1,2579 @@
+{
+  "config": {
+    "cases": "1-100",
+    "scenes": "C",
+    "cores": "2,3,4,5",
+    "baseline_dir": [
+      "results\\plans_oplist_full800"
+    ],
+    "reference_log": "results\\solve_log_oplist_full800.jsonl",
+    "singlecore": "results\\summary.csv",
+    "output_dir": "results\\plans_problem3_full400",
+    "log_file": "results\\solve_log_problem3_full400.jsonl",
+    "workers": 6,
+    "max_candidates": 6,
+    "evaluation_seconds": 360.0,
+    "generation_seconds": 120.0,
+    "candidate_seconds": 300.0
+  },
+  "python": "3.12.7 | packaged by Anaconda, Inc. | (main, Oct  4 2024, 13:17:27) [MSC v.1929 64 bit (AMD64)]",
+  "hashes": {
+    "C:\\Users\\admin\\Documents\\ChatGPT\\数学建模\\npuaaaa\\solver\\ab_budget.py": "8f54391ea1b41b52738501c72be03715e5f2916f6e63c3ee20c7796005fec5b6",
+    "C:\\Users\\admin\\Documents\\ChatGPT\\数学建模\\npuaaaa\\solver\\ab_test.py": "c5418bec95a9c8cf9c2b31097776a15c4c36d567a71a8e53070922f8ff5dd1f2",
+    "C:\\Users\\admin\\Documents\\ChatGPT\\数学建模\\npuaaaa\\solver\\aco.py": "d825e081e7f08dcecb4c278afa54eae87569f84c19b816c1af97e66e684f7cd9",
+    "C:\\Users\\admin\\Documents\\ChatGPT\\数学建模\\npuaaaa\\solver\\aggregate.py": "ed5d103567322c96cb374a71d9c6f5d99e4206c8e5070d1442e57ce8ead85c2d",
+    "C:\\Users\\admin\\Documents\\ChatGPT\\数学建模\\npuaaaa\\solver\\archive.py": "168f692fab8ffe1418dd03972514d500f7cbbdb1bfef6607ad8ca735c0ba4c9c",
+    "C:\\Users\\admin\\Documents\\ChatGPT\\数学建模\\npuaaaa\\solver\\beam_schedule.py": "46dba974166da327ad31e9313cf189a4b58411210464e16349b034945bc1bee9",
+    "C:\\Users\\admin\\Documents\\ChatGPT\\数学建模\\npuaaaa\\solver\\bound_certificate.py": "c94a6106ac43d383dbc483f48e6f3b0a731a9e7e888611da0cfcd5f241dac64d",
+    "C:\\Users\\admin\\Documents\\ChatGPT\\数学建模\\npuaaaa\\solver\\calibrate_spill.py": "71ffa7602f838e8ab9d1efdd053324bd0b7e1d191c9447286274a85abe592959",
+    "C:\\Users\\admin\\Documents\\ChatGPT\\数学建模\\npuaaaa\\solver\\compare_baseline.py": "873c687dd0a9f85dc65e13ac96ae165b750998f1b2675c11f1bb9b0d3a9d3c08",
+    "C:\\Users\\admin\\Documents\\ChatGPT\\数学建模\\npuaaaa\\solver\\compare_optimizer_runs.py": "382670748f21201b76edb33730cb6ecd444c07dcb6ea64dcecf2557fd9d7e17c",
+    "C:\\Users\\admin\\Documents\\ChatGPT\\数学建模\\npuaaaa\\solver\\construct.py": "68990365449d9e3e660774414409d1ac4bf27ab3fc081559741505d935485ae3",
+    "C:\\Users\\admin\\Documents\\ChatGPT\\数学建模\\npuaaaa\\solver\\construct_refine.py": "776153d2c5a09c7f1128dae5c0d4d5a96691562e722e10036138947bebca2656",
+    "C:\\Users\\admin\\Documents\\ChatGPT\\数学建模\\npuaaaa\\solver\\construct_v2.py": "3be0f786f971f0c7c4f569c62914ec4283873ec9b2402c5bec509153d1db7459",
+    "C:\\Users\\admin\\Documents\\ChatGPT\\数学建模\\npuaaaa\\solver\\diagnostics.py": "bbd4b18b99c5bd7cf8a92e2a015561fbf927204511d156771d423300bb4a6dfe",
+    "C:\\Users\\admin\\Documents\\ChatGPT\\数学建模\\npuaaaa\\solver\\evaluate_official.py": "6c982f359755751f32468341d1bbda4693d4a69e4b7b0ee2e9e0ffc68ce89f81",
+    "C:\\Users\\admin\\Documents\\ChatGPT\\数学建模\\npuaaaa\\solver\\eval_metrics.py": "a2992b15fdd32e32d3a80fac6694eadb0a3013593c862333c80754a2429c9858",
+    "C:\\Users\\admin\\Documents\\ChatGPT\\数学建模\\npuaaaa\\solver\\export_oplist_report.py": "87785b848dcbaffd59b632f630f1912de0a0c865661808726de8f04c65faa3ca",
+    "C:\\Users\\admin\\Documents\\ChatGPT\\数学建模\\npuaaaa\\solver\\improve_runs.py": "b2d55bfeb200f0607700c6d7c8ad23a39abde29f58ccc96684a9cbaf6b0fe3b1",
+    "C:\\Users\\admin\\Documents\\ChatGPT\\数学建模\\npuaaaa\\solver\\mamba_screen.py": "268dcb3d7463bbec11e1a7343ac6d5697688e8849de8414b506b70a1646211be",
+    "C:\\Users\\admin\\Documents\\ChatGPT\\数学建模\\npuaaaa\\solver\\mcts_schedule.py": "38d40c3be0dae5b7261a55f735995d6ab277a2af8077b8832b84c9a6f7d95c75",
+    "C:\\Users\\admin\\Documents\\ChatGPT\\数学建模\\npuaaaa\\solver\\model.py": "910b356c615830030edcdcb9ce97dbf536e3c0daacdfd16f793b39073bf22c1b",
+    "C:\\Users\\admin\\Documents\\ChatGPT\\数学建模\\npuaaaa\\solver\\mopso.py": "e07324a66b31b7015a94bfae3a762daf796da78135253eb7fbea484f22f9e22e",
+    "C:\\Users\\admin\\Documents\\ChatGPT\\数学建模\\npuaaaa\\solver\\op_list_candidates.py": "65ab64dae71a297d05f82c925e12ca1393ae6b7f3598ac4148b6e863a849531b",
+    "C:\\Users\\admin\\Documents\\ChatGPT\\数学建模\\npuaaaa\\solver\\order_refine.py": "037103d221c9d90d0d5ccb76731477d858b74183dc35043ff8dd217ef03d26db",
+    "C:\\Users\\admin\\Documents\\ChatGPT\\数学建模\\npuaaaa\\solver\\pipeline.py": "191f1c7f3a5985c7f19390e08f661c56f7826abc6d3319ba16cf5537998f1dab",
+    "C:\\Users\\admin\\Documents\\ChatGPT\\数学建模\\npuaaaa\\solver\\pipe_local_cp.py": "81775c48f3d546f06b0072304f64c32bcec905f2806e06ddb795d782f51f0458",
+    "C:\\Users\\admin\\Documents\\ChatGPT\\数学建模\\npuaaaa\\solver\\run_all.py": "b3176e699fd98275b92a1a26a96c4b75d89f19cfb5064f7ad2edc4019e3387b1",
+    "C:\\Users\\admin\\Documents\\ChatGPT\\数学建模\\npuaaaa\\solver\\run_math_refine.py": "a43383645c338f93d1125505873784a5c83cebad4eee25721127d115ee003db5",
+    "C:\\Users\\admin\\Documents\\ChatGPT\\数学建模\\npuaaaa\\solver\\run_oplist_full.py": "10ff7c28eff265c99627f6209e2dbb11b1e58b42bb988fe9b5fac15610d39399",
+    "C:\\Users\\admin\\Documents\\ChatGPT\\数学建模\\npuaaaa\\solver\\run_problem3_probe.py": "3203034867a5a73219a52ab429e87c70bc3bc50128e1eed6e02cd7a649a00930",
+    "C:\\Users\\admin\\Documents\\ChatGPT\\数学建模\\npuaaaa\\solver\\sa.py": "09f26d60d4289a34caf4b3084597a977eca626efe2d3fca9e521d2e7b8daa5dd",
+    "C:\\Users\\admin\\Documents\\ChatGPT\\数学建模\\npuaaaa\\solver\\solution.py": "2e157d9b1dd80fa62ebe60a1d65c7d45d4b5169b7b268ef3c52e774450587be6",
+    "C:\\Users\\admin\\Documents\\ChatGPT\\数学建模\\npuaaaa\\solver\\stub_baseline.py": "84167579add56ec418b3714bf89e722c3e65cb3146d37c49880fd0f77bf829cb",
+    "C:\\Users\\admin\\Documents\\ChatGPT\\数学建模\\npuaaaa\\solver\\summarize_full_run.py": "860140af5cb29d810d94bb00a9360ce0fdac254d1a657adec16f85d4b534586d",
+    "C:\\Users\\admin\\Documents\\ChatGPT\\数学建模\\npuaaaa\\solver\\tabu.py": "39efd047091513863e632e138aa10014cc30c1adeadd5df63972eeedb7e09138",
+    "C:\\Users\\admin\\Documents\\ChatGPT\\数学建模\\npuaaaa\\solver\\validate_construct_pool.py": "1b0cf3aaa0e2a4e2a2d4dd17a0774b12d7322246c614e9326ae2909c4e59728d",
+    "C:\\Users\\admin\\Documents\\ChatGPT\\数学建模\\npuaaaa\\solver\\validate_v2.py": "5c37b2a09b7623511a8eee4e787b49e031355b3e8ce3f67b86f19b055c77f6a1",
+    "C:\\Users\\admin\\Documents\\ChatGPT\\数学建模\\npuaaaa\\solver\\validate_v3.py": "e8165dfe0f9470b0ae19d75061bb01d952ff8e29f312f8a84f7031c81c9c801e",
+    "C:\\Users\\admin\\Documents\\ChatGPT\\数学建模\\npuaaaa\\solver\\verify_full_official.py": "91963cf320473ea36233ce0c68b99ea97d40ead7cc3210167ea011a760cda518",
+    "C:\\Users\\admin\\Documents\\ChatGPT\\数学建模\\npuaaaa\\solver\\wavefront_schedule.py": "a25cc19db7841ec59250bdf56e0d807d7e12fd8947a5fd44abf1c62227c39458",
+    "C:\\Users\\admin\\Documents\\ChatGPT\\数学建模\\npuaaaa\\通用神经网络处理器下的多核调度问题附件\\code\\contest_io.py": "d5936908e4c261c7003b78e783f30bd7d65cb38d6b53a269ea67f0103cac848e",
+    "C:\\Users\\admin\\Documents\\ChatGPT\\数学建模\\npuaaaa\\通用神经网络处理器下的多核调度问题附件\\code\\evaluation_validation.py": "103206b8c5c25e37de50cc3193de3989d7c1e01d4a11cc5f509dedd8f9be9a64",
+    "C:\\Users\\admin\\Documents\\ChatGPT\\数学建模\\npuaaaa\\通用神经网络处理器下的多核调度问题附件\\code\\multicore_cut_evaluate_problem_1.py": "2095f188a6c24ce3899f156bef21d50dcd87cbd9368488046b1e77e2bf91af3f",
+    "C:\\Users\\admin\\Documents\\ChatGPT\\数学建模\\npuaaaa\\通用神经网络处理器下的多核调度问题附件\\code\\multicore_cut_evaluate_problem_2.py": "0b39f84d5ec0a7fba9a4c92a598a9044b97ab79c71393824c1ba130ecfe6c464",
+    "C:\\Users\\admin\\Documents\\ChatGPT\\数学建模\\npuaaaa\\通用神经网络处理器下的多核调度问题附件\\code\\multicore_cut_evaluate_problem_3.py": "eab1504dead881f4b67c0f0498cbc2dbbd9039dc3c9d198c6af58773c127eeb0",
+    "C:\\Users\\admin\\Documents\\ChatGPT\\数学建模\\npuaaaa\\通用神经网络处理器下的多核调度问题附件\\code\\schedule_step1.py": "d8fe721ff3dbe036e34a20c00cce6430960860000a49eb467e63465f76b84034",
+    "C:\\Users\\admin\\Documents\\ChatGPT\\数学建模\\npuaaaa\\通用神经网络处理器下的多核调度问题附件\\code\\schedule_step2.py": "2836baac176f4e0bdd9eec59b8d9ce254e209e5f7a251e23837ab684312fa0c3",
+    "C:\\Users\\admin\\Documents\\ChatGPT\\数学建模\\npuaaaa\\通用神经网络处理器下的多核调度问题附件\\code\\schedule_step3.py": "50053db0436f1d166dd75436693ba3af49b5c339576beb6e7299477f6b69fc7a",
+    "C:\\Users\\admin\\Documents\\ChatGPT\\数学建模\\npuaaaa\\通用神经网络处理器下的多核调度问题附件\\code\\singlecore_evaluate.py": "446b753ee134ef1fec8e052356bb077a2602fbe95572ccd3dddd7928e894b77a",
+    "C:\\Users\\admin\\Documents\\ChatGPT\\数学建模\\npuaaaa\\通用神经网络处理器下的多核调度问题附件\\code\\stub_multicore_cut_and_schedule.py": "0a3a3b79b5173b466fc05fc8d33b72d11d90b4df78995435853d91c632a35892",
+    "C:\\Users\\admin\\Documents\\ChatGPT\\数学建模\\npuaaaa\\通用神经网络处理器下的多核调度问题附件\\data\\case_001.json": "9242651a4b787734f90a8b2778c494dce2104ffb42b3ddb07129418c43b2b8d4",
+    "C:\\Users\\admin\\Documents\\ChatGPT\\数学建模\\npuaaaa\\通用神经网络处理器下的多核调度问题附件\\data\\case_002.json": "70b424eab8b78cc1dee9c2e6f9ccc7f46be5c3f4714a75497a9a28742ae41220",
+    "C:\\Users\\admin\\Documents\\ChatGPT\\数学建模\\npuaaaa\\通用神经网络处理器下的多核调度问题附件\\data\\case_003.json": "4eb7f81250b3cabc38b8d86ee6a1945b315e33e8930beb17bf93b971df7abaf4",
+    "C:\\Users\\admin\\Documents\\ChatGPT\\数学建模\\npuaaaa\\通用神经网络处理器下的多核调度问题附件\\data\\case_004.json": "4915d909f9dc2d1854ab8ab154baf76605d085cfa678f16e5495c44d6e7ab8dd",
+    "C:\\Users\\admin\\Documents\\ChatGPT\\数学建模\\npuaaaa\\通用神经网络处理器下的多核调度问题附件\\data\\case_005.json": "458bcd04315ccfd205e8c93ac463a416d439f47ff56b6139c23e463a43918f6b",
+    "C:\\Users\\admin\\Documents\\ChatGPT\\数学建模\\npuaaaa\\通用神经网络处理器下的多核调度问题附件\\data\\case_006.json": "1868a48f22a5205403c525c0021ead176e254c08551951656d0d12df6086a65d",
+    "C:\\Users\\admin\\Documents\\ChatGPT\\数学建模\\npuaaaa\\通用神经网络处理器下的多核调度问题附件\\data\\case_007.json": "941e2f8b6b26c1fcb3d780c8acd0e155b36369ddf3179c87ea64f2be1199adf1",
+    "C:\\Users\\admin\\Documents\\ChatGPT\\数学建模\\npuaaaa\\通用神经网络处理器下的多核调度问题附件\\data\\case_008.json": "f6dedd15a4dd63575a9705220716f7289957f121453654ad0958e481733f3c3e",
+    "C:\\Users\\admin\\Documents\\ChatGPT\\数学建模\\npuaaaa\\通用神经网络处理器下的多核调度问题附件\\data\\case_009.json": "e709a2728b69ef053732224a67d6db8f3092238701fd49254566ad7f8b584625",
+    "C:\\Users\\admin\\Documents\\ChatGPT\\数学建模\\npuaaaa\\通用神经网络处理器下的多核调度问题附件\\data\\case_010.json": "ad7cd8117e5c30f68db7f0223a4c4954d2af024c033d278647e38ec0fd52da73",
+    "C:\\Users\\admin\\Documents\\ChatGPT\\数学建模\\npuaaaa\\通用神经网络处理器下的多核调度问题附件\\data\\case_011.json": "707f69a9d868f523bb43cc6f8182fdc5de16cc6a5fba6dcda3511856f051ec3b",
+    "C:\\Users\\admin\\Documents\\ChatGPT\\数学建模\\npuaaaa\\通用神经网络处理器下的多核调度问题附件\\data\\case_012.json": "0f446ddadaf7cda6315133d52195b08f802ad058e61b8bf986d9ba4a9425a2fb",
+    "C:\\Users\\admin\\Documents\\ChatGPT\\数学建模\\npuaaaa\\通用神经网络处理器下的多核调度问题附件\\data\\case_013.json": "d59efbba60f427e2bb8d09b8a601a5c88ef8661175357615b84b8c87da91168f",
+    "C:\\Users\\admin\\Documents\\ChatGPT\\数学建模\\npuaaaa\\通用神经网络处理器下的多核调度问题附件\\data\\case_014.json": "35e0a12f3a9eb5da0c7f786c5a3d087d466761f2d75c9936f86604b33e00c9b1",
+    "C:\\Users\\admin\\Documents\\ChatGPT\\数学建模\\npuaaaa\\通用神经网络处理器下的多核调度问题附件\\data\\case_015.json": "650b8a8265371a0b2fcbb36bff643f9ccaa60f00f6fc1a65c332b4ad793c35c1",
+    "C:\\Users\\admin\\Documents\\ChatGPT\\数学建模\\npuaaaa\\通用神经网络处理器下的多核调度问题附件\\data\\case_016.json": "35cb2861fbd0d57fedca90535458cacf29845aa9ce58778ca15f49968912a868",
+    "C:\\Users\\admin\\Documents\\ChatGPT\\数学建模\\npuaaaa\\通用神经网络处理器下的多核调度问题附件\\data\\case_017.json": "2bcf4a2ba91bd7893310cb0c51679e75563815784d163b61ab86c263663909d3",
+    "C:\\Users\\admin\\Documents\\ChatGPT\\数学建模\\npuaaaa\\通用神经网络处理器下的多核调度问题附件\\data\\case_018.json": "ea6841748435fa3142ca466d55a3c470f12d1ed2eee76c76ace7db093b4a6269",
+    "C:\\Users\\admin\\Documents\\ChatGPT\\数学建模\\npuaaaa\\通用神经网络处理器下的多核调度问题附件\\data\\case_019.json": "866db51a42e78352d408ae68e9091ecea814a80d7cdc77ebfecdf1b48ae614b9",
+    "C:\\Users\\admin\\Documents\\ChatGPT\\数学建模\\npuaaaa\\通用神经网络处理器下的多核调度问题附件\\data\\case_020.json": "2425ef0abbfaebe0a75dfe8183bc10a01723653fd70c9960f7d363f7590f9bb2",
+    "C:\\Users\\admin\\Documents\\ChatGPT\\数学建模\\npuaaaa\\通用神经网络处理器下的多核调度问题附件\\data\\case_021.json": "262b999ccb776a272f45b4fcaa30f97731b8beb453ad6b5ac4b4af8dd8c9f569",
+    "C:\\Users\\admin\\Documents\\ChatGPT\\数学建模\\npuaaaa\\通用神经网络处理器下的多核调度问题附件\\data\\case_022.json": "ead083d4f92d3996d48adb0ae242cb7284919128589ce902803d7004c1f10d67",
+    "C:\\Users\\admin\\Documents\\ChatGPT\\数学建模\\npuaaaa\\通用神经网络处理器下的多核调度问题附件\\data\\case_023.json": "b4b5ced05a58b17e9e066ac8b57e327784643bd67aeadaa0cf6478ce41cd6c5b",
+    "C:\\Users\\admin\\Documents\\ChatGPT\\数学建模\\npuaaaa\\通用神经网络处理器下的多核调度问题附件\\data\\case_024.json": "44e69a4ce817ba85f6d74d5f18bd6025fecd8a989b28cb183aa4f58225b3aacd",
+    "C:\\Users\\admin\\Documents\\ChatGPT\\数学建模\\npuaaaa\\通用神经网络处理器下的多核调度问题附件\\data\\case_025.json": "04612fbf10392348b3820627c8738bc4f67a82e24ed1b2352645933b3c397688",
+    "C:\\Users\\admin\\Documents\\ChatGPT\\数学建模\\npuaaaa\\通用神经网络处理器下的多核调度问题附件\\data\\case_026.json": "afcc5a9068af3423991ade3febc9b82422b0b668938904319ed652632dfac172",
+    "C:\\Users\\admin\\Documents\\ChatGPT\\数学建模\\npuaaaa\\通用神经网络处理器下的多核调度问题附件\\data\\case_027.json": "22e6e56715e40dd1222d4a61884a47ac89cbf0aa279a880397f51f6e5cc5f1b1",
+    "C:\\Users\\admin\\Documents\\ChatGPT\\数学建模\\npuaaaa\\通用神经网络处理器下的多核调度问题附件\\data\\case_028.json": "36611055ea1d49ffa6fa450e67723b26725adf32c7221b6399ba3c0d6fca18b8",
+    "C:\\Users\\admin\\Documents\\ChatGPT\\数学建模\\npuaaaa\\通用神经网络处理器下的多核调度问题附件\\data\\case_029.json": "08c9fd48e8fcf1f778f90b7d426c1a68544c81fa8ee9d7b0e18aeca20d39b544",
+    "C:\\Users\\admin\\Documents\\ChatGPT\\数学建模\\npuaaaa\\通用神经网络处理器下的多核调度问题附件\\data\\case_030.json": "7dcc3e4077b3f72640f353ef02c000e9011335a29d020f714d96be23811ab1e7",
+    "C:\\Users\\admin\\Documents\\ChatGPT\\数学建模\\npuaaaa\\通用神经网络处理器下的多核调度问题附件\\data\\case_031.json": "b8659d1faaeb16810043b05b91f9deab2002e627164b5de6fb232847870305ac",
+    "C:\\Users\\admin\\Documents\\ChatGPT\\数学建模\\npuaaaa\\通用神经网络处理器下的多核调度问题附件\\data\\case_032.json": "d97c4ed0fa968caec880967fed0701066c3f331712f4e9db009a2190e8d77e3d",
+    "C:\\Users\\admin\\Documents\\ChatGPT\\数学建模\\npuaaaa\\通用神经网络处理器下的多核调度问题附件\\data\\case_033.json": "a642f331ad477e3b7e28e75792aac05a711ff950044ec0942a8571050082f06f",
+    "C:\\Users\\admin\\Documents\\ChatGPT\\数学建模\\npuaaaa\\通用神经网络处理器下的多核调度问题附件\\data\\case_034.json": "384b041b6737145e5c43c28628abe3e98c0bf065eabb7e7af8463ea2110e731e",
+    "C:\\Users\\admin\\Documents\\ChatGPT\\数学建模\\npuaaaa\\通用神经网络处理器下的多核调度问题附件\\data\\case_035.json": "0a34a6ebe57d760f046062290501d55e4db10c606a9054fe0b97969ad96f9b81",
+    "C:\\Users\\admin\\Documents\\ChatGPT\\数学建模\\npuaaaa\\通用神经网络处理器下的多核调度问题附件\\data\\case_036.json": "15a695e19e51535914dc52b6f6c18e2bb79d2d2ef8a1f91b09e6a7e7b39d98dc",
+    "C:\\Users\\admin\\Documents\\ChatGPT\\数学建模\\npuaaaa\\通用神经网络处理器下的多核调度问题附件\\data\\case_037.json": "5e3f52dc739029cb3e571a86e5d4d9e7fe99c5383333e1f062b16dfca9bb429b",
+    "C:\\Users\\admin\\Documents\\ChatGPT\\数学建模\\npuaaaa\\通用神经网络处理器下的多核调度问题附件\\data\\case_038.json": "313ce1dc8a31ba363b5d3b587bb2e3cfc45357477fa163c8668defc89da36d88",
+    "C:\\Users\\admin\\Documents\\ChatGPT\\数学建模\\npuaaaa\\通用神经网络处理器下的多核调度问题附件\\data\\case_039.json": "b462e87cc6c5d489cb9f1f8b685cdcd3d849b300518ca2c36c21d4964b8a27f5",
+    "C:\\Users\\admin\\Documents\\ChatGPT\\数学建模\\npuaaaa\\通用神经网络处理器下的多核调度问题附件\\data\\case_040.json": "e2730cb2df45864a86ff790d89965c54e211e28e38647b1f9ff539e3df1ab79e",
+    "C:\\Users\\admin\\Documents\\ChatGPT\\数学建模\\npuaaaa\\通用神经网络处理器下的多核调度问题附件\\data\\case_041.json": "6d389ea106930e9741fc0bdaa21565a2a9198c27034f90d299dae1fee6b8e727",
+    "C:\\Users\\admin\\Documents\\ChatGPT\\数学建模\\npuaaaa\\通用神经网络处理器下的多核调度问题附件\\data\\case_042.json": "a4c0fd4287f376c95e9502153b5fe79f10a12eebcee8d31ef759c4de05a76258",
+    "C:\\Users\\admin\\Documents\\ChatGPT\\数学建模\\npuaaaa\\通用神经网络处理器下的多核调度问题附件\\data\\case_043.json": "d52b6b0f87ed193efc67ea8afaa6807059b6a1988e0d3c2fa68a0e456038d481",
+    "C:\\Users\\admin\\Documents\\ChatGPT\\数学建模\\npuaaaa\\通用神经网络处理器下的多核调度问题附件\\data\\case_044.json": "b2c3234fa17218d211c55a1fb7c15d904b27b39fe34fc82012df9d979563e41e",
+    "C:\\Users\\admin\\Documents\\ChatGPT\\数学建模\\npuaaaa\\通用神经网络处理器下的多核调度问题附件\\data\\case_045.json": "724e21dfdce786da8266b10c5135c4f73a40a335762c63de70778c351c42bc12",
+    "C:\\Users\\admin\\Documents\\ChatGPT\\数学建模\\npuaaaa\\通用神经网络处理器下的多核调度问题附件\\data\\case_046.json": "4e0063857d54312fddc8017a5a956b057698f8ae015ee9e26d6dea17b3e8d4e0",
+    "C:\\Users\\admin\\Documents\\ChatGPT\\数学建模\\npuaaaa\\通用神经网络处理器下的多核调度问题附件\\data\\case_047.json": "52d9a61efbbe992e1759f38fd13bfa21fb095ad5ddbf83fb8c369502f2029bed",
+    "C:\\Users\\admin\\Documents\\ChatGPT\\数学建模\\npuaaaa\\通用神经网络处理器下的多核调度问题附件\\data\\case_048.json": "6b30ec37a04faa3bd587e340ce66c344801ff776da033bad27b54fda6e5f7474",
+    "C:\\Users\\admin\\Documents\\ChatGPT\\数学建模\\npuaaaa\\通用神经网络处理器下的多核调度问题附件\\data\\case_049.json": "94edbdb778b858ebabdd58298339f06e78eff5362a3874bd1aaad6d193026fe1",
+    "C:\\Users\\admin\\Documents\\ChatGPT\\数学建模\\npuaaaa\\通用神经网络处理器下的多核调度问题附件\\data\\case_050.json": "c754f534d73ae63616fc13d945803885775600598b855d4e090a793b59274873",
+    "C:\\Users\\admin\\Documents\\ChatGPT\\数学建模\\npuaaaa\\通用神经网络处理器下的多核调度问题附件\\data\\case_051.json": "f6e98d2ae7e477de0eb77d634fd0dc30c3b9dec09cb317eb5ac34683c9cbbb29",
+    "C:\\Users\\admin\\Documents\\ChatGPT\\数学建模\\npuaaaa\\通用神经网络处理器下的多核调度问题附件\\data\\case_052.json": "603e8fb1366022dc52f8681cb0520cabffbcddf8e19f63f9f1bbdd8b6f068077",
+    "C:\\Users\\admin\\Documents\\ChatGPT\\数学建模\\npuaaaa\\通用神经网络处理器下的多核调度问题附件\\data\\case_053.json": "a0d6cd3739c58b91b547de5255c49536316204e1eb8a3abe3960662e704b99cf",
+    "C:\\Users\\admin\\Documents\\ChatGPT\\数学建模\\npuaaaa\\通用神经网络处理器下的多核调度问题附件\\data\\case_054.json": "4ed6cc1a9224bebd4cde571ba3ce3985b02642b3fef7c7ae93eb7b1369ab88b7",
+    "C:\\Users\\admin\\Documents\\ChatGPT\\数学建模\\npuaaaa\\通用神经网络处理器下的多核调度问题附件\\data\\case_055.json": "b7d6b1cb432f7e05c90670392ca50944a3dee2396ee4bbb35ae107a853254dc6",
+    "C:\\Users\\admin\\Documents\\ChatGPT\\数学建模\\npuaaaa\\通用神经网络处理器下的多核调度问题附件\\data\\case_056.json": "5141e25a67c24eee608d4d359d63f058867e22f11bdc8d047841225469d03c02",
+    "C:\\Users\\admin\\Documents\\ChatGPT\\数学建模\\npuaaaa\\通用神经网络处理器下的多核调度问题附件\\data\\case_057.json": "54890942d14f12338b1de879073c478cb447d4ef2b2cd7a1181ca907e62bad20",
+    "C:\\Users\\admin\\Documents\\ChatGPT\\数学建模\\npuaaaa\\通用神经网络处理器下的多核调度问题附件\\data\\case_058.json": "50876eff3bc1f9a42c7e4f6fd64260d28e97c86352f9c17fec0723b65a5dc6cf",
+    "C:\\Users\\admin\\Documents\\ChatGPT\\数学建模\\npuaaaa\\通用神经网络处理器下的多核调度问题附件\\data\\case_059.json": "6b5fdf9478506994ea99c8724e3044c4e46908f6883719fce3950ef8dbb331ab",
+    "C:\\Users\\admin\\Documents\\ChatGPT\\数学建模\\npuaaaa\\通用神经网络处理器下的多核调度问题附件\\data\\case_060.json": "5bad579fcbc8cb16a49655ad7563587e57448c6c7f760484a2f5cc1a7f8b9c42",
+    "C:\\Users\\admin\\Documents\\ChatGPT\\数学建模\\npuaaaa\\通用神经网络处理器下的多核调度问题附件\\data\\case_061.json": "0afa81ebfd1afc2a3aca05a01d88b1daf87b401d6aaa1545c9efc7e87bf621b3",
+    "C:\\Users\\admin\\Documents\\ChatGPT\\数学建模\\npuaaaa\\通用神经网络处理器下的多核调度问题附件\\data\\case_062.json": "26ddd30c048b36cdd092fe2e03a973e1ab1721e59d2869cd221e6e1d9f25bff4",
+    "C:\\Users\\admin\\Documents\\ChatGPT\\数学建模\\npuaaaa\\通用神经网络处理器下的多核调度问题附件\\data\\case_063.json": "3e6198e4b1f5d9d44302eb7cb0fa59233e011776e8154b01d5277b1fdd728f95",
+    "C:\\Users\\admin\\Documents\\ChatGPT\\数学建模\\npuaaaa\\通用神经网络处理器下的多核调度问题附件\\data\\case_064.json": "96a61eb737290244b67a0af4bcef832988c78433b760cd516eb8ed72e01b4dfe",
+    "C:\\Users\\admin\\Documents\\ChatGPT\\数学建模\\npuaaaa\\通用神经网络处理器下的多核调度问题附件\\data\\case_065.json": "b24d08741f0c7095138eb55130e398241e3d2ae96f22f1b04481ca41d6915c90",
+    "C:\\Users\\admin\\Documents\\ChatGPT\\数学建模\\npuaaaa\\通用神经网络处理器下的多核调度问题附件\\data\\case_066.json": "b8327862bd839fc6cb0fbf9fc8bccdd3a65ef0d39c5c866eca36800b51bc0dd1",
+    "C:\\Users\\admin\\Documents\\ChatGPT\\数学建模\\npuaaaa\\通用神经网络处理器下的多核调度问题附件\\data\\case_067.json": "20641f4d195a501f6ba45d3eee09c61f9a1f0a75ffa8da271f537ab95e56258f",
+    "C:\\Users\\admin\\Documents\\ChatGPT\\数学建模\\npuaaaa\\通用神经网络处理器下的多核调度问题附件\\data\\case_068.json": "741be10d53a34e60efdb3ae17384c5c1b0bd4c9005080f4e7b4b80bd55f3ef3a",
+    "C:\\Users\\admin\\Documents\\ChatGPT\\数学建模\\npuaaaa\\通用神经网络处理器下的多核调度问题附件\\data\\case_069.json": "65486ac0aef25132b9470ab65a59d207fea1b4adb0115f8e9039878a7490c751",
+    "C:\\Users\\admin\\Documents\\ChatGPT\\数学建模\\npuaaaa\\通用神经网络处理器下的多核调度问题附件\\data\\case_070.json": "a51a356a00168faffce8b54cf947f1707f618bae8ba1dc344712fab97041c763",
+    "C:\\Users\\admin\\Documents\\ChatGPT\\数学建模\\npuaaaa\\通用神经网络处理器下的多核调度问题附件\\data\\case_071.json": "74e557288ae57d0766076d3424146458c30f7a3a3831e480fb6fa3c3ba9d5e44",
+    "C:\\Users\\admin\\Documents\\ChatGPT\\数学建模\\npuaaaa\\通用神经网络处理器下的多核调度问题附件\\data\\case_072.json": "acc073a7840359ea2ad357f297aa6620856092e1ce88b447c101cc7f4b3d8aad",
+    "C:\\Users\\admin\\Documents\\ChatGPT\\数学建模\\npuaaaa\\通用神经网络处理器下的多核调度问题附件\\data\\case_073.json": "4e48d9ce512edd76df090d579cbd7bdfb59e33b043e0f91a170b87f872d56999",
+    "C:\\Users\\admin\\Documents\\ChatGPT\\数学建模\\npuaaaa\\通用神经网络处理器下的多核调度问题附件\\data\\case_074.json": "d44940e41a0a7870dabd0ebddd2899866c3b009881ae0a447b949f260d96f2b1",
+    "C:\\Users\\admin\\Documents\\ChatGPT\\数学建模\\npuaaaa\\通用神经网络处理器下的多核调度问题附件\\data\\case_075.json": "c28a5873c9549d3282af02018086df1fe63816bd23e58b209d316e0faf604eac",
+    "C:\\Users\\admin\\Documents\\ChatGPT\\数学建模\\npuaaaa\\通用神经网络处理器下的多核调度问题附件\\data\\case_076.json": "2c1126b95ee76c5725602657f7fd3e0ef91117f4e80b3f1224f88fa7e059134a",
+    "C:\\Users\\admin\\Documents\\ChatGPT\\数学建模\\npuaaaa\\通用神经网络处理器下的多核调度问题附件\\data\\case_077.json": "e0e9c26382a116e79131865cb1865307e2db971bc8fc5f01c32dd5f0d81e6666",
+    "C:\\Users\\admin\\Documents\\ChatGPT\\数学建模\\npuaaaa\\通用神经网络处理器下的多核调度问题附件\\data\\case_078.json": "b2f6005f4c77620769f379804af79973743618538703ae25212569f6cac24d21",
+    "C:\\Users\\admin\\Documents\\ChatGPT\\数学建模\\npuaaaa\\通用神经网络处理器下的多核调度问题附件\\data\\case_079.json": "38a780715024e651cb9e3c8f727e5e5a0a5bd8928eeb92b2f36acf0ed9c01f00",
+    "C:\\Users\\admin\\Documents\\ChatGPT\\数学建模\\npuaaaa\\通用神经网络处理器下的多核调度问题附件\\data\\case_080.json": "054111a73271dd0dfb805b1761adcb4d9b09a124d32a5ded480eb90428cfdf46",
+    "C:\\Users\\admin\\Documents\\ChatGPT\\数学建模\\npuaaaa\\通用神经网络处理器下的多核调度问题附件\\data\\case_081.json": "46d8e75824d08036b8b992bbc27470edcf30eaa247fdfadef8dc932753dc0684",
+    "C:\\Users\\admin\\Documents\\ChatGPT\\数学建模\\npuaaaa\\通用神经网络处理器下的多核调度问题附件\\data\\case_082.json": "7decf23ef86c104f9da584bb39c9777bd2b80539a2e874d88259382d7f1d9ffa",
+    "C:\\Users\\admin\\Documents\\ChatGPT\\数学建模\\npuaaaa\\通用神经网络处理器下的多核调度问题附件\\data\\case_083.json": "b490edb6167c9255c4dc8a8ed5e10bf460387a39e91ea76bc682b1580661442e",
+    "C:\\Users\\admin\\Documents\\ChatGPT\\数学建模\\npuaaaa\\通用神经网络处理器下的多核调度问题附件\\data\\case_084.json": "b2fc3f1921e6757813a32da74b10c6582763fd209f0e95509c019e70c837c187",
+    "C:\\Users\\admin\\Documents\\ChatGPT\\数学建模\\npuaaaa\\通用神经网络处理器下的多核调度问题附件\\data\\case_085.json": "0004836594cb07bc76e84f1d0cac17ae9c25a3aea4ca860333b24576e46a8ad4",
+    "C:\\Users\\admin\\Documents\\ChatGPT\\数学建模\\npuaaaa\\通用神经网络处理器下的多核调度问题附件\\data\\case_086.json": "47ae68e7591f07c898530101f0a3c28117815c6f886bfeab466f35b1f2e27ed4",
+    "C:\\Users\\admin\\Documents\\ChatGPT\\数学建模\\npuaaaa\\通用神经网络处理器下的多核调度问题附件\\data\\case_087.json": "56eb9fa9f4825a9ea42157b911275b1c8ce3723b910b1fe63211b775e96aefa9",
+    "C:\\Users\\admin\\Documents\\ChatGPT\\数学建模\\npuaaaa\\通用神经网络处理器下的多核调度问题附件\\data\\case_088.json": "985e224568aa4ace87b741b1de79aae335d077dc6e1870e3d2597fb1b77f07a9",
+    "C:\\Users\\admin\\Documents\\ChatGPT\\数学建模\\npuaaaa\\通用神经网络处理器下的多核调度问题附件\\data\\case_089.json": "1dd9c05dfcc0e68079235cc1473748f197bfbfff37d34121663f11936985b056",
+    "C:\\Users\\admin\\Documents\\ChatGPT\\数学建模\\npuaaaa\\通用神经网络处理器下的多核调度问题附件\\data\\case_090.json": "16bd782f6467ad11dc934226dcf8cbb4f356c1d43a10362192a60b774a852945",
+    "C:\\Users\\admin\\Documents\\ChatGPT\\数学建模\\npuaaaa\\通用神经网络处理器下的多核调度问题附件\\data\\case_091.json": "604197480754981054112aa1e5d615592061825383c40d057d846a3b49347095",
+    "C:\\Users\\admin\\Documents\\ChatGPT\\数学建模\\npuaaaa\\通用神经网络处理器下的多核调度问题附件\\data\\case_092.json": "de39cd819e989f1aad78d8b8905abaa2bfbe8cba7451148e8b235c5243c8a99c",
+    "C:\\Users\\admin\\Documents\\ChatGPT\\数学建模\\npuaaaa\\通用神经网络处理器下的多核调度问题附件\\data\\case_093.json": "efcf27064c80cd33d1b64f261cb0129328db137c726f1f5fdd6919864531dde2",
+    "C:\\Users\\admin\\Documents\\ChatGPT\\数学建模\\npuaaaa\\通用神经网络处理器下的多核调度问题附件\\data\\case_094.json": "78f8f45bd72016f80482b3125fda3ec97caa2a977b48c3c72f2fa74232a672d8",
+    "C:\\Users\\admin\\Documents\\ChatGPT\\数学建模\\npuaaaa\\通用神经网络处理器下的多核调度问题附件\\data\\case_095.json": "3582654771abef645b7c753c8b1e8f7d6d3cea860e7667c0c40b0c55e0714bca",
+    "C:\\Users\\admin\\Documents\\ChatGPT\\数学建模\\npuaaaa\\通用神经网络处理器下的多核调度问题附件\\data\\case_096.json": "5e252613275bd582d0ed19b7ef6274bccc41e99d66022182181d152dab6896c1",
+    "C:\\Users\\admin\\Documents\\ChatGPT\\数学建模\\npuaaaa\\通用神经网络处理器下的多核调度问题附件\\data\\case_097.json": "9a5cbdaa60456e072a679ac04846d97397fa9d46dc2cc26b52f9435eb2146036",
+    "C:\\Users\\admin\\Documents\\ChatGPT\\数学建模\\npuaaaa\\通用神经网络处理器下的多核调度问题附件\\data\\case_098.json": "5abfdd1b2aa76174e8cea234193ed36ed88959ebdebc957688f925414ef45a60",
+    "C:\\Users\\admin\\Documents\\ChatGPT\\数学建模\\npuaaaa\\通用神经网络处理器下的多核调度问题附件\\data\\case_099.json": "efeec273381e521d7003e7fe10f97875f7395f0992c5115ec5cd6720f3d71186",
+    "C:\\Users\\admin\\Documents\\ChatGPT\\数学建模\\npuaaaa\\通用神经网络处理器下的多核调度问题附件\\data\\case_100.json": "a37532a9ba709cdc282b8b062d5978b4c1a85152ff5067858df8394fd197341f",
+    "C:\\Users\\admin\\Documents\\ChatGPT\\数学建模\\npuaaaa\\results\\solve_log_oplist_full800.jsonl": "c8714b2e0eb846ec8218ff119eef8f71cfc9f4da8cfab05b541c6cfffe8471c9",
+    "C:\\Users\\admin\\Documents\\ChatGPT\\数学建模\\npuaaaa\\results\\summary.csv": "3f74943c46698eb250d49fd11b74f1f78b512a84cac5996f324590c1e4fbcf03",
+    "C:\\Users\\admin\\Documents\\ChatGPT\\数学建模\\npuaaaa\\results\\plans_oplist_full800\\case_001_B_N2.json": "aaea6461474745bc1ed4c8d94b78eb46d32823150a9b417931c7c3250cedc2f5",
+    "C:\\Users\\admin\\Documents\\ChatGPT\\数学建模\\npuaaaa\\results\\plans_oplist_full800\\case_001_B_N3.json": "fd134dc244fc1539a56d034533596661da6fd9d78a848a5ce8992aaa0a8f7f3f",
+    "C:\\Users\\admin\\Documents\\ChatGPT\\数学建模\\npuaaaa\\results\\plans_oplist_full800\\case_001_B_N4.json": "1d00a2193c4c02d534cc20d45bc282915d590734686d70f1a99d05bb79412d71",
+    "C:\\Users\\admin\\Documents\\ChatGPT\\数学建模\\npuaaaa\\results\\plans_oplist_full800\\case_001_B_N5.json": "13bf796295d75d00955d02c32fe0f983f562c466c48dcafa0c934bb9c9e2d239",
+    "C:\\Users\\admin\\Documents\\ChatGPT\\数学建模\\npuaaaa\\results\\plans_oplist_full800\\case_002_B_N2.json": "d78f623b400d176895af84ab8310d127e5c258e2fe3e873e5cf0940420d75e4b",
+    "C:\\Users\\admin\\Documents\\ChatGPT\\数学建模\\npuaaaa\\results\\plans_oplist_full800\\case_002_B_N3.json": "0d01b4ebe932c5ff4818f4fc6cb54044a3e50a3cc34080055fb3ad97273b2f24",
+    "C:\\Users\\admin\\Documents\\ChatGPT\\数学建模\\npuaaaa\\results\\plans_oplist_full800\\case_002_B_N4.json": "cdd7f2a3244b23f9fe3289c598d2ed732054414989db4fe77a24d6c8e05c7878",
+    "C:\\Users\\admin\\Documents\\ChatGPT\\数学建模\\npuaaaa\\results\\plans_oplist_full800\\case_002_B_N5.json": "1c0e276a3623d8895a4aac686ab82bb389f24fda0cca91cd09545ea4d584e412",
+    "C:\\Users\\admin\\Documents\\ChatGPT\\数学建模\\npuaaaa\\results\\plans_oplist_full800\\case_003_B_N2.json": "213b944a41fcda5405955fdf75bea911a17ba208e6db35f4d09ad1e75c97dfdf",
+    "C:\\Users\\admin\\Documents\\ChatGPT\\数学建模\\npuaaaa\\results\\plans_oplist_full800\\case_003_B_N3.json": "8402430fcb9a2f945f0306fcff3d162200190d95a0bfc7c056e2a427ea98340a",
+    "C:\\Users\\admin\\Documents\\ChatGPT\\数学建模\\npuaaaa\\results\\plans_oplist_full800\\case_003_B_N4.json": "35f80d93e8ba86f6f50007715350cb9e263662b8c5c53449973e5ff88b69f499",
+    "C:\\Users\\admin\\Documents\\ChatGPT\\数学建模\\npuaaaa\\results\\plans_oplist_full800\\case_003_B_N5.json": "d6126ff26735e3e58c743f6664fffeeb81d6de0fedaad2bc638638e205538fce",
+    "C:\\Users\\admin\\Documents\\ChatGPT\\数学建模\\npuaaaa\\results\\plans_oplist_full800\\case_004_B_N2.json": "c601806a8adb2e63954ecb6ab59eeddb1ddaba47ed76038b10d5114115deaf85",
+    "C:\\Users\\admin\\Documents\\ChatGPT\\数学建模\\npuaaaa\\results\\plans_oplist_full800\\case_004_B_N3.json": "19667243f83e08f491133f07cbf5ac2adfd47767294662016fe6eaa26d9f61e3",
+    "C:\\Users\\admin\\Documents\\ChatGPT\\数学建模\\npuaaaa\\results\\plans_oplist_full800\\case_004_B_N4.json": "8c8a31c53918601c773dcb9308c3e2d5d6383b1c579bfb42a685b7a09c7ad48f",
+    "C:\\Users\\admin\\Documents\\ChatGPT\\数学建模\\npuaaaa\\results\\plans_oplist_full800\\case_004_B_N5.json": "cfcb14b7d0059e2d327caf14ce772d824d7b10d5ca37ea94251547f056f13051",
+    "C:\\Users\\admin\\Documents\\ChatGPT\\数学建模\\npuaaaa\\results\\plans_oplist_full800\\case_005_B_N2.json": "38339885fed3ba981a2c5d13741578282383cb2eb886b3db819abb9c494d9a2a",
+    "C:\\Users\\admin\\Documents\\ChatGPT\\数学建模\\npuaaaa\\results\\plans_oplist_full800\\case_005_B_N3.json": "ed14e3d4924f6d4a3f7cb7b0963139277622eaa8500168a72e454624ece0db4e",
+    "C:\\Users\\admin\\Documents\\ChatGPT\\数学建模\\npuaaaa\\results\\plans_oplist_full800\\case_005_B_N4.json": "05b39507611c3c5f6e6a5c8eefd401fe25dff39c096c8fa2f8c870f8d12b6113",
+    "C:\\Users\\admin\\Documents\\ChatGPT\\数学建模\\npuaaaa\\results\\plans_oplist_full800\\case_005_B_N5.json": "8d435c80a71fac991b35220292399d84ed6ff827410bf253c684b9d9796bd486",
+    "C:\\Users\\admin\\Documents\\ChatGPT\\数学建模\\npuaaaa\\results\\plans_oplist_full800\\case_006_B_N2.json": "ea46ec3cc4f96c89cd72eddfe55b085557eb395f65c670cdeecc69fea66f1efc",
+    "C:\\Users\\admin\\Documents\\ChatGPT\\数学建模\\npuaaaa\\results\\plans_oplist_full800\\case_006_B_N3.json": "b3586dea79ef05e8f5bc8d6a369065dda7bf442619ec2e04c9cf51857135c7cb",
+    "C:\\Users\\admin\\Documents\\ChatGPT\\数学建模\\npuaaaa\\results\\plans_oplist_full800\\case_006_B_N4.json": "c82725f36bae7440fff2f25b124abbc88418c5024a6f1cb1615454f4076f1c73",
+    "C:\\Users\\admin\\Documents\\ChatGPT\\数学建模\\npuaaaa\\results\\plans_oplist_full800\\case_006_B_N5.json": "88f0c4334ea8dae95bb5e1bf44cf46833fd7baa5907768e60b1b38046fa4af90",
+    "C:\\Users\\admin\\Documents\\ChatGPT\\数学建模\\npuaaaa\\results\\plans_oplist_full800\\case_007_B_N2.json": "9bd26ad72b750e4810d3f3261b450326f2542382e8a35ea7b8d2aaeb5608e030",
+    "C:\\Users\\admin\\Documents\\ChatGPT\\数学建模\\npuaaaa\\results\\plans_oplist_full800\\case_007_B_N3.json": "1bd92840cfe9c8535250592d201ad476ea76fd020f587f2f43bc6c024b8a3e40",
+    "C:\\Users\\admin\\Documents\\ChatGPT\\数学建模\\npuaaaa\\results\\plans_oplist_full800\\case_007_B_N4.json": "11916cdcf8bf2c72906fea0f221f02bb4633b50113adf9922ee688daa003c8be",
+    "C:\\Users\\admin\\Documents\\ChatGPT\\数学建模\\npuaaaa\\results\\plans_oplist_full800\\case_007_B_N5.json": "3185fe1d62980695e9aae20338eb0e20dd793249129ee849cbbad8d5d098093f",
+    "C:\\Users\\admin\\Documents\\ChatGPT\\数学建模\\npuaaaa\\results\\plans_oplist_full800\\case_008_B_N2.json": "a86adbef47fcc653712aa2b7ae3d9923ed557fa3637626314e39d9b82319d10a",
+    "C:\\Users\\admin\\Documents\\ChatGPT\\数学建模\\npuaaaa\\results\\plans_oplist_full800\\case_008_B_N3.json": "d0bd087fe3500f37e9bb68e5a19020f8eb9915de186f5764094ea06c6eb0e5dd",
+    "C:\\Users\\admin\\Documents\\ChatGPT\\数学建模\\npuaaaa\\results\\plans_oplist_full800\\case_008_B_N4.json": "8fbf6960e78778e7b6034b32c1167ba4439b55231eaaf819c59b5172b73fe1ae",
+    "C:\\Users\\admin\\Documents\\ChatGPT\\数学建模\\npuaaaa\\results\\plans_oplist_full800\\case_008_B_N5.json": "a1dfa7c8f14630b5e3ccd68a50cf9933608a3d596191300b4afe2232ba2f2b6b",
+    "C:\\Users\\admin\\Documents\\ChatGPT\\数学建模\\npuaaaa\\results\\plans_oplist_full800\\case_009_B_N2.json": "b5e01b8a5c9820819c36b8c60f0611ba0c68f00d8cb930bb89dafd22df5db81b",
+    "C:\\Users\\admin\\Documents\\ChatGPT\\数学建模\\npuaaaa\\results\\plans_oplist_full800\\case_009_B_N3.json": "33dafef14923d155300bfb39defd7dca8dcd6c365aae9bf9f18f61ca300e87ba",
+    "C:\\Users\\admin\\Documents\\ChatGPT\\数学建模\\npuaaaa\\results\\plans_oplist_full800\\case_009_B_N4.json": "1f859656b49257d7329c35a76aecd0c14a4583fd1fa85028d93dcb4332d8f2f4",
+    "C:\\Users\\admin\\Documents\\ChatGPT\\数学建模\\npuaaaa\\results\\plans_oplist_full800\\case_009_B_N5.json": "a5c62c3a075f73106760557838af7266c124f98b1992147811f4e653974b6f46",
+    "C:\\Users\\admin\\Documents\\ChatGPT\\数学建模\\npuaaaa\\results\\plans_oplist_full800\\case_010_B_N2.json": "99eac0233d8001c897f78110a85898d37f08869c5c0773699cc2a3e20eab7f81",
+    "C:\\Users\\admin\\Documents\\ChatGPT\\数学建模\\npuaaaa\\results\\plans_oplist_full800\\case_010_B_N3.json": "30fe874c883cc5d1975f38db0dbacb977ee1bc500cc5c7c7aac95105fbd250d0",
+    "C:\\Users\\admin\\Documents\\ChatGPT\\数学建模\\npuaaaa\\results\\plans_oplist_full800\\case_010_B_N4.json": "61daa3ab79b040ce9f77f5a160af4f4faad6e7fbef7058956cbbfd61eba810a6",
+    "C:\\Users\\admin\\Documents\\ChatGPT\\数学建模\\npuaaaa\\results\\plans_oplist_full800\\case_010_B_N5.json": "e6a3a2d138cadddba62fbc836d8f7fc3bbddd32e4e7d7076be2553b124532286",
+    "C:\\Users\\admin\\Documents\\ChatGPT\\数学建模\\npuaaaa\\results\\plans_oplist_full800\\case_011_B_N2.json": "988b68d63bc1e83b968806ebb7f8cb78a435e48d18b2bad38b622f193d9d187b",
+    "C:\\Users\\admin\\Documents\\ChatGPT\\数学建模\\npuaaaa\\results\\plans_oplist_full800\\case_011_B_N3.json": "1a54ab95ab3c198853c180da3c8aa8c87d85a1da6d44ee5f458d9206023d1789",
+    "C:\\Users\\admin\\Documents\\ChatGPT\\数学建模\\npuaaaa\\results\\plans_oplist_full800\\case_011_B_N4.json": "5f8ce167ea40400e93c2fde07a3bcf01a15088875ef8fbe5c1f4a3beb7fe11fe",
+    "C:\\Users\\admin\\Documents\\ChatGPT\\数学建模\\npuaaaa\\results\\plans_oplist_full800\\case_011_B_N5.json": "7ce2652aff8077a5134aab74d9a049c92eb02f416a61e214496d49c0c0b36b3b",
+    "C:\\Users\\admin\\Documents\\ChatGPT\\数学建模\\npuaaaa\\results\\plans_oplist_full800\\case_012_B_N2.json": "424b774bdf6ee2ade75c6bb9515485ed1cf143f7cd782bff84383a6f40c8b896",
+    "C:\\Users\\admin\\Documents\\ChatGPT\\数学建模\\npuaaaa\\results\\plans_oplist_full800\\case_012_B_N3.json": "ce57419aa120c3330ab476bfb88a1de811ec4b6ecd7253a78bed59b6039d7fd8",
+    "C:\\Users\\admin\\Documents\\ChatGPT\\数学建模\\npuaaaa\\results\\plans_oplist_full800\\case_012_B_N4.json": "8ade77cf8f87fec94cd76d5b90e165a7cfc6ccd856c395b11d7fea08c0bd1c0d",
+    "C:\\Users\\admin\\Documents\\ChatGPT\\数学建模\\npuaaaa\\results\\plans_oplist_full800\\case_012_B_N5.json": "3f9d37f7179cd9b4417091090a5a1478c86c7b3499c09bea19a23869223a9960",
+    "C:\\Users\\admin\\Documents\\ChatGPT\\数学建模\\npuaaaa\\results\\plans_oplist_full800\\case_013_B_N2.json": "34d63d4efe4dd31db73f154cc8ad55c03a4479caab08e71297306f14b563f95d",
+    "C:\\Users\\admin\\Documents\\ChatGPT\\数学建模\\npuaaaa\\results\\plans_oplist_full800\\case_013_B_N3.json": "5e1f96ff8ea907c2937811566d1bdcf4531f198207d565e5febe2e27bd445a44",
+    "C:\\Users\\admin\\Documents\\ChatGPT\\数学建模\\npuaaaa\\results\\plans_oplist_full800\\case_013_B_N4.json": "4d1bf85bf4a694e044c0964c69ae0a0e281660992e4e70c1ecb7d684b522a51c",
+    "C:\\Users\\admin\\Documents\\ChatGPT\\数学建模\\npuaaaa\\results\\plans_oplist_full800\\case_013_B_N5.json": "3f4f06d3b90bdfe5f3e70403df922e1d6cbe3a0bca2ddcbac829e41e71527204",
+    "C:\\Users\\admin\\Documents\\ChatGPT\\数学建模\\npuaaaa\\results\\plans_oplist_full800\\case_014_B_N2.json": "e8f0f346ab0a44554f47860c04dac434c42ca2f4c5840ca624a5c3eed903354b",
+    "C:\\Users\\admin\\Documents\\ChatGPT\\数学建模\\npuaaaa\\results\\plans_oplist_full800\\case_014_B_N3.json": "37a3d7050f151436e0c7f444f8abc8c754fbfaa14cb9f7335263bc0a0de31ef5",
+    "C:\\Users\\admin\\Documents\\ChatGPT\\数学建模\\npuaaaa\\results\\plans_oplist_full800\\case_014_B_N4.json": "f685488a84df1a401b0461c2df2175fc15ab414a932ca3bc8d168f7d1b86c2e9",
+    "C:\\Users\\admin\\Documents\\ChatGPT\\数学建模\\npuaaaa\\results\\plans_oplist_full800\\case_014_B_N5.json": "44eeca584e1a5f667f809bf1ffb12d6818f2f8bd82205f47eeab0c2b54573c5f",
+    "C:\\Users\\admin\\Documents\\ChatGPT\\数学建模\\npuaaaa\\results\\plans_oplist_full800\\case_015_B_N2.json": "0bfb32dbd2a89008b2962688f63b4033e63a7d5b4cd0cd397df179d05110e935",
+    "C:\\Users\\admin\\Documents\\ChatGPT\\数学建模\\npuaaaa\\results\\plans_oplist_full800\\case_015_B_N3.json": "5ef173033b6e7bdbc5782ae879dad9f890346f40248f733d48e1164fd8589a11",
+    "C:\\Users\\admin\\Documents\\ChatGPT\\数学建模\\npuaaaa\\results\\plans_oplist_full800\\case_015_B_N4.json": "1ea92127898d2d0262fcdf7f9cc4b45f92c837fe3919f8376a75745e8364bd2d",
+    "C:\\Users\\admin\\Documents\\ChatGPT\\数学建模\\npuaaaa\\results\\plans_oplist_full800\\case_015_B_N5.json": "865359fc86654c79514f5c64d5ad68c255d32d8e507a02cdf90304112690c9a1",
+    "C:\\Users\\admin\\Documents\\ChatGPT\\数学建模\\npuaaaa\\results\\plans_oplist_full800\\case_016_B_N2.json": "a70870dcbe17fec80e9776c5a924a6b8d1da0d3456fccd2ae266c164aec31b70",
+    "C:\\Users\\admin\\Documents\\ChatGPT\\数学建模\\npuaaaa\\results\\plans_oplist_full800\\case_016_B_N3.json": "53fa3997eef91faa5f1bb41b6fbc2e070624ab9e1f6b6ba7b98f15763cacf190",
+    "C:\\Users\\admin\\Documents\\ChatGPT\\数学建模\\npuaaaa\\results\\plans_oplist_full800\\case_016_B_N4.json": "88a96d4e923df496c04805b3916a3a14d0fc4483bae6e6253528391d552fab0f",
+    "C:\\Users\\admin\\Documents\\ChatGPT\\数学建模\\npuaaaa\\results\\plans_oplist_full800\\case_016_B_N5.json": "61220f0eecdb5b5c6b652455b37d19bb898f6c3e433a85c4ee9eddf195485e60",
+    "C:\\Users\\admin\\Documents\\ChatGPT\\数学建模\\npuaaaa\\results\\plans_oplist_full800\\case_017_B_N2.json": "df659846cbb8dd84db67274eaafd4ca5be5fb9b759806f85dcce3e83328d5887",
+    "C:\\Users\\admin\\Documents\\ChatGPT\\数学建模\\npuaaaa\\results\\plans_oplist_full800\\case_017_B_N3.json": "86ab552b665a93724313bea59698e26959a7a12453a30f53dabfa28a1bab0c63",
+    "C:\\Users\\admin\\Documents\\ChatGPT\\数学建模\\npuaaaa\\results\\plans_oplist_full800\\case_017_B_N4.json": "dd0c6725cf1ef33b9ecf76238a6b642efc81e56e6ff794d48c0bb1a891536f16",
+    "C:\\Users\\admin\\Documents\\ChatGPT\\数学建模\\npuaaaa\\results\\plans_oplist_full800\\case_017_B_N5.json": "d090a9a097d2e95eed483bdd27c62caaba3e4bd6667ff426600b6ee91efd334b",
+    "C:\\Users\\admin\\Documents\\ChatGPT\\数学建模\\npuaaaa\\results\\plans_oplist_full800\\case_018_B_N2.json": "feae037b36acd99a057b885d097a651d50fb9d962940a99d7d34891dd7f8ed51",
+    "C:\\Users\\admin\\Documents\\ChatGPT\\数学建模\\npuaaaa\\results\\plans_oplist_full800\\case_018_B_N3.json": "ab3e79aa54cb19e5ef2d39c946e3a302586d8afd1f8cc4414d6f6b15fd14b633",
+    "C:\\Users\\admin\\Documents\\ChatGPT\\数学建模\\npuaaaa\\results\\plans_oplist_full800\\case_018_B_N4.json": "6d0e878fe516f3e7885f31dc27670a6967b4073990299e31608602d9312cda2a",
+    "C:\\Users\\admin\\Documents\\ChatGPT\\数学建模\\npuaaaa\\results\\plans_oplist_full800\\case_018_B_N5.json": "a640f5e66f80893e6f1a71c700bee9c0250be459cd95ac13ae071ebfe58dc303",
+    "C:\\Users\\admin\\Documents\\ChatGPT\\数学建模\\npuaaaa\\results\\plans_oplist_full800\\case_019_B_N2.json": "763169688fe4d36275f8749dbefe35e13f7998e297a48da1b29877ccb6d37d6a",
+    "C:\\Users\\admin\\Documents\\ChatGPT\\数学建模\\npuaaaa\\results\\plans_oplist_full800\\case_019_B_N3.json": "dee5cd7e994414842603f4cc6962c4dddff353dd95b3d4ce0b6b1ba5b3ab165b",
+    "C:\\Users\\admin\\Documents\\ChatGPT\\数学建模\\npuaaaa\\results\\plans_oplist_full800\\case_019_B_N4.json": "28121997624700043403b66e35bd943a43c30251f15ffc6e4ecfac3fff935a10",
+    "C:\\Users\\admin\\Documents\\ChatGPT\\数学建模\\npuaaaa\\results\\plans_oplist_full800\\case_019_B_N5.json": "f4ea857b721c066c020ec0f039e76046b10155485579e4ad21f5e47a948232b0",
+    "C:\\Users\\admin\\Documents\\ChatGPT\\数学建模\\npuaaaa\\results\\plans_oplist_full800\\case_020_B_N2.json": "de39ddcee4a96267f30460c4b7f8879818e32dc28d46fc82190adc6e13b9e6a4",
+    "C:\\Users\\admin\\Documents\\ChatGPT\\数学建模\\npuaaaa\\results\\plans_oplist_full800\\case_020_B_N3.json": "0f86dd345ffce6bc85b70d6bee18980cb452278fc5770ff45390a3c8dcbb0d2b",
+    "C:\\Users\\admin\\Documents\\ChatGPT\\数学建模\\npuaaaa\\results\\plans_oplist_full800\\case_020_B_N4.json": "b18f889f98c71d39b5c626aab01e0b2ce9dea9b33dff28f59f8543ed9fcf8ea9",
+    "C:\\Users\\admin\\Documents\\ChatGPT\\数学建模\\npuaaaa\\results\\plans_oplist_full800\\case_020_B_N5.json": "28f435228d04344466817ca793733c88f95639b9d5db7cdf3ba44e2ce512c41d",
+    "C:\\Users\\admin\\Documents\\ChatGPT\\数学建模\\npuaaaa\\results\\plans_oplist_full800\\case_021_B_N2.json": "8204fe8e6c3959793de538e2523664e9c78d4d9ec1561a3baf7e6cba53db0a2e",
+    "C:\\Users\\admin\\Documents\\ChatGPT\\数学建模\\npuaaaa\\results\\plans_oplist_full800\\case_021_B_N3.json": "711273f6a3eae3bfcaba95b8175069ece79ec89103b51a9e94fe7ad3ad5fd923",
+    "C:\\Users\\admin\\Documents\\ChatGPT\\数学建模\\npuaaaa\\results\\plans_oplist_full800\\case_021_B_N4.json": "a2817431d583a99337e8bcebe1c20ff6a438f38e3865b70742480ba1e5ccc6ab",
+    "C:\\Users\\admin\\Documents\\ChatGPT\\数学建模\\npuaaaa\\results\\plans_oplist_full800\\case_021_B_N5.json": "4da64b38d883841dccce398c493afc5e35310a888f1483a496b6ad8d7ffaf39b",
+    "C:\\Users\\admin\\Documents\\ChatGPT\\数学建模\\npuaaaa\\results\\plans_oplist_full800\\case_022_B_N2.json": "e5f322c8e2556fc51c6ee83c38b12653093d6f0df4713d9548071fb974752bdb",
+    "C:\\Users\\admin\\Documents\\ChatGPT\\数学建模\\npuaaaa\\results\\plans_oplist_full800\\case_022_B_N3.json": "b7c25cf5dc0656cf1d585afd2f20e02e8b20559e7a5b12b5378f3aa65e8990af",
+    "C:\\Users\\admin\\Documents\\ChatGPT\\数学建模\\npuaaaa\\results\\plans_oplist_full800\\case_022_B_N4.json": "ae817a832f196d6427682ad563f5953c70f49dcc148595db5e076678055f3b6f",
+    "C:\\Users\\admin\\Documents\\ChatGPT\\数学建模\\npuaaaa\\results\\plans_oplist_full800\\case_022_B_N5.json": "217128abc07558ebd8f4432027a69444211c4de00c79a3cbe7125af3a0fae2f4",
+    "C:\\Users\\admin\\Documents\\ChatGPT\\数学建模\\npuaaaa\\results\\plans_oplist_full800\\case_023_B_N2.json": "7912e595cce5222601eee8b2f93b57d4b179a5add55449899423dcba0279dbd7",
+    "C:\\Users\\admin\\Documents\\ChatGPT\\数学建模\\npuaaaa\\results\\plans_oplist_full800\\case_023_B_N3.json": "c382f324ba4ec768e77de1b4441417aae5f2ab392b0b4a972273f4398ed3f2c8",
+    "C:\\Users\\admin\\Documents\\ChatGPT\\数学建模\\npuaaaa\\results\\plans_oplist_full800\\case_023_B_N4.json": "563f5cce3cbb6f830224ff94e1c551e1b989add2fcfc4958ceb85198535fdfbf",
+    "C:\\Users\\admin\\Documents\\ChatGPT\\数学建模\\npuaaaa\\results\\plans_oplist_full800\\case_023_B_N5.json": "18170e0c0f8cf893d38fac168042d814bda8739421b2844aaa7e2f4eeb299159",
+    "C:\\Users\\admin\\Documents\\ChatGPT\\数学建模\\npuaaaa\\results\\plans_oplist_full800\\case_024_B_N2.json": "15479a0c4d894a560ba5a34add70506cb76a3a15cc4808f24bf3522ac27fbcbd",
+    "C:\\Users\\admin\\Documents\\ChatGPT\\数学建模\\npuaaaa\\results\\plans_oplist_full800\\case_024_B_N3.json": "f6391c208d212fb10d0dff64d48423ff8d53db3d9c1812d8aa335196e5dc7c8a",
+    "C:\\Users\\admin\\Documents\\ChatGPT\\数学建模\\npuaaaa\\results\\plans_oplist_full800\\case_024_B_N4.json": "07ce6728ddcc575daf2395d8fcc8ad55e6a8be1918d6acc50c177a5cf9e527b4",
+    "C:\\Users\\admin\\Documents\\ChatGPT\\数学建模\\npuaaaa\\results\\plans_oplist_full800\\case_024_B_N5.json": "b023f5b87b53ef106c70dc2df0b78f2b46e4ac77bfd301b86cee0ca0cb403ccf",
+    "C:\\Users\\admin\\Documents\\ChatGPT\\数学建模\\npuaaaa\\results\\plans_oplist_full800\\case_025_B_N2.json": "726fbbd68ac84e4f5cfe4ad73077143a1934e83a3f7ee88dcf740c05ae5948b4",
+    "C:\\Users\\admin\\Documents\\ChatGPT\\数学建模\\npuaaaa\\results\\plans_oplist_full800\\case_025_B_N3.json": "31fd4f2903b935182349ab52c8620646db3c892681d337c68d1480a4c51224cb",
+    "C:\\Users\\admin\\Documents\\ChatGPT\\数学建模\\npuaaaa\\results\\plans_oplist_full800\\case_025_B_N4.json": "b573a20e682287aa5dfd25d91983df153f373363fdc029c3c892612f1cf15a72",
+    "C:\\Users\\admin\\Documents\\ChatGPT\\数学建模\\npuaaaa\\results\\plans_oplist_full800\\case_025_B_N5.json": "552d18f079b84f7163c9b84a08d30b3c195d7eab41ed6d6fb59acd4d1d5499f6",
+    "C:\\Users\\admin\\Documents\\ChatGPT\\数学建模\\npuaaaa\\results\\plans_oplist_full800\\case_026_B_N2.json": "69b46200c7267c2a22129b73b1111baf6d837817872299b10f79c80243219007",
+    "C:\\Users\\admin\\Documents\\ChatGPT\\数学建模\\npuaaaa\\results\\plans_oplist_full800\\case_026_B_N3.json": "82d77ecd5b9446232885891d8b9348c68ee4e3b8acfdb904d287dd84394ee367",
+    "C:\\Users\\admin\\Documents\\ChatGPT\\数学建模\\npuaaaa\\results\\plans_oplist_full800\\case_026_B_N4.json": "d62a704c215d2c822dc7b564a22a9ab762a706288bb54a17a2cfe88f024df433",
+    "C:\\Users\\admin\\Documents\\ChatGPT\\数学建模\\npuaaaa\\results\\plans_oplist_full800\\case_026_B_N5.json": "3ab85f7eba7a37b89a7aa50c7bb9cc755216fd64b71ae987305d5ace0a764744",
+    "C:\\Users\\admin\\Documents\\ChatGPT\\数学建模\\npuaaaa\\results\\plans_oplist_full800\\case_027_B_N2.json": "688881b0e6b1153f5a9ffbbfc809aeeb07ad7e619de6940057b97b43454e0018",
+    "C:\\Users\\admin\\Documents\\ChatGPT\\数学建模\\npuaaaa\\results\\plans_oplist_full800\\case_027_B_N3.json": "1beb15e9f5e7cb4e391587f9fefd8d383e46aa3d3488561ae26e3c0c7fd78db3",
+    "C:\\Users\\admin\\Documents\\ChatGPT\\数学建模\\npuaaaa\\results\\plans_oplist_full800\\case_027_B_N4.json": "f95653d07b5130771e2885b414805753a7816707e0e2e3f150f63b6e860875f1",
+    "C:\\Users\\admin\\Documents\\ChatGPT\\数学建模\\npuaaaa\\results\\plans_oplist_full800\\case_027_B_N5.json": "fda8847ea91f2d7e8113c232fa0961a58ab5196260c5dcc1625bbca42697bd30",
+    "C:\\Users\\admin\\Documents\\ChatGPT\\数学建模\\npuaaaa\\results\\plans_oplist_full800\\case_028_B_N2.json": "b2359ba28097d0d801e0c5bdf2a25f7ab3d4503e90dd48b90fa172ea3e8a1227",
+    "C:\\Users\\admin\\Documents\\ChatGPT\\数学建模\\npuaaaa\\results\\plans_oplist_full800\\case_028_B_N3.json": "2206b1686ad9e687d9df5b749c5c13819995976ea8ba74128a79663077d1b681",
+    "C:\\Users\\admin\\Documents\\ChatGPT\\数学建模\\npuaaaa\\results\\plans_oplist_full800\\case_028_B_N4.json": "dfb60ba3c1448a971f2b3a5ea6ee36e570c19fdfeeb9c9eeb5f63e289367c4a2",
+    "C:\\Users\\admin\\Documents\\ChatGPT\\数学建模\\npuaaaa\\results\\plans_oplist_full800\\case_028_B_N5.json": "1ae131bbc74c974636762ed65281b0d95970458e595d0450960c2702cf058060",
+    "C:\\Users\\admin\\Documents\\ChatGPT\\数学建模\\npuaaaa\\results\\plans_oplist_full800\\case_029_B_N2.json": "a858444ea978cfa864758d60242f82f9baa29d22cee90a0186ba592b49e13d39",
+    "C:\\Users\\admin\\Documents\\ChatGPT\\数学建模\\npuaaaa\\results\\plans_oplist_full800\\case_029_B_N3.json": "909c1d56ad8ed3952068613f0620b051d1588201cc24f19434c9cf734ec32843",
+    "C:\\Users\\admin\\Documents\\ChatGPT\\数学建模\\npuaaaa\\results\\plans_oplist_full800\\case_029_B_N4.json": "7f7b682ee7226fd42ea5183bf4deddfa9ed1f44dc18fc2c5d73f5b7780f7edb7",
+    "C:\\Users\\admin\\Documents\\ChatGPT\\数学建模\\npuaaaa\\results\\plans_oplist_full800\\case_029_B_N5.json": "4634e1375f2c6757aa7dac903009b81c4baa60f033c74526ef0289051a0bac96",
+    "C:\\Users\\admin\\Documents\\ChatGPT\\数学建模\\npuaaaa\\results\\plans_oplist_full800\\case_030_B_N2.json": "24f5481509178d12d7b48c96f75a5e98dacde55e26648ad2658b264467cc101f",
+    "C:\\Users\\admin\\Documents\\ChatGPT\\数学建模\\npuaaaa\\results\\plans_oplist_full800\\case_030_B_N3.json": "5a47411a57f0497db713c5bd2e028f878d98c845ef684701dcb1d4e3329e68cc",
+    "C:\\Users\\admin\\Documents\\ChatGPT\\数学建模\\npuaaaa\\results\\plans_oplist_full800\\case_030_B_N4.json": "e79959406d99dbebd76121c090373de93c87e848f1e795a1f80d76fe2345dd73",
+    "C:\\Users\\admin\\Documents\\ChatGPT\\数学建模\\npuaaaa\\results\\plans_oplist_full800\\case_030_B_N5.json": "b812d5648bed1183b893eeaefc23217e67bdd22ef248a85e1a2553888f5c1ff4",
+    "C:\\Users\\admin\\Documents\\ChatGPT\\数学建模\\npuaaaa\\results\\plans_oplist_full800\\case_031_B_N2.json": "4a5c7122c8c152fcf611aa645c7a8000b0a20108fe6e50f6153985f65ae30c99",
+    "C:\\Users\\admin\\Documents\\ChatGPT\\数学建模\\npuaaaa\\results\\plans_oplist_full800\\case_031_B_N3.json": "217a9e6b460c1b08f88b00c6a22648cac8fb8c636291f2b0c082195f1f21b324",
+    "C:\\Users\\admin\\Documents\\ChatGPT\\数学建模\\npuaaaa\\results\\plans_oplist_full800\\case_031_B_N4.json": "a0544615613053a17d4249337cc5fc4c6ab46097f94c88478e821447b341d903",
+    "C:\\Users\\admin\\Documents\\ChatGPT\\数学建模\\npuaaaa\\results\\plans_oplist_full800\\case_031_B_N5.json": "4a3540594bdba216980444d1261b9c5dc76c9b26198629ebfdff9291df3f1b10",
+    "C:\\Users\\admin\\Documents\\ChatGPT\\数学建模\\npuaaaa\\results\\plans_oplist_full800\\case_032_B_N2.json": "ec8850982b27c0d9085104e89e9f666fb508d301d46dd603058df90959465d27",
+    "C:\\Users\\admin\\Documents\\ChatGPT\\数学建模\\npuaaaa\\results\\plans_oplist_full800\\case_032_B_N3.json": "5f3f448f11285a2a9096d515c406f57f165e9d3c3d1b8a734f1a9274a835e08f",
+    "C:\\Users\\admin\\Documents\\ChatGPT\\数学建模\\npuaaaa\\results\\plans_oplist_full800\\case_032_B_N4.json": "a57308946c2c3448038f8c1ca5283f98ff1a5ffe7c7dbf366fe089a1088a52e5",
+    "C:\\Users\\admin\\Documents\\ChatGPT\\数学建模\\npuaaaa\\results\\plans_oplist_full800\\case_032_B_N5.json": "8a90f7dcf3d96659fc961c8fd173d417b8660a7303e64a04e3d30c3b1590a6ac",
+    "C:\\Users\\admin\\Documents\\ChatGPT\\数学建模\\npuaaaa\\results\\plans_oplist_full800\\case_033_B_N2.json": "e230b5a313e4afaa9a51309d346f1db8a8a319456c8667596e1a066e0514fc53",
+    "C:\\Users\\admin\\Documents\\ChatGPT\\数学建模\\npuaaaa\\results\\plans_oplist_full800\\case_033_B_N3.json": "354a15d2a736f9323221ba52d1ca2146e8b8005c604483ce87ecd7e971045431",
+    "C:\\Users\\admin\\Documents\\ChatGPT\\数学建模\\npuaaaa\\results\\plans_oplist_full800\\case_033_B_N4.json": "55814be5861e39ed5cc768da82082cdf1a65dc6f8215ab070fadaa5776609a09",
+    "C:\\Users\\admin\\Documents\\ChatGPT\\数学建模\\npuaaaa\\results\\plans_oplist_full800\\case_033_B_N5.json": "9d62c3ab2f0a406274c280178b29f841f246005f0407c489306d1de0bd7b23d6",
+    "C:\\Users\\admin\\Documents\\ChatGPT\\数学建模\\npuaaaa\\results\\plans_oplist_full800\\case_034_B_N2.json": "6f40dfa5b0d0e0c5d50e3451caa4732c3443848cfffe773d5e7f3c7cc1331f5b",
+    "C:\\Users\\admin\\Documents\\ChatGPT\\数学建模\\npuaaaa\\results\\plans_oplist_full800\\case_034_B_N3.json": "083eba804946d8bd55674ef639755cc4d5b83215d34ec1ac5a62616abe4490ac",
+    "C:\\Users\\admin\\Documents\\ChatGPT\\数学建模\\npuaaaa\\results\\plans_oplist_full800\\case_034_B_N4.json": "48bdc10b8ec1e856b7e3d853c81652b4b06b287855519752cd81208975f89741",
+    "C:\\Users\\admin\\Documents\\ChatGPT\\数学建模\\npuaaaa\\results\\plans_oplist_full800\\case_034_B_N5.json": "079c5fc2b001de12e02e1506fd15b10c2a7393bc91f13a807c0f0718fba1eaaf",
+    "C:\\Users\\admin\\Documents\\ChatGPT\\数学建模\\npuaaaa\\results\\plans_oplist_full800\\case_035_B_N2.json": "6338866ca7c90807a1fbd1a356a3f2db498e1e5ec52b841bf7582ca5a1828af4",
+    "C:\\Users\\admin\\Documents\\ChatGPT\\数学建模\\npuaaaa\\results\\plans_oplist_full800\\case_035_B_N3.json": "972ca37422fcdf56491b182447f18333cc71336f259f4dcd14ee0ee1528a6bf3",
+    "C:\\Users\\admin\\Documents\\ChatGPT\\数学建模\\npuaaaa\\results\\plans_oplist_full800\\case_035_B_N4.json": "88ebb14f8a7532eaecb5516ef5bb17e13b12753790e7329ec8666f62b315471e",
+    "C:\\Users\\admin\\Documents\\ChatGPT\\数学建模\\npuaaaa\\results\\plans_oplist_full800\\case_035_B_N5.json": "14abb7cb90ccd99a98b506434ba39c8cc9375c2641d088a8adfdbfaf69068410",
+    "C:\\Users\\admin\\Documents\\ChatGPT\\数学建模\\npuaaaa\\results\\plans_oplist_full800\\case_036_B_N2.json": "0e31ee2ba925dc378abc1d15bd6979cb64b2b39d96a21b8c77fdcd0a6af56b34",
+    "C:\\Users\\admin\\Documents\\ChatGPT\\数学建模\\npuaaaa\\results\\plans_oplist_full800\\case_036_B_N3.json": "010f353b4649d60d891f66f468babc2532ceb1b1f113406ea96f44b0846c05cc",
+    "C:\\Users\\admin\\Documents\\ChatGPT\\数学建模\\npuaaaa\\results\\plans_oplist_full800\\case_036_B_N4.json": "2ba7bc0a8e97555b89fc968882c3fb15402e99652e9b3263a45845d6c4cb1a62",
+    "C:\\Users\\admin\\Documents\\ChatGPT\\数学建模\\npuaaaa\\results\\plans_oplist_full800\\case_036_B_N5.json": "1440c8fac5a2b4a5f4920a0c1a91f5c4c2e3617338ecbddba3a095dc6b530358",
+    "C:\\Users\\admin\\Documents\\ChatGPT\\数学建模\\npuaaaa\\results\\plans_oplist_full800\\case_037_B_N2.json": "4bcffbe841e2834b83c405ec4a9cee41de06f24192c981d7e32959db116bbea2",
+    "C:\\Users\\admin\\Documents\\ChatGPT\\数学建模\\npuaaaa\\results\\plans_oplist_full800\\case_037_B_N3.json": "e07f7b40ccd4720f02a9721443092cb4c55a216492e41c74f4a2eaad91b0750c",
+    "C:\\Users\\admin\\Documents\\ChatGPT\\数学建模\\npuaaaa\\results\\plans_oplist_full800\\case_037_B_N4.json": "f33945abc5f740a45b94766066983f66416f9f943e920ddb187cb72281670d41",
+    "C:\\Users\\admin\\Documents\\ChatGPT\\数学建模\\npuaaaa\\results\\plans_oplist_full800\\case_037_B_N5.json": "94c9fc4b93babb1df1a4386d94e11b8d476f23a9a7d18134a40844649def9d25",
+    "C:\\Users\\admin\\Documents\\ChatGPT\\数学建模\\npuaaaa\\results\\plans_oplist_full800\\case_038_B_N2.json": "8aff86c3216145db3a1e1c846b7912d403cafd8677364d6db669eb9e894f2276",
+    "C:\\Users\\admin\\Documents\\ChatGPT\\数学建模\\npuaaaa\\results\\plans_oplist_full800\\case_038_B_N3.json": "22f3851b47c243cb89b9c321c4dea3cafa20f2780a374865a7563b411c7b57e1",
+    "C:\\Users\\admin\\Documents\\ChatGPT\\数学建模\\npuaaaa\\results\\plans_oplist_full800\\case_038_B_N4.json": "cadfae6785949fd1fe33ec4d99bac1a192ef25c8ccc253f1cb2b4471d7ea2093",
+    "C:\\Users\\admin\\Documents\\ChatGPT\\数学建模\\npuaaaa\\results\\plans_oplist_full800\\case_038_B_N5.json": "a2d4ed84a40b9b66d2eebe9b838742e90c9667ddd0c8a713e5ccc797587d1d4b",
+    "C:\\Users\\admin\\Documents\\ChatGPT\\数学建模\\npuaaaa\\results\\plans_oplist_full800\\case_039_B_N2.json": "bb78595cf4e86dd47e3317f4d3aea843ede62b6f819016af1bf9fecb165df1e5",
+    "C:\\Users\\admin\\Documents\\ChatGPT\\数学建模\\npuaaaa\\results\\plans_oplist_full800\\case_039_B_N3.json": "fa16087432df21694d1cc9de69dac03d28901bb4487a08e4714d15ff9357dbab",
+    "C:\\Users\\admin\\Documents\\ChatGPT\\数学建模\\npuaaaa\\results\\plans_oplist_full800\\case_039_B_N4.json": "f77a958bea57ed193ef4ae3edc353f1c0c4c8b5193103af8ad9b5ec3fc6190a6",
+    "C:\\Users\\admin\\Documents\\ChatGPT\\数学建模\\npuaaaa\\results\\plans_oplist_full800\\case_039_B_N5.json": "aa4c92a573ab0e0640c95f3453334f3737953e582bf885359f722d76e4bfd1d7",
+    "C:\\Users\\admin\\Documents\\ChatGPT\\数学建模\\npuaaaa\\results\\plans_oplist_full800\\case_040_B_N2.json": "a135201342193965400de135ec6ccdb996b39eb3884c50b9d3e0b1cdcc754549",
+    "C:\\Users\\admin\\Documents\\ChatGPT\\数学建模\\npuaaaa\\results\\plans_oplist_full800\\case_040_B_N3.json": "a9bc1950909802c6a155a9dde46bfdd462cb7c2ce2a9559116827a2630105a77",
+    "C:\\Users\\admin\\Documents\\ChatGPT\\数学建模\\npuaaaa\\results\\plans_oplist_full800\\case_040_B_N4.json": "5fa0f684832c54eb65fdb14a6863031a11c9f20c273a23e1da690e121c802ecd",
+    "C:\\Users\\admin\\Documents\\ChatGPT\\数学建模\\npuaaaa\\results\\plans_oplist_full800\\case_040_B_N5.json": "2c443d4cc17a2c07aa5e0d843e16fb9723f41a3c934c39735b9702d9d5bb3518",
+    "C:\\Users\\admin\\Documents\\ChatGPT\\数学建模\\npuaaaa\\results\\plans_oplist_full800\\case_041_B_N2.json": "bb863bc06e6f0e0fe77a841943011a63e39f40ff25a625354eeff4d46fa5c7d0",
+    "C:\\Users\\admin\\Documents\\ChatGPT\\数学建模\\npuaaaa\\results\\plans_oplist_full800\\case_041_B_N3.json": "88edffa4d2dbed9969c4d2ddc2dcec04f0d9a0ef2b5634e568f01c9f3b6050f4",
+    "C:\\Users\\admin\\Documents\\ChatGPT\\数学建模\\npuaaaa\\results\\plans_oplist_full800\\case_041_B_N4.json": "230a3d305e4d844a3f1ef78146c901c6938724160551b81f2bcce8a6ed35f0c7",
+    "C:\\Users\\admin\\Documents\\ChatGPT\\数学建模\\npuaaaa\\results\\plans_oplist_full800\\case_041_B_N5.json": "a8477775a7da1c5b18736af5d51b8fcf292f5963ed05a8aaa188f78138dc3e23",
+    "C:\\Users\\admin\\Documents\\ChatGPT\\数学建模\\npuaaaa\\results\\plans_oplist_full800\\case_042_B_N2.json": "a86c36d7d21563282a0e1192c3c2697e26fb8766d730d604244ceb8dcfb8f9b7",
+    "C:\\Users\\admin\\Documents\\ChatGPT\\数学建模\\npuaaaa\\results\\plans_oplist_full800\\case_042_B_N3.json": "aae38f985a51228196a6ce1f447321a905a8507ec8cbfc73803af3ea0408d17d",
+    "C:\\Users\\admin\\Documents\\ChatGPT\\数学建模\\npuaaaa\\results\\plans_oplist_full800\\case_042_B_N4.json": "33c08eef53e964bab0821b4685ecaebcd1c1b93551f98f7c448f4e96453ad7af",
+    "C:\\Users\\admin\\Documents\\ChatGPT\\数学建模\\npuaaaa\\results\\plans_oplist_full800\\case_042_B_N5.json": "168c2209b4901dd422274ea5e56059466cb849116092bd36e514fdb70c06e984",
+    "C:\\Users\\admin\\Documents\\ChatGPT\\数学建模\\npuaaaa\\results\\plans_oplist_full800\\case_043_B_N2.json": "7b325d885fa6626e8fa0d7fb7dbc787bb3a775a633a716f566bf2c80eeebed74",
+    "C:\\Users\\admin\\Documents\\ChatGPT\\数学建模\\npuaaaa\\results\\plans_oplist_full800\\case_043_B_N3.json": "f9000cac62217c394272f657bb1a2e7d2540bcf855ad13049277d34ade3f3003",
+    "C:\\Users\\admin\\Documents\\ChatGPT\\数学建模\\npuaaaa\\results\\plans_oplist_full800\\case_043_B_N4.json": "a7ed06814f6929a59789109af28e23159010f3f58ac9f87688e2e4cd186655f8",
+    "C:\\Users\\admin\\Documents\\ChatGPT\\数学建模\\npuaaaa\\results\\plans_oplist_full800\\case_043_B_N5.json": "9bfa236b3a819b685611f15c1d0d98d891871361cbfba612139ed8404d92106c",
+    "C:\\Users\\admin\\Documents\\ChatGPT\\数学建模\\npuaaaa\\results\\plans_oplist_full800\\case_044_B_N2.json": "d2526e98a37403a3ec2b55a942817b5c6d657cb1c88a7795a8cbd97d49e3d85a",
+    "C:\\Users\\admin\\Documents\\ChatGPT\\数学建模\\npuaaaa\\results\\plans_oplist_full800\\case_044_B_N3.json": "b6984b2eb45cbfa8eedaf1e7baf40a6dbc4d43988b4074a8e46016f2fac0d492",
+    "C:\\Users\\admin\\Documents\\ChatGPT\\数学建模\\npuaaaa\\results\\plans_oplist_full800\\case_044_B_N4.json": "96b0859a2062591d8452e6e7105e2a35819a165eb85a1b443218a4019b76c870",
+    "C:\\Users\\admin\\Documents\\ChatGPT\\数学建模\\npuaaaa\\results\\plans_oplist_full800\\case_044_B_N5.json": "c55cc8ad5247b17182634021717735e74e9a633e2ee52ec1b20346855d3b1ab1",
+    "C:\\Users\\admin\\Documents\\ChatGPT\\数学建模\\npuaaaa\\results\\plans_oplist_full800\\case_045_B_N2.json": "d7e6717f0ad05574d70588c3a11aeab56a4715dd553bb529820fb1939aa0d00e",
+    "C:\\Users\\admin\\Documents\\ChatGPT\\数学建模\\npuaaaa\\results\\plans_oplist_full800\\case_045_B_N3.json": "988e44f6564978d656038ddca4366e6831759880e4e5ddad6f2495614ac1a4f9",
+    "C:\\Users\\admin\\Documents\\ChatGPT\\数学建模\\npuaaaa\\results\\plans_oplist_full800\\case_045_B_N4.json": "16e0ff76361a3d8287500d422a2b56e8ef54838b45086376be17a4a59ef35499",
+    "C:\\Users\\admin\\Documents\\ChatGPT\\数学建模\\npuaaaa\\results\\plans_oplist_full800\\case_045_B_N5.json": "5955603877b52a48f4b4f129d874ae894db64da695b86a3379c882ca65b88b6a",
+    "C:\\Users\\admin\\Documents\\ChatGPT\\数学建模\\npuaaaa\\results\\plans_oplist_full800\\case_046_B_N2.json": "2a320c7474178f0799a22c9bf7cdf9568f2f51b2ec27b58b1b75117586288582",
+    "C:\\Users\\admin\\Documents\\ChatGPT\\数学建模\\npuaaaa\\results\\plans_oplist_full800\\case_046_B_N3.json": "96cc4dde07001f2d41d20102e90d10d04fa288b6c3b886d4c6c3b6941f09070a",
+    "C:\\Users\\admin\\Documents\\ChatGPT\\数学建模\\npuaaaa\\results\\plans_oplist_full800\\case_046_B_N4.json": "c37646b5112064f20e475889d23a7f84eed6807c487b917b40efc442a4f87b6d",
+    "C:\\Users\\admin\\Documents\\ChatGPT\\数学建模\\npuaaaa\\results\\plans_oplist_full800\\case_046_B_N5.json": "a23fd44ec1f3045aad267931c198ac202ad732cced38c6d566a2358660b8f87e",
+    "C:\\Users\\admin\\Documents\\ChatGPT\\数学建模\\npuaaaa\\results\\plans_oplist_full800\\case_047_B_N2.json": "ac6a80fc470e28f89c5bc7234eb0499ecbfe847901523893631a03158ebd35dd",
+    "C:\\Users\\admin\\Documents\\ChatGPT\\数学建模\\npuaaaa\\results\\plans_oplist_full800\\case_047_B_N3.json": "2f05929a31a193faa5a08c473fdd5ed107a6317cf2047e1c7235d54cb012461b",
+    "C:\\Users\\admin\\Documents\\ChatGPT\\数学建模\\npuaaaa\\results\\plans_oplist_full800\\case_047_B_N4.json": "6cd7238473755b68f8922e03773bbcd1f0f1b0b47eda61be84c831624e10fc31",
+    "C:\\Users\\admin\\Documents\\ChatGPT\\数学建模\\npuaaaa\\results\\plans_oplist_full800\\case_047_B_N5.json": "2d921ad07f14d19713742efb507cab5426a465dee1789a642ca0223ef89fbb63",
+    "C:\\Users\\admin\\Documents\\ChatGPT\\数学建模\\npuaaaa\\results\\plans_oplist_full800\\case_048_B_N2.json": "f3da549d99d21b9a5b06540271bb6f4bb5275bc98f2157dac64de12cfd11f429",
+    "C:\\Users\\admin\\Documents\\ChatGPT\\数学建模\\npuaaaa\\results\\plans_oplist_full800\\case_048_B_N3.json": "7a211409f1ab3a96e3b3ed4ef78412882397ebc848e885725a571a0ad5abe826",
+    "C:\\Users\\admin\\Documents\\ChatGPT\\数学建模\\npuaaaa\\results\\plans_oplist_full800\\case_048_B_N4.json": "cb99a9bd92d164ec8e0d1bfd2afb6cbf34682310679aaa4e5c002f241ff5d02b",
+    "C:\\Users\\admin\\Documents\\ChatGPT\\数学建模\\npuaaaa\\results\\plans_oplist_full800\\case_048_B_N5.json": "efc22b1d14bd2a06a69cf45a65a4598ef27dd0bcf6dd234ccc03d440433eafe1",
+    "C:\\Users\\admin\\Documents\\ChatGPT\\数学建模\\npuaaaa\\results\\plans_oplist_full800\\case_049_B_N2.json": "dc17c1dde11a83ea5c53e816655175407536316fc656ef150822ea9be9a98f8e",
+    "C:\\Users\\admin\\Documents\\ChatGPT\\数学建模\\npuaaaa\\results\\plans_oplist_full800\\case_049_B_N3.json": "c4cee0232d5b17762421e0c35cc05c0a726a7c7f30d92419c7b4dff4ae76ee74",
+    "C:\\Users\\admin\\Documents\\ChatGPT\\数学建模\\npuaaaa\\results\\plans_oplist_full800\\case_049_B_N4.json": "7ec523cfc6f48b8238199d6b6c05226ddc5ca755b03f90bb5b118128ad0ec738",
+    "C:\\Users\\admin\\Documents\\ChatGPT\\数学建模\\npuaaaa\\results\\plans_oplist_full800\\case_049_B_N5.json": "b0a795c851c202ba4f3cc40ddd64f5fffecb7cefdbaacb1ae9a4dc2492c1a3d8",
+    "C:\\Users\\admin\\Documents\\ChatGPT\\数学建模\\npuaaaa\\results\\plans_oplist_full800\\case_050_B_N2.json": "9d7c3e8efb27590e07d9ffa1c0a8afabb185229e5c071f0083e8ace346746dd0",
+    "C:\\Users\\admin\\Documents\\ChatGPT\\数学建模\\npuaaaa\\results\\plans_oplist_full800\\case_050_B_N3.json": "39cbc39c622080da1589cf3a92b71d5a604aabe8f834d763bc16a36064250455",
+    "C:\\Users\\admin\\Documents\\ChatGPT\\数学建模\\npuaaaa\\results\\plans_oplist_full800\\case_050_B_N4.json": "06e6b01a15e2ebc0d96354c2e9b4cea7bd4952a42ec6542c5bb7039f5ac52392",
+    "C:\\Users\\admin\\Documents\\ChatGPT\\数学建模\\npuaaaa\\results\\plans_oplist_full800\\case_050_B_N5.json": "42d7769098fd7aee4a1fc1afd264bd9e9ca34c82619e38c62d999b670790ee97",
+    "C:\\Users\\admin\\Documents\\ChatGPT\\数学建模\\npuaaaa\\results\\plans_oplist_full800\\case_051_B_N2.json": "8e72a314f39d9d9a5434b20c9dc2a28dbdb8dfe394cc9171531d1ac1a5471828",
+    "C:\\Users\\admin\\Documents\\ChatGPT\\数学建模\\npuaaaa\\results\\plans_oplist_full800\\case_051_B_N3.json": "4d3c1daed620dc4f876ea4d436a88939005c49167a52235eae977eb7f693bf75",
+    "C:\\Users\\admin\\Documents\\ChatGPT\\数学建模\\npuaaaa\\results\\plans_oplist_full800\\case_051_B_N4.json": "ca0445504a5fec50f2c19e0aaae8360934dccbda133ce37bd6daeb37ff6e0e44",
+    "C:\\Users\\admin\\Documents\\ChatGPT\\数学建模\\npuaaaa\\results\\plans_oplist_full800\\case_051_B_N5.json": "7fd1a2f3d3480ca33a65da65a3a48e23ed005df44660f5a9eba00e5e3a4a8f94",
+    "C:\\Users\\admin\\Documents\\ChatGPT\\数学建模\\npuaaaa\\results\\plans_oplist_full800\\case_052_B_N2.json": "ae143aca90f0d9ac8b639a784139a5ab60c3465f6a5616292e0af7dc61104e9c",
+    "C:\\Users\\admin\\Documents\\ChatGPT\\数学建模\\npuaaaa\\results\\plans_oplist_full800\\case_052_B_N3.json": "30734da76b6549a309a68b5098e359cd96636dd73c0acf5aed46269313831b3a",
+    "C:\\Users\\admin\\Documents\\ChatGPT\\数学建模\\npuaaaa\\results\\plans_oplist_full800\\case_052_B_N4.json": "0262bdb69d28b90119ee4a5eacb9fbc391ddefb53dbc979b38470dd00b887dad",
+    "C:\\Users\\admin\\Documents\\ChatGPT\\数学建模\\npuaaaa\\results\\plans_oplist_full800\\case_052_B_N5.json": "d6c7fce1d63ef8e59b4808a3af1805e7b613784a93fa753ba183c790c86687e7",
+    "C:\\Users\\admin\\Documents\\ChatGPT\\数学建模\\npuaaaa\\results\\plans_oplist_full800\\case_053_B_N2.json": "1a0ef5bd76a97b61b9ae8f17d5cdcf573958f81d290536f684df377ac4574d48",
+    "C:\\Users\\admin\\Documents\\ChatGPT\\数学建模\\npuaaaa\\results\\plans_oplist_full800\\case_053_B_N3.json": "e27c4cdc39bfb22e58d0ea2327c495727654c9cd0b8999870c6ea82b5bc7ad56",
+    "C:\\Users\\admin\\Documents\\ChatGPT\\数学建模\\npuaaaa\\results\\plans_oplist_full800\\case_053_B_N4.json": "de25c6c0d5443bca3c556faa322dc7f2297b1d1a5548fb63c876370e3ad438e2",
+    "C:\\Users\\admin\\Documents\\ChatGPT\\数学建模\\npuaaaa\\results\\plans_oplist_full800\\case_053_B_N5.json": "b51b451e586fd3700a26ea311f1c73a6d62966defaf6978862b11f931e6d554a",
+    "C:\\Users\\admin\\Documents\\ChatGPT\\数学建模\\npuaaaa\\results\\plans_oplist_full800\\case_054_B_N2.json": "c7b8afe4af75caf5a03af248d9d0110d36793750cca0cadb2ff5696929c7183d",
+    "C:\\Users\\admin\\Documents\\ChatGPT\\数学建模\\npuaaaa\\results\\plans_oplist_full800\\case_054_B_N3.json": "5ad93802d419317288f6edc4524654949fdf1fa15893732d00d45070a6029653",
+    "C:\\Users\\admin\\Documents\\ChatGPT\\数学建模\\npuaaaa\\results\\plans_oplist_full800\\case_054_B_N4.json": "3a5d0f7757acf38aab79462a99818403c68e6b6d22e0602670c8d4d97223ba8c",
+    "C:\\Users\\admin\\Documents\\ChatGPT\\数学建模\\npuaaaa\\results\\plans_oplist_full800\\case_054_B_N5.json": "e9e675c4b9a2bf5d9cf60c1516b0930150223d4075c96fb32af36f4ea76858e9",
+    "C:\\Users\\admin\\Documents\\ChatGPT\\数学建模\\npuaaaa\\results\\plans_oplist_full800\\case_055_B_N2.json": "4877e0f96e2cd03dd20ed27b761e157740e898d17c79f6ee458d0d424757ed76",
+    "C:\\Users\\admin\\Documents\\ChatGPT\\数学建模\\npuaaaa\\results\\plans_oplist_full800\\case_055_B_N3.json": "f06d603813588505b94f62e3dc5892ed7213fa3fb76a07a4bebb7e4e83411975",
+    "C:\\Users\\admin\\Documents\\ChatGPT\\数学建模\\npuaaaa\\results\\plans_oplist_full800\\case_055_B_N4.json": "cc7df361acc06eb3678ba55cb13d7ad5498582ed4fe7bb6f6876e081e3a12579",
+    "C:\\Users\\admin\\Documents\\ChatGPT\\数学建模\\npuaaaa\\results\\plans_oplist_full800\\case_055_B_N5.json": "6b4c0da74e7ac020372c8c742313afddff544eb33250c196fe6aeed0d367b9f5",
+    "C:\\Users\\admin\\Documents\\ChatGPT\\数学建模\\npuaaaa\\results\\plans_oplist_full800\\case_056_B_N2.json": "93a73fa292ed7cc8253aa3493e906322f729e43afe0481419f19bff8498f0ad2",
+    "C:\\Users\\admin\\Documents\\ChatGPT\\数学建模\\npuaaaa\\results\\plans_oplist_full800\\case_056_B_N3.json": "3a81d9ad7eb37bcad1aadf18012a6a7df7e767d03f2784f340bf2f976f4819c6",
+    "C:\\Users\\admin\\Documents\\ChatGPT\\数学建模\\npuaaaa\\results\\plans_oplist_full800\\case_056_B_N4.json": "49884cb3caee9b389b2ddf2ef449c7846ec516da9bd71bf93c221d51f89bdbe5",
+    "C:\\Users\\admin\\Documents\\ChatGPT\\数学建模\\npuaaaa\\results\\plans_oplist_full800\\case_056_B_N5.json": "35c27fe81ec77ed6b17e6e85a56c7011b3a52aa824c3c36cb2dc88c077e8d7ad",
+    "C:\\Users\\admin\\Documents\\ChatGPT\\数学建模\\npuaaaa\\results\\plans_oplist_full800\\case_057_B_N2.json": "e6061613d6368eeff6443df220e708d2c3e4c82277e114c4ef2fc388eaf13efa",
+    "C:\\Users\\admin\\Documents\\ChatGPT\\数学建模\\npuaaaa\\results\\plans_oplist_full800\\case_057_B_N3.json": "03265d20f87fff198ff196bfcb40b5355ca7b5dbcbddd622a0cfeb8db637fe0d",
+    "C:\\Users\\admin\\Documents\\ChatGPT\\数学建模\\npuaaaa\\results\\plans_oplist_full800\\case_057_B_N4.json": "01a08db32f72103443fac70db61baa07c19234e99b6d160858efaaacc60b7c2c",
+    "C:\\Users\\admin\\Documents\\ChatGPT\\数学建模\\npuaaaa\\results\\plans_oplist_full800\\case_057_B_N5.json": "2f353472bef9053e7cb9d81a1d984af171114e1b68047faa37418ad4ef93187e",
+    "C:\\Users\\admin\\Documents\\ChatGPT\\数学建模\\npuaaaa\\results\\plans_oplist_full800\\case_058_B_N2.json": "351833f04b634ac075155f1e29d161b0f126fb8200d9b6425d19b852aaa701ab",
+    "C:\\Users\\admin\\Documents\\ChatGPT\\数学建模\\npuaaaa\\results\\plans_oplist_full800\\case_058_B_N3.json": "ef8fcd482c6486ecdb6d79bed6333edbfd8dd2fec565ef0b868be89cf0a1f50a",
+    "C:\\Users\\admin\\Documents\\ChatGPT\\数学建模\\npuaaaa\\results\\plans_oplist_full800\\case_058_B_N4.json": "121c6cddfbf15685a3fae0cb90dcc91146e034bf6b4591916e15e65127adf3ae",
+    "C:\\Users\\admin\\Documents\\ChatGPT\\数学建模\\npuaaaa\\results\\plans_oplist_full800\\case_058_B_N5.json": "675fbabb24548f704071e150b45ad52b63e03a1ab8e7f3c3950767567d3c3749",
+    "C:\\Users\\admin\\Documents\\ChatGPT\\数学建模\\npuaaaa\\results\\plans_oplist_full800\\case_059_B_N2.json": "8eaba9e69d08d1955b9d2a7b234642268e4937a1a768ef9c1117afdab050e589",
+    "C:\\Users\\admin\\Documents\\ChatGPT\\数学建模\\npuaaaa\\results\\plans_oplist_full800\\case_059_B_N3.json": "0cfddfd41a947e7f0630ffa1d774bbe2721e9c09f4c113aa21855d5836a48914",
+    "C:\\Users\\admin\\Documents\\ChatGPT\\数学建模\\npuaaaa\\results\\plans_oplist_full800\\case_059_B_N4.json": "ff06bf874298ab20679fea9ab0c26c581cc67ac216f1faaff03b35c12c97c9c8",
+    "C:\\Users\\admin\\Documents\\ChatGPT\\数学建模\\npuaaaa\\results\\plans_oplist_full800\\case_059_B_N5.json": "16c4735af8a52619f05bdc3af8087d4b2b80f0f7eb564a5b1a20312f3f13697f",
+    "C:\\Users\\admin\\Documents\\ChatGPT\\数学建模\\npuaaaa\\results\\plans_oplist_full800\\case_060_B_N2.json": "b88e6e6cb1ed280110930d322fb1870ccff2a9e2be5a8ad1321f910581f69b77",
+    "C:\\Users\\admin\\Documents\\ChatGPT\\数学建模\\npuaaaa\\results\\plans_oplist_full800\\case_060_B_N3.json": "5fd49a2d2629a393defdca939df0a85222513a0c7e98509f6371334d98656664",
+    "C:\\Users\\admin\\Documents\\ChatGPT\\数学建模\\npuaaaa\\results\\plans_oplist_full800\\case_060_B_N4.json": "3846553c1fb96d212f01d2c1b8533547e39901580281b248fefba1e6f68b0864",
+    "C:\\Users\\admin\\Documents\\ChatGPT\\数学建模\\npuaaaa\\results\\plans_oplist_full800\\case_060_B_N5.json": "a87d9bd98dffc918b0c12d3dd744574132f2782d7a5a74e0621053a22ef834d4",
+    "C:\\Users\\admin\\Documents\\ChatGPT\\数学建模\\npuaaaa\\results\\plans_oplist_full800\\case_061_B_N2.json": "c06ac65eb1d085e52cb683901dd1dce73847204806d3ae9ceb12ea218fda2bbe",
+    "C:\\Users\\admin\\Documents\\ChatGPT\\数学建模\\npuaaaa\\results\\plans_oplist_full800\\case_061_B_N3.json": "cdfcab50e0f78fa176e8bd40215d6e6b6cf663d2959c0b7fe3ed85fc8f6880de",
+    "C:\\Users\\admin\\Documents\\ChatGPT\\数学建模\\npuaaaa\\results\\plans_oplist_full800\\case_061_B_N4.json": "c83ca4bfc0ac9aee27015253134f024ac0ed93a711f8d7f8a8c53246b7b224b9",
+    "C:\\Users\\admin\\Documents\\ChatGPT\\数学建模\\npuaaaa\\results\\plans_oplist_full800\\case_061_B_N5.json": "36de8393cfac25b0822270208d6e14c411fb07e9e65f423105f4aa6d4ea131e9",
+    "C:\\Users\\admin\\Documents\\ChatGPT\\数学建模\\npuaaaa\\results\\plans_oplist_full800\\case_062_B_N2.json": "cd6a30982bf9f766177b49b9e5938cf142db6e7fd8326faaea3e75a0cb2f8c54",
+    "C:\\Users\\admin\\Documents\\ChatGPT\\数学建模\\npuaaaa\\results\\plans_oplist_full800\\case_062_B_N3.json": "02f6c7a711f5aa8dc34706be5434d6401001125eb7633369e0811a719189b0fe",
+    "C:\\Users\\admin\\Documents\\ChatGPT\\数学建模\\npuaaaa\\results\\plans_oplist_full800\\case_062_B_N4.json": "b8dea3e61287b29f825302d7213eefce31c832cca4730fff66ebd9a02bec31a9",
+    "C:\\Users\\admin\\Documents\\ChatGPT\\数学建模\\npuaaaa\\results\\plans_oplist_full800\\case_062_B_N5.json": "990ef66e39797917680a0a82af6053670467250f2eff0f8fea5c38b986d140a0",
+    "C:\\Users\\admin\\Documents\\ChatGPT\\数学建模\\npuaaaa\\results\\plans_oplist_full800\\case_063_B_N2.json": "cd277d16e58f55da337897e0a1e3d9fd2ed7fa1df290b7f8bad9427679c5783c",
+    "C:\\Users\\admin\\Documents\\ChatGPT\\数学建模\\npuaaaa\\results\\plans_oplist_full800\\case_063_B_N3.json": "30e5a899b7ce872a6fc4863a572a89a10023420f1def348e28bb4f3e027a04aa",
+    "C:\\Users\\admin\\Documents\\ChatGPT\\数学建模\\npuaaaa\\results\\plans_oplist_full800\\case_063_B_N4.json": "8dde5f6d26a990545c1975ff3f07edeaddbcd9ff9973d2851f8e07d0b2bb4bb1",
+    "C:\\Users\\admin\\Documents\\ChatGPT\\数学建模\\npuaaaa\\results\\plans_oplist_full800\\case_063_B_N5.json": "1984b8456c0d236349a9f1a28d4c08e99dfb7cc29eb0a21ea6c73a2c256f6c9f",
+    "C:\\Users\\admin\\Documents\\ChatGPT\\数学建模\\npuaaaa\\results\\plans_oplist_full800\\case_064_B_N2.json": "9ed9106b270556b85b7078a02c4a450ca2ca0b728ec376f0f6ec7e05bd541cad",
+    "C:\\Users\\admin\\Documents\\ChatGPT\\数学建模\\npuaaaa\\results\\plans_oplist_full800\\case_064_B_N3.json": "5bb753b7afed11c3312121c6af15e6486c54895d4596b7682b9028e52d60b485",
+    "C:\\Users\\admin\\Documents\\ChatGPT\\数学建模\\npuaaaa\\results\\plans_oplist_full800\\case_064_B_N4.json": "06807db666d1318c7710d0edbe02d8a43279872a56a92c278f44fcb52b836273",
+    "C:\\Users\\admin\\Documents\\ChatGPT\\数学建模\\npuaaaa\\results\\plans_oplist_full800\\case_064_B_N5.json": "607c7037f93c6b9f4f294131d5a09dd8252cdbdbd0cb1a8c600f8eb89a34f2c6",
+    "C:\\Users\\admin\\Documents\\ChatGPT\\数学建模\\npuaaaa\\results\\plans_oplist_full800\\case_065_B_N2.json": "a11dfa5c474b9e5e6c28240276fb219139e86fae10cbcd82c382c638062bf1e8",
+    "C:\\Users\\admin\\Documents\\ChatGPT\\数学建模\\npuaaaa\\results\\plans_oplist_full800\\case_065_B_N3.json": "a361ed842d5d51e780c65f9036428810ce31245db8382e0db56750e851619d42",
+    "C:\\Users\\admin\\Documents\\ChatGPT\\数学建模\\npuaaaa\\results\\plans_oplist_full800\\case_065_B_N4.json": "4e0033bcc43e04b7e156448e4ee94a6dd10e581067aa7088728cea9686dc8a4d",
+    "C:\\Users\\admin\\Documents\\ChatGPT\\数学建模\\npuaaaa\\results\\plans_oplist_full800\\case_065_B_N5.json": "3c7916a8c7b16e0ead05a25a7af625eb768362e87b8d12b3c7bd5e41a6474fba",
+    "C:\\Users\\admin\\Documents\\ChatGPT\\数学建模\\npuaaaa\\results\\plans_oplist_full800\\case_066_B_N2.json": "e2fb10cb49298af7cb3e1994ebefca2e513e1b59f998255463cd98d6fa3580e3",
+    "C:\\Users\\admin\\Documents\\ChatGPT\\数学建模\\npuaaaa\\results\\plans_oplist_full800\\case_066_B_N3.json": "ec4d94d7f361a195d278bfae0110624b44b82126b85f3690eba1438d3ffc6347",
+    "C:\\Users\\admin\\Documents\\ChatGPT\\数学建模\\npuaaaa\\results\\plans_oplist_full800\\case_066_B_N4.json": "f1778c6e48d64fa3dcf8dff834db488e7a03d7d6c3404ef4a4696e4ed367b813",
+    "C:\\Users\\admin\\Documents\\ChatGPT\\数学建模\\npuaaaa\\results\\plans_oplist_full800\\case_066_B_N5.json": "12d427d24a408f77ad8dada12f00a0f26afd272c3cf390a3dccbff36b1b4e3da",
+    "C:\\Users\\admin\\Documents\\ChatGPT\\数学建模\\npuaaaa\\results\\plans_oplist_full800\\case_067_B_N2.json": "f4032fef346446525af9240c9366cdb3c1755c3b7c99f7ae4aef80ecbc0b817c",
+    "C:\\Users\\admin\\Documents\\ChatGPT\\数学建模\\npuaaaa\\results\\plans_oplist_full800\\case_067_B_N3.json": "00a1991fcbc17590001cd0b0bba547e679f34ab5341a08e5ee10e22fcf34634f",
+    "C:\\Users\\admin\\Documents\\ChatGPT\\数学建模\\npuaaaa\\results\\plans_oplist_full800\\case_067_B_N4.json": "b2187e16d7f2ca669d2a22b56848cb40c58b82cdcdfbde48803c589ba290aadf",
+    "C:\\Users\\admin\\Documents\\ChatGPT\\数学建模\\npuaaaa\\results\\plans_oplist_full800\\case_067_B_N5.json": "1392453f452839cf54ebf2de6881c0554f4c969daa16ea3467de981766a8934b",
+    "C:\\Users\\admin\\Documents\\ChatGPT\\数学建模\\npuaaaa\\results\\plans_oplist_full800\\case_068_B_N2.json": "31a797b414e29fa8fdb45f17f556299200f8daf421840263b0cd5b78f24b5f6b",
+    "C:\\Users\\admin\\Documents\\ChatGPT\\数学建模\\npuaaaa\\results\\plans_oplist_full800\\case_068_B_N3.json": "8535b648a10513de07d09c03c028ad7ad12f51d16d80f98bf6f1f34cbe678ca7",
+    "C:\\Users\\admin\\Documents\\ChatGPT\\数学建模\\npuaaaa\\results\\plans_oplist_full800\\case_068_B_N4.json": "472674035510cdb95cce6eed4e5fe96cff088fac9ee95e88a7404cacd4cbda13",
+    "C:\\Users\\admin\\Documents\\ChatGPT\\数学建模\\npuaaaa\\results\\plans_oplist_full800\\case_068_B_N5.json": "da85554c2efa09445e192b80af6697a2bad33905a2a578ee973d3318313f84d6",
+    "C:\\Users\\admin\\Documents\\ChatGPT\\数学建模\\npuaaaa\\results\\plans_oplist_full800\\case_069_B_N2.json": "bec6958d1d5d65028d72d71cc33bea7ba9c7eb1e183511c5d918306c2e3c86b7",
+    "C:\\Users\\admin\\Documents\\ChatGPT\\数学建模\\npuaaaa\\results\\plans_oplist_full800\\case_069_B_N3.json": "efcab2b2e754385ec77d1a700051c97eb5c024d553f8f0a0ecd78298408c2417",
+    "C:\\Users\\admin\\Documents\\ChatGPT\\数学建模\\npuaaaa\\results\\plans_oplist_full800\\case_069_B_N4.json": "f27b5996d8fe439c6cc99b255bb1ea9202f97be2a93417a74d7bf5da43aa2cd7",
+    "C:\\Users\\admin\\Documents\\ChatGPT\\数学建模\\npuaaaa\\results\\plans_oplist_full800\\case_069_B_N5.json": "5c7ea8be75dc657bdd26d8e07a1f38d61c05ad6866511b652e175da81cffb8dc",
+    "C:\\Users\\admin\\Documents\\ChatGPT\\数学建模\\npuaaaa\\results\\plans_oplist_full800\\case_070_B_N2.json": "492c61a5ff373955f4a006ffadd65925d5d78f0914d5ae0443139179f75fe5c3",
+    "C:\\Users\\admin\\Documents\\ChatGPT\\数学建模\\npuaaaa\\results\\plans_oplist_full800\\case_070_B_N3.json": "ecd0960b4d36ece721dfbb92d9f8ca46cb3441ed1872d7c199fbbd0dab6271c5",
+    "C:\\Users\\admin\\Documents\\ChatGPT\\数学建模\\npuaaaa\\results\\plans_oplist_full800\\case_070_B_N4.json": "372f47566942c9b99ba8a1815269fc2dae144b973a5cec54f8f31cb1aa1ebe10",
+    "C:\\Users\\admin\\Documents\\ChatGPT\\数学建模\\npuaaaa\\results\\plans_oplist_full800\\case_070_B_N5.json": "887431c5b41d32d9fc3ee83a76d0b59a02a79aeab66a56978708fbf01f87f674",
+    "C:\\Users\\admin\\Documents\\ChatGPT\\数学建模\\npuaaaa\\results\\plans_oplist_full800\\case_071_B_N2.json": "aadc34329667a9b305048e1a47ce6acec77133b76184764d4c9d36c0a48a1ef4",
+    "C:\\Users\\admin\\Documents\\ChatGPT\\数学建模\\npuaaaa\\results\\plans_oplist_full800\\case_071_B_N3.json": "c59fa65b1f8b800a72c2fa97bdcf3c3d4cc4d31fabcc3bde4bf2173e2f470004",
+    "C:\\Users\\admin\\Documents\\ChatGPT\\数学建模\\npuaaaa\\results\\plans_oplist_full800\\case_071_B_N4.json": "06b2842df8624d05bd6ccd5e9b9b739e5d7c85f609c20dfad94777a409a71cb9",
+    "C:\\Users\\admin\\Documents\\ChatGPT\\数学建模\\npuaaaa\\results\\plans_oplist_full800\\case_071_B_N5.json": "043c858df1cdc678b948ae4ebaa9f6cc05bcaf9d1c1583fa1e8555011b9a6c12",
+    "C:\\Users\\admin\\Documents\\ChatGPT\\数学建模\\npuaaaa\\results\\plans_oplist_full800\\case_072_B_N2.json": "4960a6daedb8fc59932e9bef327622a318921b3089e35ebec18400583829e120",
+    "C:\\Users\\admin\\Documents\\ChatGPT\\数学建模\\npuaaaa\\results\\plans_oplist_full800\\case_072_B_N3.json": "ff1e528e88e59a6dbd7cf6756df2665e1ed3a20187abadbc1ea242e8b021b550",
+    "C:\\Users\\admin\\Documents\\ChatGPT\\数学建模\\npuaaaa\\results\\plans_oplist_full800\\case_072_B_N4.json": "252231aa07ac0d41e4ed2a52bfaf518d02b879490216afa72d83bdfe7e5274b9",
+    "C:\\Users\\admin\\Documents\\ChatGPT\\数学建模\\npuaaaa\\results\\plans_oplist_full800\\case_072_B_N5.json": "d0712e2dee0dd64294428083c52f080b1bdbe90e9eabc1874c9ffe2778269bb8",
+    "C:\\Users\\admin\\Documents\\ChatGPT\\数学建模\\npuaaaa\\results\\plans_oplist_full800\\case_073_B_N2.json": "619e34dd0bc495efbbeaa65614b1f7fbb4d6f812007318f906e4967f12e581e4",
+    "C:\\Users\\admin\\Documents\\ChatGPT\\数学建模\\npuaaaa\\results\\plans_oplist_full800\\case_073_B_N3.json": "b636b2b157928352aeb233f179f34c4bcbee67368b5d97bec860d5a90f9f8514",
+    "C:\\Users\\admin\\Documents\\ChatGPT\\数学建模\\npuaaaa\\results\\plans_oplist_full800\\case_073_B_N4.json": "d7e68431bc0f9ff82505d1fe83b428e6e76e16df0b47e213724a3d52a86c6ba6",
+    "C:\\Users\\admin\\Documents\\ChatGPT\\数学建模\\npuaaaa\\results\\plans_oplist_full800\\case_073_B_N5.json": "db649e2a8c83aea4b73aed9cdd3062663ee9eecc4ee62927418710cfbdd98c7e",
+    "C:\\Users\\admin\\Documents\\ChatGPT\\数学建模\\npuaaaa\\results\\plans_oplist_full800\\case_074_B_N2.json": "47b95467c783e70377e92c808cffd99c8b41995ce070152791b58c2a46a88160",
+    "C:\\Users\\admin\\Documents\\ChatGPT\\数学建模\\npuaaaa\\results\\plans_oplist_full800\\case_074_B_N3.json": "971ad2759f2d61b5df8e814c12703162ef6872728ccf89b031b5d0e33029045b",
+    "C:\\Users\\admin\\Documents\\ChatGPT\\数学建模\\npuaaaa\\results\\plans_oplist_full800\\case_074_B_N4.json": "caded44f047cee4f38b0efd9d1c21913bf09a84f40e4159c4b517eb4535640e1",
+    "C:\\Users\\admin\\Documents\\ChatGPT\\数学建模\\npuaaaa\\results\\plans_oplist_full800\\case_074_B_N5.json": "545ff9816e4ba26a4c7ffba20eca7221f2c2537f5819d58a9e26c95d9d305a21",
+    "C:\\Users\\admin\\Documents\\ChatGPT\\数学建模\\npuaaaa\\results\\plans_oplist_full800\\case_075_B_N2.json": "c1a57e2bc8e133d2f2d0477c93c0ddade5c73b32f003c9786117d0408feb1b76",
+    "C:\\Users\\admin\\Documents\\ChatGPT\\数学建模\\npuaaaa\\results\\plans_oplist_full800\\case_075_B_N3.json": "d42b7cfb5626d04efff95d817e9426c1e580fd375959719781b95bb227ffcb60",
+    "C:\\Users\\admin\\Documents\\ChatGPT\\数学建模\\npuaaaa\\results\\plans_oplist_full800\\case_075_B_N4.json": "5c4c6860d06c07b7f9631524bad85da62a593f618915cef109baea9186c0203a",
+    "C:\\Users\\admin\\Documents\\ChatGPT\\数学建模\\npuaaaa\\results\\plans_oplist_full800\\case_075_B_N5.json": "448c3542a333f1d139025efe7b0057e69cc317ff3a495c8783c32b08aafe8582",
+    "C:\\Users\\admin\\Documents\\ChatGPT\\数学建模\\npuaaaa\\results\\plans_oplist_full800\\case_076_B_N2.json": "8f7f9f57b29e60c35198ebc659701fdff68dedfb33216d3e7086182f8df26110",
+    "C:\\Users\\admin\\Documents\\ChatGPT\\数学建模\\npuaaaa\\results\\plans_oplist_full800\\case_076_B_N3.json": "b7c7ecb72373aae7d718dea352759ff69eb505962d9bba898221603f3b54d468",
+    "C:\\Users\\admin\\Documents\\ChatGPT\\数学建模\\npuaaaa\\results\\plans_oplist_full800\\case_076_B_N4.json": "9ecd590837a50dee6c4401033326b49e9860d5c8d92de74da20429628abcbd0c",
+    "C:\\Users\\admin\\Documents\\ChatGPT\\数学建模\\npuaaaa\\results\\plans_oplist_full800\\case_076_B_N5.json": "616cdf95fe92d6e4d4edb44fd42022c769c55f5afd1fe8433a4838185f2b82e0",
+    "C:\\Users\\admin\\Documents\\ChatGPT\\数学建模\\npuaaaa\\results\\plans_oplist_full800\\case_077_B_N2.json": "b0a32b9fec6e25de51469df4ee17c0cdb4743f8e10206e42434a7a3b9bdf5801",
+    "C:\\Users\\admin\\Documents\\ChatGPT\\数学建模\\npuaaaa\\results\\plans_oplist_full800\\case_077_B_N3.json": "7b3f744bd372cb50dec1dbad8971564052782629804246fbec3e55cd382e8fa6",
+    "C:\\Users\\admin\\Documents\\ChatGPT\\数学建模\\npuaaaa\\results\\plans_oplist_full800\\case_077_B_N4.json": "6fcc52f082710599ba82abf5e41b1973a3557f7f5baa83b7b485aa9cee8cb583",
+    "C:\\Users\\admin\\Documents\\ChatGPT\\数学建模\\npuaaaa\\results\\plans_oplist_full800\\case_077_B_N5.json": "910b636647b4eaba3a6b17597d2e362eacc8b82e035f52636421f0f5d4ca8ff0",
+    "C:\\Users\\admin\\Documents\\ChatGPT\\数学建模\\npuaaaa\\results\\plans_oplist_full800\\case_078_B_N2.json": "85bda65e268303a5c9ab0de17e1ad3c81165aaa69c67db1aadb05ac68d052532",
+    "C:\\Users\\admin\\Documents\\ChatGPT\\数学建模\\npuaaaa\\results\\plans_oplist_full800\\case_078_B_N3.json": "3336c57f099e2143c172b47611c61b70d0df919e9a2f074ed813018ac712700a",
+    "C:\\Users\\admin\\Documents\\ChatGPT\\数学建模\\npuaaaa\\results\\plans_oplist_full800\\case_078_B_N4.json": "d81c356430992cbfc1d9c0e04fe087e2ed0d31c7bf4715bb6a09df75b93119e2",
+    "C:\\Users\\admin\\Documents\\ChatGPT\\数学建模\\npuaaaa\\results\\plans_oplist_full800\\case_078_B_N5.json": "6700a75d5956ef6f7c69a945a0922ff62b02661653d6bc33fefde60e31176716",
+    "C:\\Users\\admin\\Documents\\ChatGPT\\数学建模\\npuaaaa\\results\\plans_oplist_full800\\case_079_B_N2.json": "77209da568836e9cb1e84ea66c610984294941953676c2e388b6aefa0f14048c",
+    "C:\\Users\\admin\\Documents\\ChatGPT\\数学建模\\npuaaaa\\results\\plans_oplist_full800\\case_079_B_N3.json": "7c09f3b90699b7c6a0b48cbda5d6c74725d20ac241896201b0e92689c858f96a",
+    "C:\\Users\\admin\\Documents\\ChatGPT\\数学建模\\npuaaaa\\results\\plans_oplist_full800\\case_079_B_N4.json": "4caffcd5fb1db95608c368fbd5f2afd1f3798261577fe64e7047fbd2b48ab8d0",
+    "C:\\Users\\admin\\Documents\\ChatGPT\\数学建模\\npuaaaa\\results\\plans_oplist_full800\\case_079_B_N5.json": "e477474324414fa863e5ab5ac159651bde7bfea637ff3e8a573bde4bfef892ad",
+    "C:\\Users\\admin\\Documents\\ChatGPT\\数学建模\\npuaaaa\\results\\plans_oplist_full800\\case_080_B_N2.json": "c8755bad823cb679d57a6503bc85361c6cfa5a4d343fcd24e42f1b16fe8653f8",
+    "C:\\Users\\admin\\Documents\\ChatGPT\\数学建模\\npuaaaa\\results\\plans_oplist_full800\\case_080_B_N3.json": "366a7cdbc0c3eb5eaf4d149417aef86c699a9423c49686e9c581d53e902e3089",
+    "C:\\Users\\admin\\Documents\\ChatGPT\\数学建模\\npuaaaa\\results\\plans_oplist_full800\\case_080_B_N4.json": "4896e6b7c59619133108ad4226bd07fff528a337002e4105f05a1dae134a1586",
+    "C:\\Users\\admin\\Documents\\ChatGPT\\数学建模\\npuaaaa\\results\\plans_oplist_full800\\case_080_B_N5.json": "e2cd44d6a4993a6604bd48db1e12f78923797c9e7d9f5b73a1ef5957949fefa5",
+    "C:\\Users\\admin\\Documents\\ChatGPT\\数学建模\\npuaaaa\\results\\plans_oplist_full800\\case_081_B_N2.json": "58b6df348f0cda940c6a2de8d118d71f8f644f973c83b0019a50e18760a8dd42",
+    "C:\\Users\\admin\\Documents\\ChatGPT\\数学建模\\npuaaaa\\results\\plans_oplist_full800\\case_081_B_N3.json": "92d12a072c03071ca2ff5cc6fac2cf57efaacca747c26c1bc85b0c2107fb82f4",
+    "C:\\Users\\admin\\Documents\\ChatGPT\\数学建模\\npuaaaa\\results\\plans_oplist_full800\\case_081_B_N4.json": "0b208d4962c70c20aa8d5f52bed312d5bffdb3c1bddb21204fe955c6bd1451b8",
+    "C:\\Users\\admin\\Documents\\ChatGPT\\数学建模\\npuaaaa\\results\\plans_oplist_full800\\case_081_B_N5.json": "b4d23250d0d780766ac14c514754096fb99c028cf2719b6cbc7e47233b9f61e4",
+    "C:\\Users\\admin\\Documents\\ChatGPT\\数学建模\\npuaaaa\\results\\plans_oplist_full800\\case_082_B_N2.json": "f8014f4622adceb8e07f621f531d3e4c795a2fe9e3b5c6c1048ac8d72752ab31",
+    "C:\\Users\\admin\\Documents\\ChatGPT\\数学建模\\npuaaaa\\results\\plans_oplist_full800\\case_082_B_N3.json": "95e2cd113f4a5cf853a09cf00ef1014c03d0c482923ec3050a7a73820ae633b9",
+    "C:\\Users\\admin\\Documents\\ChatGPT\\数学建模\\npuaaaa\\results\\plans_oplist_full800\\case_082_B_N4.json": "c7968571a63e11d9e0b1180c5c5705625ef2ee7a18f001998ffd05c81dcafb9e",
+    "C:\\Users\\admin\\Documents\\ChatGPT\\数学建模\\npuaaaa\\results\\plans_oplist_full800\\case_082_B_N5.json": "080e69426368c78484cb06b64a0c8c71cb8f5bfc74e8a0e01b1d0c5b0d890752",
+    "C:\\Users\\admin\\Documents\\ChatGPT\\数学建模\\npuaaaa\\results\\plans_oplist_full800\\case_083_B_N2.json": "e0cfa31daaa469b9f1f5f11f483bc7ac7036ec5589767e939a36c426009274a1",
+    "C:\\Users\\admin\\Documents\\ChatGPT\\数学建模\\npuaaaa\\results\\plans_oplist_full800\\case_083_B_N3.json": "2e00d3c12f461c3c86ead6f3595003b846f166a8656398c591829dd492298400",
+    "C:\\Users\\admin\\Documents\\ChatGPT\\数学建模\\npuaaaa\\results\\plans_oplist_full800\\case_083_B_N4.json": "dce80b2af7224c0163cea407b4b03597c32a07463358cb6cc556a9029000946f",
+    "C:\\Users\\admin\\Documents\\ChatGPT\\数学建模\\npuaaaa\\results\\plans_oplist_full800\\case_083_B_N5.json": "5aff14f521145704667c76f3a0cffe27dd58f007e727935d26afd47df712f648",
+    "C:\\Users\\admin\\Documents\\ChatGPT\\数学建模\\npuaaaa\\results\\plans_oplist_full800\\case_084_B_N2.json": "6b1fa8cc35668e22ece6d1196c31ad081f52c796961a83b1003859992e342a1d",
+    "C:\\Users\\admin\\Documents\\ChatGPT\\数学建模\\npuaaaa\\results\\plans_oplist_full800\\case_084_B_N3.json": "8036526be5b5294184d02d606109020117b90d23b8e5dcc3a0baa4225bf0081f",
+    "C:\\Users\\admin\\Documents\\ChatGPT\\数学建模\\npuaaaa\\results\\plans_oplist_full800\\case_084_B_N4.json": "14462470c4cb8a91440a158881f757146c8aef7dc4f5d335d0115971f3f43d6d",
+    "C:\\Users\\admin\\Documents\\ChatGPT\\数学建模\\npuaaaa\\results\\plans_oplist_full800\\case_084_B_N5.json": "6f3700fdbbf5c04910dda640dbdc507e1323fc57c9184a072fc1f34cd607e50a",
+    "C:\\Users\\admin\\Documents\\ChatGPT\\数学建模\\npuaaaa\\results\\plans_oplist_full800\\case_085_B_N2.json": "6647f8569d20c67379ef0f07c3d6930d7627e89c107690c59a9a22b5f9debe5c",
+    "C:\\Users\\admin\\Documents\\ChatGPT\\数学建模\\npuaaaa\\results\\plans_oplist_full800\\case_085_B_N3.json": "aa45c33bf23ee1134a2cc38a7cc6cd9f66fdd4f6e50fb7962d2955bdd33ee312",
+    "C:\\Users\\admin\\Documents\\ChatGPT\\数学建模\\npuaaaa\\results\\plans_oplist_full800\\case_085_B_N4.json": "99adb87ecba8436c907a85febfa4f3385081a51fd503c3a04491d9be0d45b780",
+    "C:\\Users\\admin\\Documents\\ChatGPT\\数学建模\\npuaaaa\\results\\plans_oplist_full800\\case_085_B_N5.json": "c18e73e47449c83a77715efd4d363092459976ba313a2189284e5f31b465ee1d",
+    "C:\\Users\\admin\\Documents\\ChatGPT\\数学建模\\npuaaaa\\results\\plans_oplist_full800\\case_086_B_N2.json": "14a980e2b00c5b6b0703c8c99a4522aaceb05ffba1125d74c51ced7ff5db1604",
+    "C:\\Users\\admin\\Documents\\ChatGPT\\数学建模\\npuaaaa\\results\\plans_oplist_full800\\case_086_B_N3.json": "08d2c26b5d21cd15020272f7954132acd71348a875d37bd7623019c11a7b1cbf",
+    "C:\\Users\\admin\\Documents\\ChatGPT\\数学建模\\npuaaaa\\results\\plans_oplist_full800\\case_086_B_N4.json": "4340bcd084f0d905c876dd3961d55e2ade6ebaef92f0a2fab9be11dec6ed68bf",
+    "C:\\Users\\admin\\Documents\\ChatGPT\\数学建模\\npuaaaa\\results\\plans_oplist_full800\\case_086_B_N5.json": "1d6159e0ea46e483fa0226ed9dfe8271ccd929f61f59fed5a44d90d7503f7d9a",
+    "C:\\Users\\admin\\Documents\\ChatGPT\\数学建模\\npuaaaa\\results\\plans_oplist_full800\\case_087_B_N2.json": "3e8ad867f17f780af7f49565d7488df78b8968e8c3495a0ea267fd8bc9ea31a9",
+    "C:\\Users\\admin\\Documents\\ChatGPT\\数学建模\\npuaaaa\\results\\plans_oplist_full800\\case_087_B_N3.json": "102c4c07611bd59200b7345a8ec517b95b75c4543b6332243c8d774b3fca0b7f",
+    "C:\\Users\\admin\\Documents\\ChatGPT\\数学建模\\npuaaaa\\results\\plans_oplist_full800\\case_087_B_N4.json": "bee00903a212a2de5bd95a529bf444cc7fb10c65d72f1d67469f3adba55824af",
+    "C:\\Users\\admin\\Documents\\ChatGPT\\数学建模\\npuaaaa\\results\\plans_oplist_full800\\case_087_B_N5.json": "e2993ffc0628d966f2c576229ebd5576bea760d141c7a02b0e8baae749e5c446",
+    "C:\\Users\\admin\\Documents\\ChatGPT\\数学建模\\npuaaaa\\results\\plans_oplist_full800\\case_088_B_N2.json": "a66ae385d06d8a4107db0524d543990ab81592c354ae492419aa49961e79a57e",
+    "C:\\Users\\admin\\Documents\\ChatGPT\\数学建模\\npuaaaa\\results\\plans_oplist_full800\\case_088_B_N3.json": "ba250af87fe71b159812392f2264ea978c489e66c375e8d71b1f1fab16bb7cae",
+    "C:\\Users\\admin\\Documents\\ChatGPT\\数学建模\\npuaaaa\\results\\plans_oplist_full800\\case_088_B_N4.json": "647372809c2019ebfd4915c98d38b9701259436a99ed2a8258d32145e8869ff2",
+    "C:\\Users\\admin\\Documents\\ChatGPT\\数学建模\\npuaaaa\\results\\plans_oplist_full800\\case_088_B_N5.json": "e22e8a501d344fa9f9678d091520bea5ea82fd92c9f835d940cb4d10c1e9e6e5",
+    "C:\\Users\\admin\\Documents\\ChatGPT\\数学建模\\npuaaaa\\results\\plans_oplist_full800\\case_089_B_N2.json": "bf1ba72bf16850a168b6c70a58b172a3f69b286ed72e2dca5c1a9644619b5421",
+    "C:\\Users\\admin\\Documents\\ChatGPT\\数学建模\\npuaaaa\\results\\plans_oplist_full800\\case_089_B_N3.json": "659cc14156e8d8b424298ce77a1fc126c805069191d3d6a5c2a4f35e76f44f6c",
+    "C:\\Users\\admin\\Documents\\ChatGPT\\数学建模\\npuaaaa\\results\\plans_oplist_full800\\case_089_B_N4.json": "368da6b4516b4b2ba52c6e90040f14a8da56a05701a09908ad7102630ca12918",
+    "C:\\Users\\admin\\Documents\\ChatGPT\\数学建模\\npuaaaa\\results\\plans_oplist_full800\\case_089_B_N5.json": "8c4203a70b44a6048ad110f1b74681f4a9ba4d921f10a3a050071f65e2b23f1e",
+    "C:\\Users\\admin\\Documents\\ChatGPT\\数学建模\\npuaaaa\\results\\plans_oplist_full800\\case_090_B_N2.json": "7cfe915fab738f7e902b7ef9dec0bcd21d899f83eabd9e8e7fca38ae9e64c8db",
+    "C:\\Users\\admin\\Documents\\ChatGPT\\数学建模\\npuaaaa\\results\\plans_oplist_full800\\case_090_B_N3.json": "b6bfa46d6f08529a837c2e2ad7f6cd937ca6eeb32abb73bd1a530f0c241b45f2",
+    "C:\\Users\\admin\\Documents\\ChatGPT\\数学建模\\npuaaaa\\results\\plans_oplist_full800\\case_090_B_N4.json": "088bd06edb240ec4987827ffe77be989572cb7e1a8fc83558d59b2afe9b30042",
+    "C:\\Users\\admin\\Documents\\ChatGPT\\数学建模\\npuaaaa\\results\\plans_oplist_full800\\case_090_B_N5.json": "50620a06c95e4d75ba69fda2fc8fd68a993b4c994a3bb30d06f0da8971871b1e",
+    "C:\\Users\\admin\\Documents\\ChatGPT\\数学建模\\npuaaaa\\results\\plans_oplist_full800\\case_091_B_N2.json": "75b3ffc5d3ec2ce3b8e5ba660547821076641d5c6c524336b01fe785ea582b00",
+    "C:\\Users\\admin\\Documents\\ChatGPT\\数学建模\\npuaaaa\\results\\plans_oplist_full800\\case_091_B_N3.json": "fb3a1b68d7339897286bc13a4fac114afcaa705169c02460a98d63c22e6d6ee1",
+    "C:\\Users\\admin\\Documents\\ChatGPT\\数学建模\\npuaaaa\\results\\plans_oplist_full800\\case_091_B_N4.json": "5ab2660327520f69bfad894fa3e67d140232cbdacbea8fb4af3850e3adbebb2e",
+    "C:\\Users\\admin\\Documents\\ChatGPT\\数学建模\\npuaaaa\\results\\plans_oplist_full800\\case_091_B_N5.json": "df05d951e1006c5e3df7e1ec77b5054b5527db10f620f79425014b7597551d29",
+    "C:\\Users\\admin\\Documents\\ChatGPT\\数学建模\\npuaaaa\\results\\plans_oplist_full800\\case_092_B_N2.json": "1e072c72c469349c55a41ea0e2091a360d6aea070236910bebeb2685b062e314",
+    "C:\\Users\\admin\\Documents\\ChatGPT\\数学建模\\npuaaaa\\results\\plans_oplist_full800\\case_092_B_N3.json": "72c6f56906ea9a2746cd9e13cf1d0fdd970ef998c3fb5ddffc98ce7e38316b00",
+    "C:\\Users\\admin\\Documents\\ChatGPT\\数学建模\\npuaaaa\\results\\plans_oplist_full800\\case_092_B_N4.json": "d9941f9e9416a8d603a7eb6d02ac1fde7832d8a334f83cc4ee71efff953f4c66",
+    "C:\\Users\\admin\\Documents\\ChatGPT\\数学建模\\npuaaaa\\results\\plans_oplist_full800\\case_092_B_N5.json": "6811356db2667ba406cf7c2c7221d38171ca42ead9a261ca86c6276e2e88df4c",
+    "C:\\Users\\admin\\Documents\\ChatGPT\\数学建模\\npuaaaa\\results\\plans_oplist_full800\\case_093_B_N2.json": "5bf787a96794d13dc62ef430af14e5a81f9a18ca884f5977b5e152632ddc976c",
+    "C:\\Users\\admin\\Documents\\ChatGPT\\数学建模\\npuaaaa\\results\\plans_oplist_full800\\case_093_B_N3.json": "43e90ae4faf67af336d71e8f9998fad765fe578bd3796774b2135792da36e2d8",
+    "C:\\Users\\admin\\Documents\\ChatGPT\\数学建模\\npuaaaa\\results\\plans_oplist_full800\\case_093_B_N4.json": "e7e5143245028212432d38ec357c0628a6ac19d56abfc157620058502b5eab58",
+    "C:\\Users\\admin\\Documents\\ChatGPT\\数学建模\\npuaaaa\\results\\plans_oplist_full800\\case_093_B_N5.json": "a6b3d96d8c78c787c59ca0c961722cbc7d2e1e4b84037a19db168fda0c52d216",
+    "C:\\Users\\admin\\Documents\\ChatGPT\\数学建模\\npuaaaa\\results\\plans_oplist_full800\\case_094_B_N2.json": "2afe6ee655912a0fd13dc3ca284a57a11f2fe9e704983906e8dc075ad6871161",
+    "C:\\Users\\admin\\Documents\\ChatGPT\\数学建模\\npuaaaa\\results\\plans_oplist_full800\\case_094_B_N3.json": "1283e2dd9950b8d1b2b6d4704bc82a6182bd498297c3facb64de7e249e4c3b62",
+    "C:\\Users\\admin\\Documents\\ChatGPT\\数学建模\\npuaaaa\\results\\plans_oplist_full800\\case_094_B_N4.json": "3539f1b05b15217570a74c94536ab7a8de9644f1d26b48ee4c150580e842dba0",
+    "C:\\Users\\admin\\Documents\\ChatGPT\\数学建模\\npuaaaa\\results\\plans_oplist_full800\\case_094_B_N5.json": "b12c07ed2f34484d1c0ef8e26398f2ad1685c0531930565572c67442fadcb239",
+    "C:\\Users\\admin\\Documents\\ChatGPT\\数学建模\\npuaaaa\\results\\plans_oplist_full800\\case_095_B_N2.json": "b61334eea3938aa376b71a2a4ad451526d8691786370b57106dca7874fde8add",
+    "C:\\Users\\admin\\Documents\\ChatGPT\\数学建模\\npuaaaa\\results\\plans_oplist_full800\\case_095_B_N3.json": "898b1cca073c3d7b988edf29ca9320caeefa99d6cfb4d3f0a1eb06fc4426e6b3",
+    "C:\\Users\\admin\\Documents\\ChatGPT\\数学建模\\npuaaaa\\results\\plans_oplist_full800\\case_095_B_N4.json": "9bf4aa1a701ae44c0894405362b875f1c2927b896d17da6ee9fdab05771aa320",
+    "C:\\Users\\admin\\Documents\\ChatGPT\\数学建模\\npuaaaa\\results\\plans_oplist_full800\\case_095_B_N5.json": "d7beb8d2d5e2a8e3156440b88bdf8b48fb3d22c7960b53fa63e28adbe924b99f",
+    "C:\\Users\\admin\\Documents\\ChatGPT\\数学建模\\npuaaaa\\results\\plans_oplist_full800\\case_096_B_N2.json": "346be3ebfdec5325770bdff248526019b3249f85a2150e05d2c3512bbaa442f7",
+    "C:\\Users\\admin\\Documents\\ChatGPT\\数学建模\\npuaaaa\\results\\plans_oplist_full800\\case_096_B_N3.json": "90f06ad76c2c5e66d57ec721fd845472bfc6a206b7571e21b2711772b5116fd6",
+    "C:\\Users\\admin\\Documents\\ChatGPT\\数学建模\\npuaaaa\\results\\plans_oplist_full800\\case_096_B_N4.json": "eaefe45d1b4d79ea260f6e69b9832ae8602952d3a1cb2b9ac7bf8e784d6d0909",
+    "C:\\Users\\admin\\Documents\\ChatGPT\\数学建模\\npuaaaa\\results\\plans_oplist_full800\\case_096_B_N5.json": "b61912f8dab934947bca77bac94a8b1de3c9dce618b7800ffdeaa9d4a3a3cdcc",
+    "C:\\Users\\admin\\Documents\\ChatGPT\\数学建模\\npuaaaa\\results\\plans_oplist_full800\\case_097_B_N2.json": "8496dfa3ff73a0179031a2bcc30d36eea97a89a90ff9d74b2d1b4a5373d2b330",
+    "C:\\Users\\admin\\Documents\\ChatGPT\\数学建模\\npuaaaa\\results\\plans_oplist_full800\\case_097_B_N3.json": "67625d5b99ed2987908b57fc3923ce336703a1383eae3972130d0e04f563b0b8",
+    "C:\\Users\\admin\\Documents\\ChatGPT\\数学建模\\npuaaaa\\results\\plans_oplist_full800\\case_097_B_N4.json": "f7ae9cbd4f9b9ad8426ebd8cb54e517823aa3988b459ac4d935f9d7889848f8b",
+    "C:\\Users\\admin\\Documents\\ChatGPT\\数学建模\\npuaaaa\\results\\plans_oplist_full800\\case_097_B_N5.json": "24a1677e7ec1bd1a1066206446959028e5cfa5cf6bddad77b8db726707907d65",
+    "C:\\Users\\admin\\Documents\\ChatGPT\\数学建模\\npuaaaa\\results\\plans_oplist_full800\\case_098_B_N2.json": "8bb2c3154c47defa0a27596cca32dff10af3ec7f5038adacf8dc6a44fc1d9949",
+    "C:\\Users\\admin\\Documents\\ChatGPT\\数学建模\\npuaaaa\\results\\plans_oplist_full800\\case_098_B_N3.json": "efc30b07a83cfcd259e555911417f8bb4eacb3644bdf5e60530ca1b320cf36be",
+    "C:\\Users\\admin\\Documents\\ChatGPT\\数学建模\\npuaaaa\\results\\plans_oplist_full800\\case_098_B_N4.json": "50dee965f8cd0d4452a91d18ed750c818ac471a8cae320ff69caa9405250f746",
+    "C:\\Users\\admin\\Documents\\ChatGPT\\数学建模\\npuaaaa\\results\\plans_oplist_full800\\case_098_B_N5.json": "733c6c905d620b33d3494cc2e880c433d460d5a6bbddc3c8224d10246e0068e1",
+    "C:\\Users\\admin\\Documents\\ChatGPT\\数学建模\\npuaaaa\\results\\plans_oplist_full800\\case_099_B_N2.json": "a2527a9059197e0ebeccd7090e2e327f63e49e35acf5585b1ee475fc5138521b",
+    "C:\\Users\\admin\\Documents\\ChatGPT\\数学建模\\npuaaaa\\results\\plans_oplist_full800\\case_099_B_N3.json": "79bdead2017dba3a92e4b4f1a8143b948f902ff8535d66328a76768360421e92",
+    "C:\\Users\\admin\\Documents\\ChatGPT\\数学建模\\npuaaaa\\results\\plans_oplist_full800\\case_099_B_N4.json": "4c14afca1d3bde8a87f59591f156dd374556db874cdb7852b794086542611dd6",
+    "C:\\Users\\admin\\Documents\\ChatGPT\\数学建模\\npuaaaa\\results\\plans_oplist_full800\\case_099_B_N5.json": "c16e5c464b480743512fdca55783aecc0c3890cc39ff8deae8ccf58b30283769",
+    "C:\\Users\\admin\\Documents\\ChatGPT\\数学建模\\npuaaaa\\results\\plans_oplist_full800\\case_100_B_N2.json": "573c5dd8382a0b0ad4e62339b77f5043a21d8c368b20954fc53020ba874d8c3d",
+    "C:\\Users\\admin\\Documents\\ChatGPT\\数学建模\\npuaaaa\\results\\plans_oplist_full800\\case_100_B_N3.json": "c89fbe167b6061958d6534ff8c2dde114d9f13ebb8df0b916e7cf62a4c3d000e",
+    "C:\\Users\\admin\\Documents\\ChatGPT\\数学建模\\npuaaaa\\results\\plans_oplist_full800\\case_100_B_N4.json": "e9c243fba6dd3f5d00dc273d88bb5459a36280d7c75a9a0488ef1165f37e5a34",
+    "C:\\Users\\admin\\Documents\\ChatGPT\\数学建模\\npuaaaa\\results\\plans_oplist_full800\\case_100_B_N5.json": "a12bf4305daff742d54178490e930b265ba874c2eb42677ddae0edd11f3db2e9"
+  },
+  "expected_keys": [
+    [
+      "case_001",
+      "C",
+      2
+    ],
+    [
+      "case_001",
+      "C",
+      3
+    ],
+    [
+      "case_001",
+      "C",
+      4
+    ],
+    [
+      "case_001",
+      "C",
+      5
+    ],
+    [
+      "case_002",
+      "C",
+      2
+    ],
+    [
+      "case_002",
+      "C",
+      3
+    ],
+    [
+      "case_002",
+      "C",
+      4
+    ],
+    [
+      "case_002",
+      "C",
+      5
+    ],
+    [
+      "case_003",
+      "C",
+      2
+    ],
+    [
+      "case_003",
+      "C",
+      3
+    ],
+    [
+      "case_003",
+      "C",
+      4
+    ],
+    [
+      "case_003",
+      "C",
+      5
+    ],
+    [
+      "case_004",
+      "C",
+      2
+    ],
+    [
+      "case_004",
+      "C",
+      3
+    ],
+    [
+      "case_004",
+      "C",
+      4
+    ],
+    [
+      "case_004",
+      "C",
+      5
+    ],
+    [
+      "case_005",
+      "C",
+      2
+    ],
+    [
+      "case_005",
+      "C",
+      3
+    ],
+    [
+      "case_005",
+      "C",
+      4
+    ],
+    [
+      "case_005",
+      "C",
+      5
+    ],
+    [
+      "case_006",
+      "C",
+      2
+    ],
+    [
+      "case_006",
+      "C",
+      3
+    ],
+    [
+      "case_006",
+      "C",
+      4
+    ],
+    [
+      "case_006",
+      "C",
+      5
+    ],
+    [
+      "case_007",
+      "C",
+      2
+    ],
+    [
+      "case_007",
+      "C",
+      3
+    ],
+    [
+      "case_007",
+      "C",
+      4
+    ],
+    [
+      "case_007",
+      "C",
+      5
+    ],
+    [
+      "case_008",
+      "C",
+      2
+    ],
+    [
+      "case_008",
+      "C",
+      3
+    ],
+    [
+      "case_008",
+      "C",
+      4
+    ],
+    [
+      "case_008",
+      "C",
+      5
+    ],
+    [
+      "case_009",
+      "C",
+      2
+    ],
+    [
+      "case_009",
+      "C",
+      3
+    ],
+    [
+      "case_009",
+      "C",
+      4
+    ],
+    [
+      "case_009",
+      "C",
+      5
+    ],
+    [
+      "case_010",
+      "C",
+      2
+    ],
+    [
+      "case_010",
+      "C",
+      3
+    ],
+    [
+      "case_010",
+      "C",
+      4
+    ],
+    [
+      "case_010",
+      "C",
+      5
+    ],
+    [
+      "case_011",
+      "C",
+      2
+    ],
+    [
+      "case_011",
+      "C",
+      3
+    ],
+    [
+      "case_011",
+      "C",
+      4
+    ],
+    [
+      "case_011",
+      "C",
+      5
+    ],
+    [
+      "case_012",
+      "C",
+      2
+    ],
+    [
+      "case_012",
+      "C",
+      3
+    ],
+    [
+      "case_012",
+      "C",
+      4
+    ],
+    [
+      "case_012",
+      "C",
+      5
+    ],
+    [
+      "case_013",
+      "C",
+      2
+    ],
+    [
+      "case_013",
+      "C",
+      3
+    ],
+    [
+      "case_013",
+      "C",
+      4
+    ],
+    [
+      "case_013",
+      "C",
+      5
+    ],
+    [
+      "case_014",
+      "C",
+      2
+    ],
+    [
+      "case_014",
+      "C",
+      3
+    ],
+    [
+      "case_014",
+      "C",
+      4
+    ],
+    [
+      "case_014",
+      "C",
+      5
+    ],
+    [
+      "case_015",
+      "C",
+      2
+    ],
+    [
+      "case_015",
+      "C",
+      3
+    ],
+    [
+      "case_015",
+      "C",
+      4
+    ],
+    [
+      "case_015",
+      "C",
+      5
+    ],
+    [
+      "case_016",
+      "C",
+      2
+    ],
+    [
+      "case_016",
+      "C",
+      3
+    ],
+    [
+      "case_016",
+      "C",
+      4
+    ],
+    [
+      "case_016",
+      "C",
+      5
+    ],
+    [
+      "case_017",
+      "C",
+      2
+    ],
+    [
+      "case_017",
+      "C",
+      3
+    ],
+    [
+      "case_017",
+      "C",
+      4
+    ],
+    [
+      "case_017",
+      "C",
+      5
+    ],
+    [
+      "case_018",
+      "C",
+      2
+    ],
+    [
+      "case_018",
+      "C",
+      3
+    ],
+    [
+      "case_018",
+      "C",
+      4
+    ],
+    [
+      "case_018",
+      "C",
+      5
+    ],
+    [
+      "case_019",
+      "C",
+      2
+    ],
+    [
+      "case_019",
+      "C",
+      3
+    ],
+    [
+      "case_019",
+      "C",
+      4
+    ],
+    [
+      "case_019",
+      "C",
+      5
+    ],
+    [
+      "case_020",
+      "C",
+      2
+    ],
+    [
+      "case_020",
+      "C",
+      3
+    ],
+    [
+      "case_020",
+      "C",
+      4
+    ],
+    [
+      "case_020",
+      "C",
+      5
+    ],
+    [
+      "case_021",
+      "C",
+      2
+    ],
+    [
+      "case_021",
+      "C",
+      3
+    ],
+    [
+      "case_021",
+      "C",
+      4
+    ],
+    [
+      "case_021",
+      "C",
+      5
+    ],
+    [
+      "case_022",
+      "C",
+      2
+    ],
+    [
+      "case_022",
+      "C",
+      3
+    ],
+    [
+      "case_022",
+      "C",
+      4
+    ],
+    [
+      "case_022",
+      "C",
+      5
+    ],
+    [
+      "case_023",
+      "C",
+      2
+    ],
+    [
+      "case_023",
+      "C",
+      3
+    ],
+    [
+      "case_023",
+      "C",
+      4
+    ],
+    [
+      "case_023",
+      "C",
+      5
+    ],
+    [
+      "case_024",
+      "C",
+      2
+    ],
+    [
+      "case_024",
+      "C",
+      3
+    ],
+    [
+      "case_024",
+      "C",
+      4
+    ],
+    [
+      "case_024",
+      "C",
+      5
+    ],
+    [
+      "case_025",
+      "C",
+      2
+    ],
+    [
+      "case_025",
+      "C",
+      3
+    ],
+    [
+      "case_025",
+      "C",
+      4
+    ],
+    [
+      "case_025",
+      "C",
+      5
+    ],
+    [
+      "case_026",
+      "C",
+      2
+    ],
+    [
+      "case_026",
+      "C",
+      3
+    ],
+    [
+      "case_026",
+      "C",
+      4
+    ],
+    [
+      "case_026",
+      "C",
+      5
+    ],
+    [
+      "case_027",
+      "C",
+      2
+    ],
+    [
+      "case_027",
+      "C",
+      3
+    ],
+    [
+      "case_027",
+      "C",
+      4
+    ],
+    [
+      "case_027",
+      "C",
+      5
+    ],
+    [
+      "case_028",
+      "C",
+      2
+    ],
+    [
+      "case_028",
+      "C",
+      3
+    ],
+    [
+      "case_028",
+      "C",
+      4
+    ],
+    [
+      "case_028",
+      "C",
+      5
+    ],
+    [
+      "case_029",
+      "C",
+      2
+    ],
+    [
+      "case_029",
+      "C",
+      3
+    ],
+    [
+      "case_029",
+      "C",
+      4
+    ],
+    [
+      "case_029",
+      "C",
+      5
+    ],
+    [
+      "case_030",
+      "C",
+      2
+    ],
+    [
+      "case_030",
+      "C",
+      3
+    ],
+    [
+      "case_030",
+      "C",
+      4
+    ],
+    [
+      "case_030",
+      "C",
+      5
+    ],
+    [
+      "case_031",
+      "C",
+      2
+    ],
+    [
+      "case_031",
+      "C",
+      3
+    ],
+    [
+      "case_031",
+      "C",
+      4
+    ],
+    [
+      "case_031",
+      "C",
+      5
+    ],
+    [
+      "case_032",
+      "C",
+      2
+    ],
+    [
+      "case_032",
+      "C",
+      3
+    ],
+    [
+      "case_032",
+      "C",
+      4
+    ],
+    [
+      "case_032",
+      "C",
+      5
+    ],
+    [
+      "case_033",
+      "C",
+      2
+    ],
+    [
+      "case_033",
+      "C",
+      3
+    ],
+    [
+      "case_033",
+      "C",
+      4
+    ],
+    [
+      "case_033",
+      "C",
+      5
+    ],
+    [
+      "case_034",
+      "C",
+      2
+    ],
+    [
+      "case_034",
+      "C",
+      3
+    ],
+    [
+      "case_034",
+      "C",
+      4
+    ],
+    [
+      "case_034",
+      "C",
+      5
+    ],
+    [
+      "case_035",
+      "C",
+      2
+    ],
+    [
+      "case_035",
+      "C",
+      3
+    ],
+    [
+      "case_035",
+      "C",
+      4
+    ],
+    [
+      "case_035",
+      "C",
+      5
+    ],
+    [
+      "case_036",
+      "C",
+      2
+    ],
+    [
+      "case_036",
+      "C",
+      3
+    ],
+    [
+      "case_036",
+      "C",
+      4
+    ],
+    [
+      "case_036",
+      "C",
+      5
+    ],
+    [
+      "case_037",
+      "C",
+      2
+    ],
+    [
+      "case_037",
+      "C",
+      3
+    ],
+    [
+      "case_037",
+      "C",
+      4
+    ],
+    [
+      "case_037",
+      "C",
+      5
+    ],
+    [
+      "case_038",
+      "C",
+      2
+    ],
+    [
+      "case_038",
+      "C",
+      3
+    ],
+    [
+      "case_038",
+      "C",
+      4
+    ],
+    [
+      "case_038",
+      "C",
+      5
+    ],
+    [
+      "case_039",
+      "C",
+      2
+    ],
+    [
+      "case_039",
+      "C",
+      3
+    ],
+    [
+      "case_039",
+      "C",
+      4
+    ],
+    [
+      "case_039",
+      "C",
+      5
+    ],
+    [
+      "case_040",
+      "C",
+      2
+    ],
+    [
+      "case_040",
+      "C",
+      3
+    ],
+    [
+      "case_040",
+      "C",
+      4
+    ],
+    [
+      "case_040",
+      "C",
+      5
+    ],
+    [
+      "case_041",
+      "C",
+      2
+    ],
+    [
+      "case_041",
+      "C",
+      3
+    ],
+    [
+      "case_041",
+      "C",
+      4
+    ],
+    [
+      "case_041",
+      "C",
+      5
+    ],
+    [
+      "case_042",
+      "C",
+      2
+    ],
+    [
+      "case_042",
+      "C",
+      3
+    ],
+    [
+      "case_042",
+      "C",
+      4
+    ],
+    [
+      "case_042",
+      "C",
+      5
+    ],
+    [
+      "case_043",
+      "C",
+      2
+    ],
+    [
+      "case_043",
+      "C",
+      3
+    ],
+    [
+      "case_043",
+      "C",
+      4
+    ],
+    [
+      "case_043",
+      "C",
+      5
+    ],
+    [
+      "case_044",
+      "C",
+      2
+    ],
+    [
+      "case_044",
+      "C",
+      3
+    ],
+    [
+      "case_044",
+      "C",
+      4
+    ],
+    [
+      "case_044",
+      "C",
+      5
+    ],
+    [
+      "case_045",
+      "C",
+      2
+    ],
+    [
+      "case_045",
+      "C",
+      3
+    ],
+    [
+      "case_045",
+      "C",
+      4
+    ],
+    [
+      "case_045",
+      "C",
+      5
+    ],
+    [
+      "case_046",
+      "C",
+      2
+    ],
+    [
+      "case_046",
+      "C",
+      3
+    ],
+    [
+      "case_046",
+      "C",
+      4
+    ],
+    [
+      "case_046",
+      "C",
+      5
+    ],
+    [
+      "case_047",
+      "C",
+      2
+    ],
+    [
+      "case_047",
+      "C",
+      3
+    ],
+    [
+      "case_047",
+      "C",
+      4
+    ],
+    [
+      "case_047",
+      "C",
+      5
+    ],
+    [
+      "case_048",
+      "C",
+      2
+    ],
+    [
+      "case_048",
+      "C",
+      3
+    ],
+    [
+      "case_048",
+      "C",
+      4
+    ],
+    [
+      "case_048",
+      "C",
+      5
+    ],
+    [
+      "case_049",
+      "C",
+      2
+    ],
+    [
+      "case_049",
+      "C",
+      3
+    ],
+    [
+      "case_049",
+      "C",
+      4
+    ],
+    [
+      "case_049",
+      "C",
+      5
+    ],
+    [
+      "case_050",
+      "C",
+      2
+    ],
+    [
+      "case_050",
+      "C",
+      3
+    ],
+    [
+      "case_050",
+      "C",
+      4
+    ],
+    [
+      "case_050",
+      "C",
+      5
+    ],
+    [
+      "case_051",
+      "C",
+      2
+    ],
+    [
+      "case_051",
+      "C",
+      3
+    ],
+    [
+      "case_051",
+      "C",
+      4
+    ],
+    [
+      "case_051",
+      "C",
+      5
+    ],
+    [
+      "case_052",
+      "C",
+      2
+    ],
+    [
+      "case_052",
+      "C",
+      3
+    ],
+    [
+      "case_052",
+      "C",
+      4
+    ],
+    [
+      "case_052",
+      "C",
+      5
+    ],
+    [
+      "case_053",
+      "C",
+      2
+    ],
+    [
+      "case_053",
+      "C",
+      3
+    ],
+    [
+      "case_053",
+      "C",
+      4
+    ],
+    [
+      "case_053",
+      "C",
+      5
+    ],
+    [
+      "case_054",
+      "C",
+      2
+    ],
+    [
+      "case_054",
+      "C",
+      3
+    ],
+    [
+      "case_054",
+      "C",
+      4
+    ],
+    [
+      "case_054",
+      "C",
+      5
+    ],
+    [
+      "case_055",
+      "C",
+      2
+    ],
+    [
+      "case_055",
+      "C",
+      3
+    ],
+    [
+      "case_055",
+      "C",
+      4
+    ],
+    [
+      "case_055",
+      "C",
+      5
+    ],
+    [
+      "case_056",
+      "C",
+      2
+    ],
+    [
+      "case_056",
+      "C",
+      3
+    ],
+    [
+      "case_056",
+      "C",
+      4
+    ],
+    [
+      "case_056",
+      "C",
+      5
+    ],
+    [
+      "case_057",
+      "C",
+      2
+    ],
+    [
+      "case_057",
+      "C",
+      3
+    ],
+    [
+      "case_057",
+      "C",
+      4
+    ],
+    [
+      "case_057",
+      "C",
+      5
+    ],
+    [
+      "case_058",
+      "C",
+      2
+    ],
+    [
+      "case_058",
+      "C",
+      3
+    ],
+    [
+      "case_058",
+      "C",
+      4
+    ],
+    [
+      "case_058",
+      "C",
+      5
+    ],
+    [
+      "case_059",
+      "C",
+      2
+    ],
+    [
+      "case_059",
+      "C",
+      3
+    ],
+    [
+      "case_059",
+      "C",
+      4
+    ],
+    [
+      "case_059",
+      "C",
+      5
+    ],
+    [
+      "case_060",
+      "C",
+      2
+    ],
+    [
+      "case_060",
+      "C",
+      3
+    ],
+    [
+      "case_060",
+      "C",
+      4
+    ],
+    [
+      "case_060",
+      "C",
+      5
+    ],
+    [
+      "case_061",
+      "C",
+      2
+    ],
+    [
+      "case_061",
+      "C",
+      3
+    ],
+    [
+      "case_061",
+      "C",
+      4
+    ],
+    [
+      "case_061",
+      "C",
+      5
+    ],
+    [
+      "case_062",
+      "C",
+      2
+    ],
+    [
+      "case_062",
+      "C",
+      3
+    ],
+    [
+      "case_062",
+      "C",
+      4
+    ],
+    [
+      "case_062",
+      "C",
+      5
+    ],
+    [
+      "case_063",
+      "C",
+      2
+    ],
+    [
+      "case_063",
+      "C",
+      3
+    ],
+    [
+      "case_063",
+      "C",
+      4
+    ],
+    [
+      "case_063",
+      "C",
+      5
+    ],
+    [
+      "case_064",
+      "C",
+      2
+    ],
+    [
+      "case_064",
+      "C",
+      3
+    ],
+    [
+      "case_064",
+      "C",
+      4
+    ],
+    [
+      "case_064",
+      "C",
+      5
+    ],
+    [
+      "case_065",
+      "C",
+      2
+    ],
+    [
+      "case_065",
+      "C",
+      3
+    ],
+    [
+      "case_065",
+      "C",
+      4
+    ],
+    [
+      "case_065",
+      "C",
+      5
+    ],
+    [
+      "case_066",
+      "C",
+      2
+    ],
+    [
+      "case_066",
+      "C",
+      3
+    ],
+    [
+      "case_066",
+      "C",
+      4
+    ],
+    [
+      "case_066",
+      "C",
+      5
+    ],
+    [
+      "case_067",
+      "C",
+      2
+    ],
+    [
+      "case_067",
+      "C",
+      3
+    ],
+    [
+      "case_067",
+      "C",
+      4
+    ],
+    [
+      "case_067",
+      "C",
+      5
+    ],
+    [
+      "case_068",
+      "C",
+      2
+    ],
+    [
+      "case_068",
+      "C",
+      3
+    ],
+    [
+      "case_068",
+      "C",
+      4
+    ],
+    [
+      "case_068",
+      "C",
+      5
+    ],
+    [
+      "case_069",
+      "C",
+      2
+    ],
+    [
+      "case_069",
+      "C",
+      3
+    ],
+    [
+      "case_069",
+      "C",
+      4
+    ],
+    [
+      "case_069",
+      "C",
+      5
+    ],
+    [
+      "case_070",
+      "C",
+      2
+    ],
+    [
+      "case_070",
+      "C",
+      3
+    ],
+    [
+      "case_070",
+      "C",
+      4
+    ],
+    [
+      "case_070",
+      "C",
+      5
+    ],
+    [
+      "case_071",
+      "C",
+      2
+    ],
+    [
+      "case_071",
+      "C",
+      3
+    ],
+    [
+      "case_071",
+      "C",
+      4
+    ],
+    [
+      "case_071",
+      "C",
+      5
+    ],
+    [
+      "case_072",
+      "C",
+      2
+    ],
+    [
+      "case_072",
+      "C",
+      3
+    ],
+    [
+      "case_072",
+      "C",
+      4
+    ],
+    [
+      "case_072",
+      "C",
+      5
+    ],
+    [
+      "case_073",
+      "C",
+      2
+    ],
+    [
+      "case_073",
+      "C",
+      3
+    ],
+    [
+      "case_073",
+      "C",
+      4
+    ],
+    [
+      "case_073",
+      "C",
+      5
+    ],
+    [
+      "case_074",
+      "C",
+      2
+    ],
+    [
+      "case_074",
+      "C",
+      3
+    ],
+    [
+      "case_074",
+      "C",
+      4
+    ],
+    [
+      "case_074",
+      "C",
+      5
+    ],
+    [
+      "case_075",
+      "C",
+      2
+    ],
+    [
+      "case_075",
+      "C",
+      3
+    ],
+    [
+      "case_075",
+      "C",
+      4
+    ],
+    [
+      "case_075",
+      "C",
+      5
+    ],
+    [
+      "case_076",
+      "C",
+      2
+    ],
+    [
+      "case_076",
+      "C",
+      3
+    ],
+    [
+      "case_076",
+      "C",
+      4
+    ],
+    [
+      "case_076",
+      "C",
+      5
+    ],
+    [
+      "case_077",
+      "C",
+      2
+    ],
+    [
+      "case_077",
+      "C",
+      3
+    ],
+    [
+      "case_077",
+      "C",
+      4
+    ],
+    [
+      "case_077",
+      "C",
+      5
+    ],
+    [
+      "case_078",
+      "C",
+      2
+    ],
+    [
+      "case_078",
+      "C",
+      3
+    ],
+    [
+      "case_078",
+      "C",
+      4
+    ],
+    [
+      "case_078",
+      "C",
+      5
+    ],
+    [
+      "case_079",
+      "C",
+      2
+    ],
+    [
+      "case_079",
+      "C",
+      3
+    ],
+    [
+      "case_079",
+      "C",
+      4
+    ],
+    [
+      "case_079",
+      "C",
+      5
+    ],
+    [
+      "case_080",
+      "C",
+      2
+    ],
+    [
+      "case_080",
+      "C",
+      3
+    ],
+    [
+      "case_080",
+      "C",
+      4
+    ],
+    [
+      "case_080",
+      "C",
+      5
+    ],
+    [
+      "case_081",
+      "C",
+      2
+    ],
+    [
+      "case_081",
+      "C",
+      3
+    ],
+    [
+      "case_081",
+      "C",
+      4
+    ],
+    [
+      "case_081",
+      "C",
+      5
+    ],
+    [
+      "case_082",
+      "C",
+      2
+    ],
+    [
+      "case_082",
+      "C",
+      3
+    ],
+    [
+      "case_082",
+      "C",
+      4
+    ],
+    [
+      "case_082",
+      "C",
+      5
+    ],
+    [
+      "case_083",
+      "C",
+      2
+    ],
+    [
+      "case_083",
+      "C",
+      3
+    ],
+    [
+      "case_083",
+      "C",
+      4
+    ],
+    [
+      "case_083",
+      "C",
+      5
+    ],
+    [
+      "case_084",
+      "C",
+      2
+    ],
+    [
+      "case_084",
+      "C",
+      3
+    ],
+    [
+      "case_084",
+      "C",
+      4
+    ],
+    [
+      "case_084",
+      "C",
+      5
+    ],
+    [
+      "case_085",
+      "C",
+      2
+    ],
+    [
+      "case_085",
+      "C",
+      3
+    ],
+    [
+      "case_085",
+      "C",
+      4
+    ],
+    [
+      "case_085",
+      "C",
+      5
+    ],
+    [
+      "case_086",
+      "C",
+      2
+    ],
+    [
+      "case_086",
+      "C",
+      3
+    ],
+    [
+      "case_086",
+      "C",
+      4
+    ],
+    [
+      "case_086",
+      "C",
+      5
+    ],
+    [
+      "case_087",
+      "C",
+      2
+    ],
+    [
+      "case_087",
+      "C",
+      3
+    ],
+    [
+      "case_087",
+      "C",
+      4
+    ],
+    [
+      "case_087",
+      "C",
+      5
+    ],
+    [
+      "case_088",
+      "C",
+      2
+    ],
+    [
+      "case_088",
+      "C",
+      3
+    ],
+    [
+      "case_088",
+      "C",
+      4
+    ],
+    [
+      "case_088",
+      "C",
+      5
+    ],
+    [
+      "case_089",
+      "C",
+      2
+    ],
+    [
+      "case_089",
+      "C",
+      3
+    ],
+    [
+      "case_089",
+      "C",
+      4
+    ],
+    [
+      "case_089",
+      "C",
+      5
+    ],
+    [
+      "case_090",
+      "C",
+      2
+    ],
+    [
+      "case_090",
+      "C",
+      3
+    ],
+    [
+      "case_090",
+      "C",
+      4
+    ],
+    [
+      "case_090",
+      "C",
+      5
+    ],
+    [
+      "case_091",
+      "C",
+      2
+    ],
+    [
+      "case_091",
+      "C",
+      3
+    ],
+    [
+      "case_091",
+      "C",
+      4
+    ],
+    [
+      "case_091",
+      "C",
+      5
+    ],
+    [
+      "case_092",
+      "C",
+      2
+    ],
+    [
+      "case_092",
+      "C",
+      3
+    ],
+    [
+      "case_092",
+      "C",
+      4
+    ],
+    [
+      "case_092",
+      "C",
+      5
+    ],
+    [
+      "case_093",
+      "C",
+      2
+    ],
+    [
+      "case_093",
+      "C",
+      3
+    ],
+    [
+      "case_093",
+      "C",
+      4
+    ],
+    [
+      "case_093",
+      "C",
+      5
+    ],
+    [
+      "case_094",
+      "C",
+      2
+    ],
+    [
+      "case_094",
+      "C",
+      3
+    ],
+    [
+      "case_094",
+      "C",
+      4
+    ],
+    [
+      "case_094",
+      "C",
+      5
+    ],
+    [
+      "case_095",
+      "C",
+      2
+    ],
+    [
+      "case_095",
+      "C",
+      3
+    ],
+    [
+      "case_095",
+      "C",
+      4
+    ],
+    [
+      "case_095",
+      "C",
+      5
+    ],
+    [
+      "case_096",
+      "C",
+      2
+    ],
+    [
+      "case_096",
+      "C",
+      3
+    ],
+    [
+      "case_096",
+      "C",
+      4
+    ],
+    [
+      "case_096",
+      "C",
+      5
+    ],
+    [
+      "case_097",
+      "C",
+      2
+    ],
+    [
+      "case_097",
+      "C",
+      3
+    ],
+    [
+      "case_097",
+      "C",
+      4
+    ],
+    [
+      "case_097",
+      "C",
+      5
+    ],
+    [
+      "case_098",
+      "C",
+      2
+    ],
+    [
+      "case_098",
+      "C",
+      3
+    ],
+    [
+      "case_098",
+      "C",
+      4
+    ],
+    [
+      "case_098",
+      "C",
+      5
+    ],
+    [
+      "case_099",
+      "C",
+      2
+    ],
+    [
+      "case_099",
+      "C",
+      3
+    ],
+    [
+      "case_099",
+      "C",
+      4
+    ],
+    [
+      "case_099",
+      "C",
+      5
+    ],
+    [
+      "case_100",
+      "C",
+      2
+    ],
+    [
+      "case_100",
+      "C",
+      3
+    ],
+    [
+      "case_100",
+      "C",
+      4
+    ],
+    [
+      "case_100",
+      "C",
+      5
+    ]
+  ],
+  "scope": "fresh A/B evaluation; official paired and full populations separate",
+  "hardware_unchanged": true,
+  "target_scope": "B_N5 paired 81 mean >= 3.8"
+}
