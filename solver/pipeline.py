@@ -620,9 +620,6 @@ def solve_case(graph_json, N, scene, time_budget=10.0, seed=0,
             mcts_candidates, mcts_limit, 'mcts') if mcts_limit else 0
         beam_verified = verify_group(
             beam_candidates, beam_limit, 'beam') if beam_limit else 0
-        wavefront_limit = 4 if wavefront_candidates else 0
-        wavefront_verified = verify_group(
-            wavefront_candidates, wavefront_limit, 'wavefront') if wavefront_limit else 0
         warm_candidates = list(warm_plans or ())
         if warm_plan is not None:
             warm_candidates.insert(0, {'plan': warm_plan,
@@ -647,6 +644,9 @@ def solve_case(graph_json, N, scene, time_budget=10.0, seed=0,
                     log.setdefault('wavefront', {})['warm_candidates'] = len(wavefront_candidates)
             except Exception as exc:
                 log['wavefront_warm_error'] = repr(exc)
+        wavefront_limit = 4 if wavefront_candidates else 0
+        wavefront_verified = verify_group(
+            wavefront_candidates, wavefront_limit, 'wavefront') if wavefront_limit else 0
         for warm_index, candidate in enumerate(warm_candidates):
             candidate_plan = (candidate.get('plan')
                               if isinstance(candidate, dict) else candidate)
