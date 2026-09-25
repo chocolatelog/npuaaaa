@@ -1,0 +1,53 @@
+{
+  "case": "case_001",
+  "kind": "problem_3",
+  "N": 2,
+  "plan_scene": "C",
+  "job_id": "case_001_problem_3_C_N2",
+  "record_id": "fb653c4e4cc44d2fb0b511f7c1490888",
+  "protocol_version": 3,
+  "updated_at": "2026-09-25T11:07+08:00",
+  "fingerprint": "fd07548f7cfe54d511f1b7a105fb46c997adce2bd20f4d02038c28cbb39621e5",
+  "context": {
+    "protocol_version": 3,
+    "job": {
+      "case": "case_001",
+      "kind": "problem_3",
+      "N": 2,
+      "plan_scene": "C"
+    },
+    "input_sha256": "44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a",
+    "config_sha256": "3e8214adf35212b25f8d669f6bb1416d39e07bacc3d82acfc287218cabbe0712",
+    "evaluator_sha256": "34094ff8e27835c12fb586add55aaa70b5b7706bab7297d40473ef064f2d5af7",
+    "plan_sha256": "4667c91c625f113239fa029ad2378ea80d597a44ea8c68bd45f4e7f39f00dceb",
+    "python": "3.13.5 | packaged by Anaconda, Inc. | (main, Jun 12 2025, 16:37:03) [MSC v.1929 64 bit (AMD64)]",
+    "platform": "Windows-11-10.0.26100-SP0",
+    "wrapper_sha256": "e34533e2e6ef1963d601dae2cf87db1f976fc5f3eea208cfbb91dce9328bc485",
+    "official_sources": {
+      "evaluator.py": "1b8f88f6d33da8cf3ff1b40946b08a71100e42e6afb2559186f783fa9c553d18"
+    }
+  },
+  "input_sha256": "44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a",
+  "config_sha256": "3e8214adf35212b25f8d669f6bb1416d39e07bacc3d82acfc287218cabbe0712",
+  "evaluator_sha256": "34094ff8e27835c12fb586add55aaa70b5b7706bab7297d40473ef064f2d5af7",
+  "plan_sha256": "4667c91c625f113239fa029ad2378ea80d597a44ea8c68bd45f4e7f39f00dceb",
+  "status": "official_success",
+  "real": {
+    "makespan": 10,
+    "added_copy_bytes": 0,
+    "scheduled_copy_bytes": 60,
+    "partition_added": null,
+    "spill_added": null,
+    "cache_hit_bytes": 30,
+    "cache_miss_bytes": 30,
+    "cache_hit_rate": 0.5
+  },
+  "result_path": "J:\\数学建模\\改进\\.pytest_tmp\\pytest-of-wwh\\pytest-0\\test_cache_tracks_content_and_0\\out\\attempts\\case_001_problem_3_C_N2\\fd07548f7cfe54d511f1b7a105fb46c997adce2bd20f4d02038c28cbb39621e5\\fb653c4e4cc44d2fb0b511f7c1490888\\result.json",
+  "artifacts": {
+    "J:\\数学建模\\改进\\.pytest_tmp\\pytest-of-wwh\\pytest-0\\test_cache_tracks_content_and_0\\out\\attempts\\case_001_problem_3_C_N2\\fd07548f7cfe54d511f1b7a105fb46c997adce2bd20f4d02038c28cbb39621e5\\fb653c4e4cc44d2fb0b511f7c1490888\\result.json": "f6d340a658c1ddb98e93fc917fd714432b41d92aff8b192d50ca1654223b2b2f",
+    "J:\\数学建模\\改进\\.pytest_tmp\\pytest-of-wwh\\pytest-0\\test_cache_tracks_content_and_0\\out\\attempts\\case_001_problem_3_C_N2\\fd07548f7cfe54d511f1b7a105fb46c997adce2bd20f4d02038c28cbb39621e5\\fb653c4e4cc44d2fb0b511f7c1490888\\trace.json": "44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a",
+    "J:\\数学建模\\改进\\.pytest_tmp\\pytest-of-wwh\\pytest-0\\test_cache_tracks_content_and_0\\out\\attempts\\case_001_problem_3_C_N2\\fd07548f7cfe54d511f1b7a105fb46c997adce2bd20f4d02038c28cbb39621e5\\fb653c4e4cc44d2fb0b511f7c1490888\\official.log": "2689367b205c16ce32ed4200942b8b8b1e262dfc70d9bc9fbc77c49699a4f1df"
+  },
+  "receipt_path": "J:\\数学建模\\改进\\.pytest_tmp\\pytest-of-wwh\\pytest-0\\test_cache_tracks_content_and_0\\out\\attempts\\case_001_problem_3_C_N2\\fd07548f7cfe54d511f1b7a105fb46c997adce2bd20f4d02038c28cbb39621e5\\fb653c4e4cc44d2fb0b511f7c1490888\\receipt.json",
+  "elapsed": 0.00503260000004957
+}

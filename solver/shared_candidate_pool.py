@@ -21,10 +21,10 @@ def make_candidate(model,plan,coarse,origin):
     return {'plan':plan,'plan_id':plan_sha(plan),'assignment':assignment,'owners':owners,
             'coarse':coarse,'origin':origin}
 
-def generate_pools(graph,model,baseline_plan,menu,order_generation,torch,progress=None):
+def generate_pools(graph,model,baseline_plan,menu,order_generation,torch,progress=None,local=None):
     started=time.perf_counter();n=len(baseline_plan['core_schedules']);base_id=plan_sha(baseline_plan)
     base=make_candidate(model,baseline_plan,1,'base');parent=Sol(base['assignment'],base['owners'])
-    local=SceneAEventModel(graph);before=time.perf_counter();estimate=local.evaluate(baseline_plan)
+    local=local or SceneAEventModel(graph);before=time.perf_counter();estimate=local.evaluate(baseline_plan)
     local_seconds=time.perf_counter()-before;search_seconds=0.;search_evals=0
     view=derive_multicore_plan(graph,baseline_plan)
     schedule,stats=search_orders({t:r['duration'] for t,r in estimate['tasks'].items()},view['subgraph_preds'],
@@ -101,7 +101,8 @@ def generate_pools(graph,model,baseline_plan,menu,order_generation,torch,progres
     batch=BatchFeatures(model,n);features=batch.evaluate([r['assignment'] for r in all_rows],[r['owners'] for r in all_rows])
     if features!=[scalar_features(model,r['assignment'],r['owners'],n) for r in all_rows]:raise ValueError('显卡特征与标量不一致')
     for row,feature in zip(all_rows,features):row['features']=feature
-    gpu={'equal':True,'seconds':time.perf_counter()-before,'peak_allocated':torch.cuda.max_memory_allocated(),'candidates':len(all_rows)}
+    gpu={'equal':True,'seconds':time.perf_counter()-before,'peak_allocated':torch.cuda.max_memory_allocated(),
+         'peak_reserved':torch.cuda.max_memory_reserved(),'candidates':len(all_rows)}
     return pools,{'seconds':time.perf_counter()-started,'local_seconds':local_seconds,'search_seconds':search_seconds,
         'search_evaluations':search_evals,'branch':branch_audit,'branch_selected':len(branch),'legacy_selected':len(legacy),
         'legacy_invalid':invalid,'gpu':gpu,'scope':'调度/分支/工作量本轮重建；区域读取已冻结的真值前提案，历史生成成本另列'}

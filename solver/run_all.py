@@ -177,6 +177,7 @@ def block_cap_for(n_eligible):
 
 
 def solve_task(task):
+    task_started = time.perf_counter()
     from model import load_graph
     from pipeline import solve_case
     case, scene, n = task['case'], task['scene'], task['n']
@@ -185,7 +186,14 @@ def solve_task(task):
     n_ops = len(graph['ops'])
     n_eligible = sum(1 for o in graph['ops']
                      if o['op'] not in ('COPY_IN', 'COPY_OUT'))
-    res = solve_case(graph, N=n, scene=scene,
+    checkpoint = None
+    if task.get('shared_budget'):
+        from online_shared import Checkpoint
+        checkpoint = Checkpoint(Path(task['out_plans']) / 'shared_checkpoints' / f'{case}_{scene}_N{n}',
+                                task['fingerprint'])
+    res = checkpoint.read('baseline') if checkpoint else None
+    if res is None:
+        res = solve_case(graph, N=n, scene=scene,
                      time_budget=task.get('budget') or budget_for(n_ops),
                      seed=task.get('seed', stable_seed(case, scene, n)),
                      block_ops_cap=block_cap_for(n_eligible),
@@ -199,6 +207,34 @@ def solve_task(task):
                      search_rounds=task.get('search_rounds'),
                      terminal_swaps=bool(task.get('terminal_swaps', False)),
                      terminal_cache=bool(task.get('terminal_cache', False)))
+        if checkpoint:
+            res = checkpoint.write('baseline', res)
+    if checkpoint:
+        if scene != 'A' or n_ops > 12000 or not valid_official(res['real']):
+            res['log']['shared_budget'] = {'status': 'skipped',
+                'reason': '仅处理场景 A 且不超过12000算子的原官方已确认方案',
+                'baseline_plan_id': plan_digest(res['plan'])}
+        else:
+            import torch
+            from model import Model
+            from pipeline import _apply_spill_coefs
+            from online_shared import refine_shared, historical_index
+            if not torch.cuda.is_available():
+                raise RuntimeError('共同预算在线入口需要可用显卡环境')
+            torch.set_num_threads(1)
+            model = Model(graph, block_ops_cap=block_cap_for(n_eligible))
+            model.use_lru_spill = bool(task.get('use_lru_spill', False))
+            if task.get('spill_calibrated'):
+                _apply_spill_coefs(model, n)
+            def progress(stage, i, total):
+                if i == total or i % 6 == 0:
+                    print(f'  {case}/N{n} {stage} [{i}/{total}]', flush=True)
+            res = refine_shared(graph, model, res, checkpoint, torch, case=case,
+                graph_sha=hashlib.sha256(Path(graph_path).read_bytes()).hexdigest(),
+                index=historical_index(), progress=progress)
+    from scene_a_event import derive_multicore_plan
+    from evaluation_validation import validate_task_order
+    validate_task_order(derive_multicore_plan(graph, res['plan']))
     out_plan = os.path.join(task.get('out_plans', OUT_PLANS),
                             f'{case}_{scene}_N{n}.json')
     with open(out_plan, 'w', encoding='utf-8') as f:
@@ -223,6 +259,8 @@ def solve_task(task):
              'elapsed': round(res['elapsed'], 1), 'n_ops': n_ops,
              'seed_base': task.get('seed_base', 0), 'fingerprint': task.get('fingerprint'),
              'attempt': task.get('attempt', 1)}
+    if task.get('shared_budget'):
+        entry['active_task_wall_seconds'] = time.perf_counter() - task_started
     bind_entry(entry, out_plan)
     return entry
 
@@ -272,6 +310,8 @@ def main():
                         help='完整流程原官方确认后执行迁移/交换，最多八份副本筛选和两份原官方确认')
     parser.add_argument('--terminal-cache', action='store_true',
                         help='为末端交换的副本精评启用每任务局部模板缓存；必须启用 --terminal-swaps')
+    parser.add_argument('--shared-budget', action='store_true',
+                        help='场景 A 现场共同候选池、最多六资源一官方、显卡批特征及候选级续跑')
     args = parser.parse_args()
     if args.terminal_cache and not args.terminal_swaps:
         parser.error('--terminal-cache 必须与 --terminal-swaps 一起使用')
@@ -291,7 +331,28 @@ def main():
     scenes = list(dict.fromkeys(args.scenes.split(',')))
     if any(n not in (2, 3, 4, 5) for n in cores) or any(s not in ('A', 'B', 'C') for s in scenes):
         parser.error('核心数为 2/3/4/5，场景为 A/B/C')
-    fingerprint = ensure_run_manifest(OUT_LOG, run_input_files(cases), {
+    if args.shared_budget:
+        if scenes != ['A']:
+            parser.error('共同预算本轮仅允许场景 A')
+        import torch
+        if not torch.cuda.is_available():
+            parser.error('请使用已有 PyTorch 显卡环境')
+    from online_shared import process_lock
+    # 同日志和同方案目录分别加锁，拒绝不同日志同时覆盖同一批方案。
+    with process_lock(Path(OUT_LOG).with_suffix('.lock')):
+        with process_lock(Path(OUT_PLANS) / 'process.lock'):
+            run_jobs(args, cases, cores, scenes)
+
+
+def run_jobs(args, cases, cores, scenes):
+    extra_files = []
+    if args.shared_budget:
+        from online_shared import history_files, historical_index
+        extra_files = history_files()
+        # 启动前审查历史证据；校验失败时不默默重跑旧评测或忽略契约。
+        index = historical_index()
+        print(f'已审查历史证据 {len(index.records) if index else 0} 条，候选名单冻结后按计划复用', flush=True)
+    fingerprint = ensure_run_manifest(OUT_LOG, run_input_files(cases) + extra_files, {
             'cases': cases, 'cores': cores, 'scenes': scenes, 'budget': args.budget,
             'seed_base': args.seed_base, 'search_rounds': args.search_rounds,
             'workers': args.workers, 'event_rerank': args.event_rerank,
@@ -300,8 +361,19 @@ def main():
             'construct_reservoir': args.construct_reservoir,
             'fast_candidate_eval': args.fast_candidate_eval,
             'terminal_swaps': args.terminal_swaps, 'terminal_cache': args.terminal_cache,
+            'shared_budget': args.shared_budget,
+            'shared_version': 'online-shared-v1' if args.shared_budget else None,
             'spill_calibrated': args.spill_calibrated, 'lru_spill': args.lru_spill,
             'output_dir': OUT_PLANS})
+    if args.shared_budget:
+        import zipfile
+        archive = Path(OUT_LOG).with_suffix('.source.zip')
+        if not archive.exists():
+            with zipfile.ZipFile(archive, 'w', zipfile.ZIP_DEFLATED) as stream:
+                for path in run_input_files(cases):
+                    if path.suffix in ('.py', '.json') and path.parent == Path(DATA):
+                        continue
+                    stream.write(path, path.relative_to(Path(HERE).parent))
 
     previous, warnings = read_run_rows(OUT_LOG)
     if warnings:
@@ -333,6 +405,7 @@ def main():
                                   'construct_reservoir': args.construct_reservoir,
                                   'fast_candidate_eval': args.fast_candidate_eval,
                                   'terminal_swaps': args.terminal_swaps,
+                                  'shared_budget': args.shared_budget,
                                   'terminal_cache': args.terminal_cache})
     remaining = len(tasks)
     if args.max_tasks:

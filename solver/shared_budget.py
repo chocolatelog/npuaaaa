@@ -6,13 +6,13 @@ from menu_order_polish import partition_key
 
 FAMILIES=('schedule','partition','region')
 
-def unify_scores(graph,pools,progress=None):
+def unify_scores(graph,pools,progress=None,local=None):
     """成员编号相同才共享局部统计；每份全图队列必须独立重放。"""
     from scene_a_event import SceneAEventModel,derive_multicore_plan
     from task_order_search import replay_tasks
     from evaluation_validation import validate_task_order
     from evidence_index import plan_sha
-    local=SceneAEventModel(graph);cache={};output={};local_seconds=0.;replay_seconds=0.;count=0
+    local=local or SceneAEventModel(graph);cache={};output={};local_seconds=0.;replay_seconds=0.;count=0
     total=sum(map(len,pools.values()));started=time.perf_counter()
     for family,rows in pools.items():
         output[family]=[]

@@ -1,0 +1,1 @@
+{"makespan": 10, "data_movement_bytes": {"added_copy_bytes": 0, "scheduled_copy_bytes": 60}, "cache_stats": {"hit_bytes": 30, "miss_bytes": 30}}
