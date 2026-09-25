@@ -1,0 +1,90 @@
+{
+  "graph": "C:\\Users\\admin\\Documents\\ChatGPT\\数学建模\\_数据解压\\data\\case_056.json",
+  "plan": "C:\\Users\\admin\\Documents\\ChatGPT\\数学建模\\case_056_multicore_res.json",
+  "num_cores": 4,
+  "iterations": 60,
+  "surrogate_score": 411735.9975,
+  "surrogate_meta": {
+    "load": [
+      90847.0,
+      94426.0,
+      101840.0,
+      89856.0
+    ],
+    "boundary_bytes": 7607808.0,
+    "cross_core_bytes": 6462648.0
+  },
+  "subgraph_count": 193,
+  "exact_validation_problem": 2,
+  "exact_makespan": 299587,
+  "fallback_to_greedy": false,
+  "exact_validation_error": null,
+  "history": [
+    {
+      "iteration": 0,
+      "score": 424194.88749999995,
+      "action": "merge_split",
+      "temperature": 0.997
+    },
+    {
+      "iteration": 6,
+      "score": 424194.88749999995,
+      "action": "boundary",
+      "temperature": 0.9791880578299021
+    },
+    {
+      "iteration": 12,
+      "score": 422610.0775,
+      "action": "boundary",
+      "temperature": 0.9616943356035061
+    },
+    {
+      "iteration": 18,
+      "score": 420635.63749999995,
+      "action": "boundary",
+      "temperature": 0.9445131481500655
+    },
+    {
+      "iteration": 24,
+      "score": 417572.2275,
+      "action": "swap",
+      "temperature": 0.9276389118674717
+    },
+    {
+      "iteration": 30,
+      "score": 416358.7875,
+      "action": "boundary",
+      "temperature": 0.9110661429076764
+    },
+    {
+      "iteration": 36,
+      "score": 413893.9775,
+      "action": "swap",
+      "temperature": 0.8947894553945313
+    },
+    {
+      "iteration": 42,
+      "score": 412258.2975,
+      "action": "swap",
+      "temperature": 0.8788035596734672
+    },
+    {
+      "iteration": 48,
+      "score": 412258.2975,
+      "action": "move",
+      "temperature": 0.8631032605924442
+    },
+    {
+      "iteration": 54,
+      "score": 412258.2975,
+      "action": "swap",
+      "temperature": 0.8476834558136123
+    },
+    {
+      "iteration": 59,
+      "score": 411735.9975,
+      "action": "move",
+      "temperature": 0.835044266956004
+    }
+  ]
+}

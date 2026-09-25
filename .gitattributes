@@ -1,0 +1,2 @@
+# Keep archived experiment evidence byte-for-byte for recorded SHA-256 hashes.
+/results/** -text

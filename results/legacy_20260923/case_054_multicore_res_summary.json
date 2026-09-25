@@ -1,0 +1,90 @@
+{
+  "graph": "C:\\Users\\admin\\Documents\\ChatGPT\\数学建模\\_数据解压\\data\\case_054.json",
+  "plan": "C:\\Users\\admin\\Documents\\ChatGPT\\数学建模\\case_054_multicore_res.json",
+  "num_cores": 4,
+  "iterations": 60,
+  "surrogate_score": 1021254.65,
+  "surrogate_meta": {
+    "load": [
+      251056.0,
+      258790.0,
+      252251.0,
+      252791.0
+    ],
+    "boundary_bytes": 18200538.0,
+    "cross_core_bytes": 16272986.0
+  },
+  "subgraph_count": 353,
+  "exact_validation_problem": 2,
+  "exact_makespan": 613923,
+  "fallback_to_greedy": false,
+  "exact_validation_error": null,
+  "history": [
+    {
+      "iteration": 0,
+      "score": 1024490.8800000001,
+      "action": "move",
+      "temperature": 0.997
+    },
+    {
+      "iteration": 6,
+      "score": 1023160.93,
+      "action": "swap",
+      "temperature": 0.9791880578299021
+    },
+    {
+      "iteration": 12,
+      "score": 1023160.93,
+      "action": "boundary",
+      "temperature": 0.9616943356035061
+    },
+    {
+      "iteration": 18,
+      "score": 1023160.93,
+      "action": "move",
+      "temperature": 0.9445131481500655
+    },
+    {
+      "iteration": 24,
+      "score": 1022014.97,
+      "action": "boundary",
+      "temperature": 0.9276389118674717
+    },
+    {
+      "iteration": 30,
+      "score": 1021254.65,
+      "action": "swap",
+      "temperature": 0.9110661429076764
+    },
+    {
+      "iteration": 36,
+      "score": 1021254.65,
+      "action": "swap",
+      "temperature": 0.8947894553945313
+    },
+    {
+      "iteration": 42,
+      "score": 1021254.65,
+      "action": "swap",
+      "temperature": 0.8788035596734672
+    },
+    {
+      "iteration": 48,
+      "score": 1021254.65,
+      "action": "move",
+      "temperature": 0.8631032605924442
+    },
+    {
+      "iteration": 54,
+      "score": 1021254.65,
+      "action": "move",
+      "temperature": 0.8476834558136123
+    },
+    {
+      "iteration": 59,
+      "score": 1021254.65,
+      "action": "boundary",
+      "temperature": 0.835044266956004
+    }
+  ]
+}

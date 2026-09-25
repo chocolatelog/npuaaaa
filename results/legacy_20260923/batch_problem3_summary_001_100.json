@@ -1,0 +1,1002 @@
+[
+  {
+    "case": "case_001",
+    "returncode": 0,
+    "status": "ok",
+    "makespan_problem3": 138252,
+    "cache_hits": null,
+    "cache_accesses": null,
+    "cache_hit_bytes": null,
+    "cache_hit_rate_bytes": null
+  },
+  {
+    "case": "case_002",
+    "returncode": 0,
+    "status": "ok",
+    "makespan_problem3": 140232,
+    "cache_hits": null,
+    "cache_accesses": null,
+    "cache_hit_bytes": null,
+    "cache_hit_rate_bytes": null
+  },
+  {
+    "case": "case_003",
+    "returncode": 0,
+    "status": "ok",
+    "makespan_problem3": 494877,
+    "cache_hits": null,
+    "cache_accesses": null,
+    "cache_hit_bytes": null,
+    "cache_hit_rate_bytes": null
+  },
+  {
+    "case": "case_004",
+    "returncode": 0,
+    "status": "ok",
+    "makespan_problem3": 272378,
+    "cache_hits": null,
+    "cache_accesses": null,
+    "cache_hit_bytes": null,
+    "cache_hit_rate_bytes": null
+  },
+  {
+    "case": "case_005",
+    "returncode": 0,
+    "status": "ok",
+    "makespan_problem3": 117146,
+    "cache_hits": null,
+    "cache_accesses": null,
+    "cache_hit_bytes": null,
+    "cache_hit_rate_bytes": null
+  },
+  {
+    "case": "case_006",
+    "returncode": 0,
+    "status": "ok",
+    "makespan_problem3": 80762,
+    "cache_hits": null,
+    "cache_accesses": null,
+    "cache_hit_bytes": null,
+    "cache_hit_rate_bytes": null
+  },
+  {
+    "case": "case_007",
+    "returncode": 0,
+    "status": "ok",
+    "makespan_problem3": 435726,
+    "cache_hits": null,
+    "cache_accesses": null,
+    "cache_hit_bytes": null,
+    "cache_hit_rate_bytes": null
+  },
+  {
+    "case": "case_008",
+    "returncode": 0,
+    "status": "ok",
+    "makespan_problem3": 485287,
+    "cache_hits": null,
+    "cache_accesses": null,
+    "cache_hit_bytes": null,
+    "cache_hit_rate_bytes": null
+  },
+  {
+    "case": "case_009",
+    "returncode": 0,
+    "status": "ok",
+    "makespan_problem3": 171411,
+    "cache_hits": null,
+    "cache_accesses": null,
+    "cache_hit_bytes": null,
+    "cache_hit_rate_bytes": null
+  },
+  {
+    "case": "case_010",
+    "returncode": 0,
+    "status": "ok",
+    "makespan_problem3": 81685,
+    "cache_hits": null,
+    "cache_accesses": null,
+    "cache_hit_bytes": null,
+    "cache_hit_rate_bytes": null
+  },
+  {
+    "case": "case_011",
+    "returncode": 0,
+    "status": "ok",
+    "makespan_problem3": 107562,
+    "cache_hits": null,
+    "cache_accesses": null,
+    "cache_hit_bytes": null,
+    "cache_hit_rate_bytes": null
+  },
+  {
+    "case": "case_012",
+    "returncode": 0,
+    "status": "ok",
+    "makespan_problem3": 57377,
+    "cache_hits": null,
+    "cache_accesses": null,
+    "cache_hit_bytes": null,
+    "cache_hit_rate_bytes": null
+  },
+  {
+    "case": "case_013",
+    "returncode": 0,
+    "status": "ok",
+    "makespan_problem3": 119700,
+    "cache_hits": null,
+    "cache_accesses": null,
+    "cache_hit_bytes": null,
+    "cache_hit_rate_bytes": null
+  },
+  {
+    "case": "case_014",
+    "returncode": 0,
+    "status": "ok",
+    "makespan_problem3": 8341837,
+    "cache_hits": null,
+    "cache_accesses": null,
+    "cache_hit_bytes": null,
+    "cache_hit_rate_bytes": null
+  },
+  {
+    "case": "case_015",
+    "returncode": 0,
+    "status": "ok",
+    "makespan_problem3": 177761,
+    "cache_hits": null,
+    "cache_accesses": null,
+    "cache_hit_bytes": null,
+    "cache_hit_rate_bytes": null
+  },
+  {
+    "case": "case_016",
+    "returncode": 0,
+    "status": "ok",
+    "makespan_problem3": 7631526,
+    "cache_hits": null,
+    "cache_accesses": null,
+    "cache_hit_bytes": null,
+    "cache_hit_rate_bytes": null
+  },
+  {
+    "case": "case_017",
+    "returncode": 0,
+    "status": "ok",
+    "makespan_problem3": 101330,
+    "cache_hits": null,
+    "cache_accesses": null,
+    "cache_hit_bytes": null,
+    "cache_hit_rate_bytes": null
+  },
+  {
+    "case": "case_018",
+    "returncode": 0,
+    "status": "ok",
+    "makespan_problem3": 424313,
+    "cache_hits": null,
+    "cache_accesses": null,
+    "cache_hit_bytes": null,
+    "cache_hit_rate_bytes": null
+  },
+  {
+    "case": "case_019",
+    "returncode": 0,
+    "status": "ok",
+    "makespan_problem3": 75927,
+    "cache_hits": null,
+    "cache_accesses": null,
+    "cache_hit_bytes": null,
+    "cache_hit_rate_bytes": null
+  },
+  {
+    "case": "case_020",
+    "returncode": 0,
+    "status": "ok",
+    "makespan_problem3": 1006039,
+    "cache_hits": null,
+    "cache_accesses": null,
+    "cache_hit_bytes": null,
+    "cache_hit_rate_bytes": null
+  },
+  {
+    "case": "case_021",
+    "returncode": 0,
+    "status": "ok",
+    "makespan_problem3": 2568409,
+    "cache_hits": null,
+    "cache_accesses": null,
+    "cache_hit_bytes": null,
+    "cache_hit_rate_bytes": null
+  },
+  {
+    "case": "case_022",
+    "returncode": 0,
+    "status": "ok",
+    "makespan_problem3": 56229,
+    "cache_hits": null,
+    "cache_accesses": null,
+    "cache_hit_bytes": null,
+    "cache_hit_rate_bytes": null
+  },
+  {
+    "case": "case_023",
+    "returncode": 0,
+    "status": "ok",
+    "makespan_problem3": 82962,
+    "cache_hits": null,
+    "cache_accesses": null,
+    "cache_hit_bytes": null,
+    "cache_hit_rate_bytes": null
+  },
+  {
+    "case": "case_024",
+    "returncode": 0,
+    "status": "ok",
+    "makespan_problem3": 2540213,
+    "cache_hits": null,
+    "cache_accesses": null,
+    "cache_hit_bytes": null,
+    "cache_hit_rate_bytes": null
+  },
+  {
+    "case": "case_025",
+    "returncode": 0,
+    "status": "ok",
+    "makespan_problem3": 2473255,
+    "cache_hits": null,
+    "cache_accesses": null,
+    "cache_hit_bytes": null,
+    "cache_hit_rate_bytes": null
+  },
+  {
+    "case": "case_026",
+    "returncode": 0,
+    "status": "ok",
+    "makespan_problem3": 102441,
+    "cache_hits": null,
+    "cache_accesses": null,
+    "cache_hit_bytes": null,
+    "cache_hit_rate_bytes": null
+  },
+  {
+    "case": "case_027",
+    "returncode": 0,
+    "status": "ok",
+    "makespan_problem3": 950555,
+    "cache_hits": null,
+    "cache_accesses": null,
+    "cache_hit_bytes": null,
+    "cache_hit_rate_bytes": null
+  },
+  {
+    "case": "case_028",
+    "returncode": 0,
+    "status": "ok",
+    "makespan_problem3": 23523419,
+    "cache_hits": null,
+    "cache_accesses": null,
+    "cache_hit_bytes": null,
+    "cache_hit_rate_bytes": null
+  },
+  {
+    "case": "case_029",
+    "returncode": 0,
+    "status": "ok",
+    "makespan_problem3": 35706,
+    "cache_hits": null,
+    "cache_accesses": null,
+    "cache_hit_bytes": null,
+    "cache_hit_rate_bytes": null
+  },
+  {
+    "case": "case_030",
+    "returncode": 0,
+    "status": "ok",
+    "makespan_problem3": 1571464,
+    "cache_hits": null,
+    "cache_accesses": null,
+    "cache_hit_bytes": null,
+    "cache_hit_rate_bytes": null
+  },
+  {
+    "case": "case_031",
+    "returncode": 0,
+    "status": "ok",
+    "makespan_problem3": 725792,
+    "cache_hits": null,
+    "cache_accesses": null,
+    "cache_hit_bytes": null,
+    "cache_hit_rate_bytes": null
+  },
+  {
+    "case": "case_032",
+    "returncode": 0,
+    "status": "ok",
+    "makespan_problem3": 35940,
+    "cache_hits": null,
+    "cache_accesses": null,
+    "cache_hit_bytes": null,
+    "cache_hit_rate_bytes": null
+  },
+  {
+    "case": "case_033",
+    "returncode": 0,
+    "status": "ok",
+    "makespan_problem3": 883600,
+    "cache_hits": null,
+    "cache_accesses": null,
+    "cache_hit_bytes": null,
+    "cache_hit_rate_bytes": null
+  },
+  {
+    "case": "case_034",
+    "returncode": 0,
+    "status": "ok",
+    "makespan_problem3": 423808,
+    "cache_hits": null,
+    "cache_accesses": null,
+    "cache_hit_bytes": null,
+    "cache_hit_rate_bytes": null
+  },
+  {
+    "case": "case_035",
+    "returncode": 0,
+    "status": "ok",
+    "makespan_problem3": 198915,
+    "cache_hits": null,
+    "cache_accesses": null,
+    "cache_hit_bytes": null,
+    "cache_hit_rate_bytes": null
+  },
+  {
+    "case": "case_036",
+    "returncode": 0,
+    "status": "ok",
+    "makespan_problem3": 477350,
+    "cache_hits": null,
+    "cache_accesses": null,
+    "cache_hit_bytes": null,
+    "cache_hit_rate_bytes": null
+  },
+  {
+    "case": "case_037",
+    "returncode": 0,
+    "status": "ok",
+    "makespan_problem3": 118756,
+    "cache_hits": null,
+    "cache_accesses": null,
+    "cache_hit_bytes": null,
+    "cache_hit_rate_bytes": null
+  },
+  {
+    "case": "case_038",
+    "returncode": 0,
+    "status": "ok",
+    "makespan_problem3": 652499,
+    "cache_hits": null,
+    "cache_accesses": null,
+    "cache_hit_bytes": null,
+    "cache_hit_rate_bytes": null
+  },
+  {
+    "case": "case_039",
+    "returncode": 0,
+    "status": "ok",
+    "makespan_problem3": 782072,
+    "cache_hits": null,
+    "cache_accesses": null,
+    "cache_hit_bytes": null,
+    "cache_hit_rate_bytes": null
+  },
+  {
+    "case": "case_040",
+    "returncode": 0,
+    "status": "ok",
+    "makespan_problem3": 301904,
+    "cache_hits": null,
+    "cache_accesses": null,
+    "cache_hit_bytes": null,
+    "cache_hit_rate_bytes": null
+  },
+  {
+    "case": "case_041",
+    "returncode": 0,
+    "status": "ok",
+    "makespan_problem3": 2789668,
+    "cache_hits": null,
+    "cache_accesses": null,
+    "cache_hit_bytes": null,
+    "cache_hit_rate_bytes": null
+  },
+  {
+    "case": "case_042",
+    "returncode": 0,
+    "status": "ok",
+    "makespan_problem3": 671261,
+    "cache_hits": null,
+    "cache_accesses": null,
+    "cache_hit_bytes": null,
+    "cache_hit_rate_bytes": null
+  },
+  {
+    "case": "case_043",
+    "returncode": 0,
+    "status": "ok",
+    "makespan_problem3": 527520,
+    "cache_hits": null,
+    "cache_accesses": null,
+    "cache_hit_bytes": null,
+    "cache_hit_rate_bytes": null
+  },
+  {
+    "case": "case_044",
+    "returncode": 0,
+    "status": "ok",
+    "makespan_problem3": 95048,
+    "cache_hits": null,
+    "cache_accesses": null,
+    "cache_hit_bytes": null,
+    "cache_hit_rate_bytes": null
+  },
+  {
+    "case": "case_045",
+    "returncode": 0,
+    "status": "ok",
+    "makespan_problem3": 218167,
+    "cache_hits": null,
+    "cache_accesses": null,
+    "cache_hit_bytes": null,
+    "cache_hit_rate_bytes": null
+  },
+  {
+    "case": "case_046",
+    "returncode": 0,
+    "status": "ok",
+    "makespan_problem3": 197923,
+    "cache_hits": null,
+    "cache_accesses": null,
+    "cache_hit_bytes": null,
+    "cache_hit_rate_bytes": null
+  },
+  {
+    "case": "case_047",
+    "returncode": 0,
+    "status": "ok",
+    "makespan_problem3": 319010,
+    "cache_hits": null,
+    "cache_accesses": null,
+    "cache_hit_bytes": null,
+    "cache_hit_rate_bytes": null
+  },
+  {
+    "case": "case_048",
+    "returncode": 0,
+    "status": "ok",
+    "makespan_problem3": 213791,
+    "cache_hits": null,
+    "cache_accesses": null,
+    "cache_hit_bytes": null,
+    "cache_hit_rate_bytes": null
+  },
+  {
+    "case": "case_049",
+    "returncode": 0,
+    "status": "ok",
+    "makespan_problem3": 200562,
+    "cache_hits": null,
+    "cache_accesses": null,
+    "cache_hit_bytes": null,
+    "cache_hit_rate_bytes": null
+  },
+  {
+    "case": "case_050",
+    "returncode": 0,
+    "status": "ok",
+    "makespan_problem3": 155327,
+    "cache_hits": null,
+    "cache_accesses": null,
+    "cache_hit_bytes": null,
+    "cache_hit_rate_bytes": null
+  },
+  {
+    "case": "case_051",
+    "returncode": 0,
+    "status": "ok",
+    "makespan_problem3": 616435,
+    "cache_hits": null,
+    "cache_accesses": null,
+    "cache_hit_bytes": null,
+    "cache_hit_rate_bytes": null
+  },
+  {
+    "case": "case_052",
+    "returncode": 0,
+    "status": "ok",
+    "makespan_problem3": 116404,
+    "cache_hits": null,
+    "cache_accesses": null,
+    "cache_hit_bytes": null,
+    "cache_hit_rate_bytes": null
+  },
+  {
+    "case": "case_053",
+    "returncode": 0,
+    "status": "ok",
+    "makespan_problem3": 1175003,
+    "cache_hits": null,
+    "cache_accesses": null,
+    "cache_hit_bytes": null,
+    "cache_hit_rate_bytes": null
+  },
+  {
+    "case": "case_054",
+    "returncode": 0,
+    "status": "ok",
+    "makespan_problem3": 598130,
+    "cache_hits": null,
+    "cache_accesses": null,
+    "cache_hit_bytes": null,
+    "cache_hit_rate_bytes": null
+  },
+  {
+    "case": "case_055",
+    "returncode": 0,
+    "status": "ok",
+    "makespan_problem3": 92700,
+    "cache_hits": null,
+    "cache_accesses": null,
+    "cache_hit_bytes": null,
+    "cache_hit_rate_bytes": null
+  },
+  {
+    "case": "case_056",
+    "returncode": 0,
+    "status": "ok",
+    "makespan_problem3": 296446,
+    "cache_hits": null,
+    "cache_accesses": null,
+    "cache_hit_bytes": null,
+    "cache_hit_rate_bytes": null
+  },
+  {
+    "case": "case_057",
+    "returncode": 0,
+    "status": "ok",
+    "makespan_problem3": 56733,
+    "cache_hits": null,
+    "cache_accesses": null,
+    "cache_hit_bytes": null,
+    "cache_hit_rate_bytes": null
+  },
+  {
+    "case": "case_058",
+    "returncode": 0,
+    "status": "ok",
+    "makespan_problem3": 2875909,
+    "cache_hits": null,
+    "cache_accesses": null,
+    "cache_hit_bytes": null,
+    "cache_hit_rate_bytes": null
+  },
+  {
+    "case": "case_059",
+    "returncode": 0,
+    "status": "ok",
+    "makespan_problem3": 339455,
+    "cache_hits": null,
+    "cache_accesses": null,
+    "cache_hit_bytes": null,
+    "cache_hit_rate_bytes": null
+  },
+  {
+    "case": "case_060",
+    "returncode": 0,
+    "status": "ok",
+    "makespan_problem3": 598355,
+    "cache_hits": null,
+    "cache_accesses": null,
+    "cache_hit_bytes": null,
+    "cache_hit_rate_bytes": null
+  },
+  {
+    "case": "case_061",
+    "returncode": 0,
+    "status": "ok",
+    "makespan_problem3": 57882,
+    "cache_hits": null,
+    "cache_accesses": null,
+    "cache_hit_bytes": null,
+    "cache_hit_rate_bytes": null
+  },
+  {
+    "case": "case_062",
+    "returncode": 0,
+    "status": "ok",
+    "makespan_problem3": 1500492,
+    "cache_hits": null,
+    "cache_accesses": null,
+    "cache_hit_bytes": null,
+    "cache_hit_rate_bytes": null
+  },
+  {
+    "case": "case_063",
+    "returncode": 0,
+    "status": "ok",
+    "makespan_problem3": 529831,
+    "cache_hits": null,
+    "cache_accesses": null,
+    "cache_hit_bytes": null,
+    "cache_hit_rate_bytes": null
+  },
+  {
+    "case": "case_064",
+    "returncode": 0,
+    "status": "ok",
+    "makespan_problem3": 27007,
+    "cache_hits": null,
+    "cache_accesses": null,
+    "cache_hit_bytes": null,
+    "cache_hit_rate_bytes": null
+  },
+  {
+    "case": "case_065",
+    "returncode": 0,
+    "status": "ok",
+    "makespan_problem3": 57651,
+    "cache_hits": null,
+    "cache_accesses": null,
+    "cache_hit_bytes": null,
+    "cache_hit_rate_bytes": null
+  },
+  {
+    "case": "case_066",
+    "returncode": 0,
+    "status": "ok",
+    "makespan_problem3": 289956,
+    "cache_hits": null,
+    "cache_accesses": null,
+    "cache_hit_bytes": null,
+    "cache_hit_rate_bytes": null
+  },
+  {
+    "case": "case_067",
+    "returncode": 0,
+    "status": "ok",
+    "makespan_problem3": 51063028,
+    "cache_hits": null,
+    "cache_accesses": null,
+    "cache_hit_bytes": null,
+    "cache_hit_rate_bytes": null
+  },
+  {
+    "case": "case_068",
+    "returncode": 0,
+    "status": "ok",
+    "makespan_problem3": 279704,
+    "cache_hits": null,
+    "cache_accesses": null,
+    "cache_hit_bytes": null,
+    "cache_hit_rate_bytes": null
+  },
+  {
+    "case": "case_069",
+    "returncode": 0,
+    "status": "ok",
+    "makespan_problem3": 26973,
+    "cache_hits": null,
+    "cache_accesses": null,
+    "cache_hit_bytes": null,
+    "cache_hit_rate_bytes": null
+  },
+  {
+    "case": "case_070",
+    "returncode": 0,
+    "status": "ok",
+    "makespan_problem3": 99176,
+    "cache_hits": null,
+    "cache_accesses": null,
+    "cache_hit_bytes": null,
+    "cache_hit_rate_bytes": null
+  },
+  {
+    "case": "case_071",
+    "returncode": 0,
+    "status": "ok",
+    "makespan_problem3": 22169,
+    "cache_hits": null,
+    "cache_accesses": null,
+    "cache_hit_bytes": null,
+    "cache_hit_rate_bytes": null
+  },
+  {
+    "case": "case_072",
+    "returncode": 0,
+    "status": "ok",
+    "makespan_problem3": 10149428,
+    "cache_hits": null,
+    "cache_accesses": null,
+    "cache_hit_bytes": null,
+    "cache_hit_rate_bytes": null
+  },
+  {
+    "case": "case_073",
+    "returncode": 0,
+    "status": "ok",
+    "makespan_problem3": 7031896,
+    "cache_hits": null,
+    "cache_accesses": null,
+    "cache_hit_bytes": null,
+    "cache_hit_rate_bytes": null
+  },
+  {
+    "case": "case_074",
+    "returncode": 0,
+    "status": "ok",
+    "makespan_problem3": 633860,
+    "cache_hits": null,
+    "cache_accesses": null,
+    "cache_hit_bytes": null,
+    "cache_hit_rate_bytes": null
+  },
+  {
+    "case": "case_075",
+    "returncode": 0,
+    "status": "ok",
+    "makespan_problem3": 1202946,
+    "cache_hits": null,
+    "cache_accesses": null,
+    "cache_hit_bytes": null,
+    "cache_hit_rate_bytes": null
+  },
+  {
+    "case": "case_076",
+    "returncode": 0,
+    "status": "ok",
+    "makespan_problem3": 3568319,
+    "cache_hits": null,
+    "cache_accesses": null,
+    "cache_hit_bytes": null,
+    "cache_hit_rate_bytes": null
+  },
+  {
+    "case": "case_077",
+    "returncode": 0,
+    "status": "ok",
+    "makespan_problem3": 322434,
+    "cache_hits": null,
+    "cache_accesses": null,
+    "cache_hit_bytes": null,
+    "cache_hit_rate_bytes": null
+  },
+  {
+    "case": "case_078",
+    "returncode": 0,
+    "status": "ok",
+    "makespan_problem3": 1520383,
+    "cache_hits": null,
+    "cache_accesses": null,
+    "cache_hit_bytes": null,
+    "cache_hit_rate_bytes": null
+  },
+  {
+    "case": "case_079",
+    "returncode": 0,
+    "status": "ok",
+    "makespan_problem3": 13294788,
+    "cache_hits": null,
+    "cache_accesses": null,
+    "cache_hit_bytes": null,
+    "cache_hit_rate_bytes": null
+  },
+  {
+    "case": "case_080",
+    "returncode": 0,
+    "status": "ok",
+    "makespan_problem3": 128534,
+    "cache_hits": null,
+    "cache_accesses": null,
+    "cache_hit_bytes": null,
+    "cache_hit_rate_bytes": null
+  },
+  {
+    "case": "case_081",
+    "returncode": 0,
+    "status": "ok",
+    "makespan_problem3": 108731,
+    "cache_hits": null,
+    "cache_accesses": null,
+    "cache_hit_bytes": null,
+    "cache_hit_rate_bytes": null
+  },
+  {
+    "case": "case_082",
+    "returncode": 0,
+    "status": "ok",
+    "makespan_problem3": 575823,
+    "cache_hits": null,
+    "cache_accesses": null,
+    "cache_hit_bytes": null,
+    "cache_hit_rate_bytes": null
+  },
+  {
+    "case": "case_083",
+    "returncode": 0,
+    "status": "ok",
+    "makespan_problem3": 904544,
+    "cache_hits": null,
+    "cache_accesses": null,
+    "cache_hit_bytes": null,
+    "cache_hit_rate_bytes": null
+  },
+  {
+    "case": "case_084",
+    "returncode": 0,
+    "status": "ok",
+    "makespan_problem3": 1305897,
+    "cache_hits": null,
+    "cache_accesses": null,
+    "cache_hit_bytes": null,
+    "cache_hit_rate_bytes": null
+  },
+  {
+    "case": "case_085",
+    "returncode": 0,
+    "status": "ok",
+    "makespan_problem3": 2012065,
+    "cache_hits": null,
+    "cache_accesses": null,
+    "cache_hit_bytes": null,
+    "cache_hit_rate_bytes": null
+  },
+  {
+    "case": "case_086",
+    "returncode": 0,
+    "status": "ok",
+    "makespan_problem3": 143524,
+    "cache_hits": null,
+    "cache_accesses": null,
+    "cache_hit_bytes": null,
+    "cache_hit_rate_bytes": null
+  },
+  {
+    "case": "case_087",
+    "returncode": 0,
+    "status": "ok",
+    "makespan_problem3": 2174351,
+    "cache_hits": null,
+    "cache_accesses": null,
+    "cache_hit_bytes": null,
+    "cache_hit_rate_bytes": null
+  },
+  {
+    "case": "case_088",
+    "returncode": 0,
+    "status": "ok",
+    "makespan_problem3": 195409,
+    "cache_hits": null,
+    "cache_accesses": null,
+    "cache_hit_bytes": null,
+    "cache_hit_rate_bytes": null
+  },
+  {
+    "case": "case_089",
+    "returncode": 0,
+    "status": "ok",
+    "makespan_problem3": 617206,
+    "cache_hits": null,
+    "cache_accesses": null,
+    "cache_hit_bytes": null,
+    "cache_hit_rate_bytes": null
+  },
+  {
+    "case": "case_090",
+    "returncode": 0,
+    "status": "ok",
+    "makespan_problem3": 696484,
+    "cache_hits": null,
+    "cache_accesses": null,
+    "cache_hit_bytes": null,
+    "cache_hit_rate_bytes": null
+  },
+  {
+    "case": "case_091",
+    "returncode": 0,
+    "status": "ok",
+    "makespan_problem3": 4555058,
+    "cache_hits": null,
+    "cache_accesses": null,
+    "cache_hit_bytes": null,
+    "cache_hit_rate_bytes": null
+  },
+  {
+    "case": "case_092",
+    "returncode": 0,
+    "status": "ok",
+    "makespan_problem3": 3232115,
+    "cache_hits": null,
+    "cache_accesses": null,
+    "cache_hit_bytes": null,
+    "cache_hit_rate_bytes": null
+  },
+  {
+    "case": "case_093",
+    "returncode": 0,
+    "status": "ok",
+    "makespan_problem3": 32423,
+    "cache_hits": null,
+    "cache_accesses": null,
+    "cache_hit_bytes": null,
+    "cache_hit_rate_bytes": null
+  },
+  {
+    "case": "case_094",
+    "returncode": 0,
+    "status": "ok",
+    "makespan_problem3": 55256,
+    "cache_hits": null,
+    "cache_accesses": null,
+    "cache_hit_bytes": null,
+    "cache_hit_rate_bytes": null
+  },
+  {
+    "case": "case_095",
+    "returncode": 0,
+    "status": "ok",
+    "makespan_problem3": 2188891,
+    "cache_hits": null,
+    "cache_accesses": null,
+    "cache_hit_bytes": null,
+    "cache_hit_rate_bytes": null
+  },
+  {
+    "case": "case_096",
+    "returncode": 0,
+    "status": "ok",
+    "makespan_problem3": 84461,
+    "cache_hits": null,
+    "cache_accesses": null,
+    "cache_hit_bytes": null,
+    "cache_hit_rate_bytes": null
+  },
+  {
+    "case": "case_097",
+    "returncode": 0,
+    "status": "ok",
+    "makespan_problem3": 3824876,
+    "cache_hits": null,
+    "cache_accesses": null,
+    "cache_hit_bytes": null,
+    "cache_hit_rate_bytes": null
+  },
+  {
+    "case": "case_098",
+    "returncode": 0,
+    "status": "ok",
+    "makespan_problem3": 176791,
+    "cache_hits": null,
+    "cache_accesses": null,
+    "cache_hit_bytes": null,
+    "cache_hit_rate_bytes": null
+  },
+  {
+    "case": "case_099",
+    "returncode": 0,
+    "status": "ok",
+    "makespan_problem3": 604444,
+    "cache_hits": null,
+    "cache_accesses": null,
+    "cache_hit_bytes": null,
+    "cache_hit_rate_bytes": null
+  },
+  {
+    "case": "case_100",
+    "returncode": 0,
+    "status": "ok",
+    "makespan_problem3": 147464,
+    "cache_hits": null,
+    "cache_accesses": null,
+    "cache_hit_bytes": null,
+    "cache_hit_rate_bytes": null
+  }
+]

@@ -1,0 +1,90 @@
+{
+  "graph": "C:\\Users\\admin\\Documents\\ChatGPT\\数学建模\\_数据解压\\data\\case_039.json",
+  "plan": "C:\\Users\\admin\\Documents\\ChatGPT\\数学建模\\case_039_multicore_res.json",
+  "num_cores": 4,
+  "iterations": 60,
+  "surrogate_score": 2648071.41,
+  "surrogate_meta": {
+    "load": [
+      372960.0,
+      367720.0,
+      368760.0,
+      366860.0
+    ],
+    "boundary_bytes": 54190080.0,
+    "cross_core_bytes": 48709632.0
+  },
+  "subgraph_count": 164,
+  "exact_validation_problem": 2,
+  "exact_makespan": 800881,
+  "fallback_to_greedy": false,
+  "exact_validation_error": null,
+  "history": [
+    {
+      "iteration": 0,
+      "score": 2648071.41,
+      "action": "move",
+      "temperature": 0.997
+    },
+    {
+      "iteration": 6,
+      "score": 2648071.41,
+      "action": "swap",
+      "temperature": 0.9791880578299021
+    },
+    {
+      "iteration": 12,
+      "score": 2648071.41,
+      "action": "merge_split",
+      "temperature": 0.9616943356035061
+    },
+    {
+      "iteration": 18,
+      "score": 2648071.41,
+      "action": "move",
+      "temperature": 0.9445131481500655
+    },
+    {
+      "iteration": 24,
+      "score": 2648071.41,
+      "action": "boundary",
+      "temperature": 0.9276389118674717
+    },
+    {
+      "iteration": 30,
+      "score": 2648071.41,
+      "action": "move",
+      "temperature": 0.9110661429076764
+    },
+    {
+      "iteration": 36,
+      "score": 2648071.41,
+      "action": "swap",
+      "temperature": 0.8947894553945313
+    },
+    {
+      "iteration": 42,
+      "score": 2648071.41,
+      "action": "move",
+      "temperature": 1.0
+    },
+    {
+      "iteration": 48,
+      "score": 2648071.41,
+      "action": "boundary",
+      "temperature": 1.0
+    },
+    {
+      "iteration": 54,
+      "score": 2648071.41,
+      "action": "boundary",
+      "temperature": 1.0
+    },
+    {
+      "iteration": 59,
+      "score": 2648071.41,
+      "action": "swap",
+      "temperature": 1.0
+    }
+  ]
+}

@@ -1,0 +1,602 @@
+[
+  {
+    "case": "case_001",
+    "returncode": 0,
+    "status": "ok",
+    "makespan_problem1": 166115
+  },
+  {
+    "case": "case_002",
+    "returncode": 0,
+    "status": "ok",
+    "makespan_problem1": 183172
+  },
+  {
+    "case": "case_003",
+    "returncode": 0,
+    "status": "ok",
+    "makespan_problem1": 811174
+  },
+  {
+    "case": "case_004",
+    "returncode": 0,
+    "status": "ok",
+    "makespan_problem1": 337778
+  },
+  {
+    "case": "case_005",
+    "returncode": 0,
+    "status": "ok",
+    "makespan_problem1": 189958
+  },
+  {
+    "case": "case_006",
+    "returncode": 0,
+    "status": "ok",
+    "makespan_problem1": 113694
+  },
+  {
+    "case": "case_007",
+    "returncode": 0,
+    "status": "ok",
+    "makespan_problem1": 510893
+  },
+  {
+    "case": "case_008",
+    "returncode": 0,
+    "status": "ok",
+    "makespan_problem1": 531720
+  },
+  {
+    "case": "case_009",
+    "returncode": 0,
+    "status": "ok",
+    "makespan_problem1": 297877
+  },
+  {
+    "case": "case_010",
+    "returncode": 0,
+    "status": "ok",
+    "makespan_problem1": 151403
+  },
+  {
+    "case": "case_011",
+    "returncode": 0,
+    "status": "ok",
+    "makespan_problem1": 205192
+  },
+  {
+    "case": "case_012",
+    "returncode": 0,
+    "status": "ok",
+    "makespan_problem1": 95133
+  },
+  {
+    "case": "case_013",
+    "returncode": 0,
+    "status": "ok",
+    "makespan_problem1": 167374
+  },
+  {
+    "case": "case_014",
+    "returncode": 0,
+    "status": "ok",
+    "makespan_problem1": 8743411
+  },
+  {
+    "case": "case_015",
+    "returncode": 0,
+    "status": "ok",
+    "makespan_problem1": 249585
+  },
+  {
+    "case": "case_016",
+    "returncode": 0,
+    "status": "ok",
+    "makespan_problem1": 8143963
+  },
+  {
+    "case": "case_017",
+    "returncode": 0,
+    "status": "ok",
+    "makespan_problem1": 193345
+  },
+  {
+    "case": "case_018",
+    "returncode": 0,
+    "status": "ok",
+    "makespan_problem1": 494972
+  },
+  {
+    "case": "case_019",
+    "returncode": 0,
+    "status": "ok",
+    "makespan_problem1": 118948
+  },
+  {
+    "case": "case_020",
+    "returncode": 0,
+    "status": "ok",
+    "makespan_problem1": 1162315
+  },
+  {
+    "case": "case_021",
+    "returncode": 0,
+    "status": "ok",
+    "makespan_problem1": 2708019
+  },
+  {
+    "case": "case_022",
+    "returncode": 0,
+    "status": "ok",
+    "makespan_problem1": 84515
+  },
+  {
+    "case": "case_023",
+    "returncode": 0,
+    "status": "ok",
+    "makespan_problem1": 170074
+  },
+  {
+    "case": "case_024",
+    "returncode": 0,
+    "status": "ok",
+    "makespan_problem1": 2686313
+  },
+  {
+    "case": "case_025",
+    "returncode": 0,
+    "status": "ok",
+    "makespan_problem1": 2491049
+  },
+  {
+    "case": "case_026",
+    "returncode": 0,
+    "status": "ok",
+    "makespan_problem1": 143424
+  },
+  {
+    "case": "case_027",
+    "returncode": 0,
+    "status": "ok",
+    "makespan_problem1": 2168756
+  },
+  {
+    "case": "case_028",
+    "returncode": 0,
+    "status": "ok",
+    "makespan_problem1": 31260115
+  },
+  {
+    "case": "case_029",
+    "returncode": 0,
+    "status": "ok",
+    "makespan_problem1": 51540
+  },
+  {
+    "case": "case_030",
+    "returncode": 0,
+    "status": "ok",
+    "makespan_problem1": 1745793
+  },
+  {
+    "case": "case_031",
+    "returncode": 0,
+    "status": "ok",
+    "makespan_problem1": 912217
+  },
+  {
+    "case": "case_032",
+    "returncode": 0,
+    "status": "ok",
+    "makespan_problem1": 54947
+  },
+  {
+    "case": "case_033",
+    "returncode": 0,
+    "status": "ok",
+    "makespan_problem1": 1018366
+  },
+  {
+    "case": "case_034",
+    "returncode": 0,
+    "status": "ok",
+    "makespan_problem1": 614710
+  },
+  {
+    "case": "case_035",
+    "returncode": 0,
+    "status": "ok",
+    "makespan_problem1": 295962
+  },
+  {
+    "case": "case_036",
+    "returncode": 0,
+    "status": "ok",
+    "makespan_problem1": 512576
+  },
+  {
+    "case": "case_037",
+    "returncode": 0,
+    "status": "ok",
+    "makespan_problem1": 159166
+  },
+  {
+    "case": "case_038",
+    "returncode": 0,
+    "status": "ok",
+    "makespan_problem1": 877426
+  },
+  {
+    "case": "case_039",
+    "returncode": 0,
+    "status": "ok",
+    "makespan_problem1": 969411
+  },
+  {
+    "case": "case_040",
+    "returncode": 0,
+    "status": "ok",
+    "makespan_problem1": 378568
+  },
+  {
+    "case": "case_041",
+    "returncode": 0,
+    "status": "ok",
+    "makespan_problem1": 3124094
+  },
+  {
+    "case": "case_042",
+    "returncode": 0,
+    "status": "ok",
+    "makespan_problem1": 974811
+  },
+  {
+    "case": "case_043",
+    "returncode": 0,
+    "status": "ok",
+    "makespan_problem1": 902278
+  },
+  {
+    "case": "case_044",
+    "returncode": 0,
+    "status": "ok",
+    "makespan_problem1": 144565
+  },
+  {
+    "case": "case_045",
+    "returncode": 0,
+    "status": "ok",
+    "makespan_problem1": 254793
+  },
+  {
+    "case": "case_046",
+    "returncode": 0,
+    "status": "ok",
+    "makespan_problem1": 286822
+  },
+  {
+    "case": "case_047",
+    "returncode": 0,
+    "status": "ok",
+    "makespan_problem1": 571889
+  },
+  {
+    "case": "case_048",
+    "returncode": 0,
+    "status": "ok",
+    "makespan_problem1": 279462
+  },
+  {
+    "case": "case_049",
+    "returncode": 0,
+    "status": "ok",
+    "makespan_problem1": 306237
+  },
+  {
+    "case": "case_050",
+    "returncode": 0,
+    "status": "ok",
+    "makespan_problem1": 262714
+  },
+  {
+    "case": "case_051",
+    "returncode": 0,
+    "status": "ok",
+    "makespan_problem1": 637333
+  },
+  {
+    "case": "case_052",
+    "returncode": 0,
+    "status": "ok",
+    "makespan_problem1": 214385
+  },
+  {
+    "case": "case_053",
+    "returncode": 0,
+    "status": "ok",
+    "makespan_problem1": 1763950
+  },
+  {
+    "case": "case_054",
+    "returncode": 0,
+    "status": "ok",
+    "makespan_problem1": 1003643
+  },
+  {
+    "case": "case_055",
+    "returncode": 0,
+    "status": "ok",
+    "makespan_problem1": 182996
+  },
+  {
+    "case": "case_056",
+    "returncode": 0,
+    "status": "ok",
+    "makespan_problem1": 479113
+  },
+  {
+    "case": "case_057",
+    "returncode": 0,
+    "status": "ok",
+    "makespan_problem1": 93485
+  },
+  {
+    "case": "case_058",
+    "returncode": 0,
+    "status": "ok",
+    "makespan_problem1": 3291755
+  },
+  {
+    "case": "case_059",
+    "returncode": 0,
+    "status": "ok",
+    "makespan_problem1": 628277
+  },
+  {
+    "case": "case_060",
+    "returncode": 0,
+    "status": "ok",
+    "makespan_problem1": 817136
+  },
+  {
+    "case": "case_061",
+    "returncode": 0,
+    "status": "ok",
+    "makespan_problem1": 99675
+  },
+  {
+    "case": "case_062",
+    "returncode": 0,
+    "status": "ok",
+    "makespan_problem1": 1751956
+  },
+  {
+    "case": "case_063",
+    "returncode": 0,
+    "status": "ok",
+    "makespan_problem1": 656532
+  },
+  {
+    "case": "case_064",
+    "returncode": 0,
+    "status": "ok",
+    "makespan_problem1": 43001
+  },
+  {
+    "case": "case_065",
+    "returncode": 0,
+    "status": "ok",
+    "makespan_problem1": 85443
+  },
+  {
+    "case": "case_066",
+    "returncode": 0,
+    "status": "ok",
+    "makespan_problem1": 482190
+  },
+  {
+    "case": "case_067",
+    "returncode": 0,
+    "status": "ok",
+    "makespan_problem1": 53605011
+  },
+  {
+    "case": "case_068",
+    "returncode": 0,
+    "status": "ok",
+    "makespan_problem1": 504378
+  },
+  {
+    "case": "case_069",
+    "returncode": 0,
+    "status": "ok",
+    "makespan_problem1": 45659
+  },
+  {
+    "case": "case_070",
+    "returncode": 0,
+    "status": "ok",
+    "makespan_problem1": 167139
+  },
+  {
+    "case": "case_071",
+    "returncode": 0,
+    "status": "ok",
+    "makespan_problem1": 37168
+  },
+  {
+    "case": "case_072",
+    "returncode": 0,
+    "status": "ok",
+    "makespan_problem1": 11742975
+  },
+  {
+    "case": "case_073",
+    "returncode": 0,
+    "status": "ok",
+    "makespan_problem1": 8105860
+  },
+  {
+    "case": "case_074",
+    "returncode": 0,
+    "status": "ok",
+    "makespan_problem1": 1138626
+  },
+  {
+    "case": "case_075",
+    "returncode": 0,
+    "status": "ok",
+    "makespan_problem1": 1683964
+  },
+  {
+    "case": "case_076",
+    "returncode": 0,
+    "status": "ok",
+    "makespan_problem1": 3976065
+  },
+  {
+    "case": "case_077",
+    "returncode": 0,
+    "status": "ok",
+    "makespan_problem1": 486616
+  },
+  {
+    "case": "case_078",
+    "returncode": 0,
+    "status": "ok",
+    "makespan_problem1": 2171993
+  },
+  {
+    "case": "case_079",
+    "returncode": 0,
+    "status": "ok",
+    "makespan_problem1": 12952539
+  },
+  {
+    "case": "case_080",
+    "returncode": 0,
+    "status": "ok",
+    "makespan_problem1": 207207
+  },
+  {
+    "case": "case_081",
+    "returncode": 0,
+    "status": "ok",
+    "makespan_problem1": 169053
+  },
+  {
+    "case": "case_082",
+    "returncode": 0,
+    "status": "ok",
+    "makespan_problem1": 807218
+  },
+  {
+    "case": "case_083",
+    "returncode": 0,
+    "status": "ok",
+    "makespan_problem1": 1164747
+  },
+  {
+    "case": "case_084",
+    "returncode": 0,
+    "status": "ok",
+    "makespan_problem1": 1241771
+  },
+  {
+    "case": "case_085",
+    "returncode": 0,
+    "status": "ok",
+    "makespan_problem1": 3033297
+  },
+  {
+    "case": "case_086",
+    "returncode": 0,
+    "status": "ok",
+    "makespan_problem1": 228104
+  },
+  {
+    "case": "case_087",
+    "returncode": 0,
+    "status": "ok",
+    "makespan_problem1": 3070480
+  },
+  {
+    "case": "case_088",
+    "returncode": 0,
+    "status": "ok",
+    "makespan_problem1": 344442
+  },
+  {
+    "case": "case_089",
+    "returncode": 0,
+    "status": "ok",
+    "makespan_problem1": 816317
+  },
+  {
+    "case": "case_090",
+    "returncode": 0,
+    "status": "ok",
+    "makespan_problem1": 968554
+  },
+  {
+    "case": "case_091",
+    "returncode": 0,
+    "status": "ok",
+    "makespan_problem1": 4813926
+  },
+  {
+    "case": "case_092",
+    "returncode": 0,
+    "status": "ok",
+    "makespan_problem1": 4598512
+  },
+  {
+    "case": "case_093",
+    "returncode": 0,
+    "status": "ok",
+    "makespan_problem1": 51649
+  },
+  {
+    "case": "case_094",
+    "returncode": 0,
+    "status": "ok",
+    "makespan_problem1": 113745
+  },
+  {
+    "case": "case_095",
+    "returncode": 0,
+    "status": "ok",
+    "makespan_problem1": 1955827
+  },
+  {
+    "case": "case_096",
+    "returncode": 0,
+    "status": "ok",
+    "makespan_problem1": 163623
+  },
+  {
+    "case": "case_097",
+    "returncode": 0,
+    "status": "ok",
+    "makespan_problem1": 9186062
+  },
+  {
+    "case": "case_098",
+    "returncode": 0,
+    "status": "ok",
+    "makespan_problem1": 219465
+  },
+  {
+    "case": "case_099",
+    "returncode": 0,
+    "status": "ok",
+    "makespan_problem1": 909083
+  },
+  {
+    "case": "case_100",
+    "returncode": 0,
+    "status": "ok",
+    "makespan_problem1": 251656
+  }
+]

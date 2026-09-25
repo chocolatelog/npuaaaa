@@ -1,0 +1,19 @@
+{
+  "graph": "_数据解压\\data\\case_002.json",
+  "plan": "case_002_initial.json",
+  "num_cores": 4,
+  "iterations": 0,
+  "surrogate_score": 351913.14,
+  "surrogate_meta": {
+    "load": [
+      71544.0,
+      67260.0,
+      69564.0,
+      67560.0
+    ],
+    "boundary_bytes": 6676992.0,
+    "cross_core_bytes": 5985792.0
+  },
+  "subgraph_count": 62,
+  "history": []
+}

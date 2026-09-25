@@ -1,0 +1,902 @@
+[
+  {
+    "case": "case_001",
+    "makespan_problem3": 138252,
+    "cache_hits": 0,
+    "cache_accesses": 772,
+    "cache_hit_bytes": 0,
+    "cache_miss_bytes": 3153280,
+    "cache_hit_rate": 0.0
+  },
+  {
+    "case": "case_002",
+    "makespan_problem3": 140232,
+    "cache_hits": 177,
+    "cache_accesses": 2187,
+    "cache_hit_bytes": 815616,
+    "cache_miss_bytes": 4583424,
+    "cache_hit_rate": 0.15106685633001424
+  },
+  {
+    "case": "case_003",
+    "makespan_problem3": 494877,
+    "cache_hits": 1884,
+    "cache_accesses": 11723,
+    "cache_hit_bytes": 1277068,
+    "cache_miss_bytes": 6468622,
+    "cache_hit_rate": 0.1648746593266707
+  },
+  {
+    "case": "case_004",
+    "makespan_problem3": 272378,
+    "cache_hits": 97,
+    "cache_accesses": 892,
+    "cache_hit_bytes": 384000,
+    "cache_miss_bytes": 4134912,
+    "cache_hit_rate": 0.0849762066621346
+  },
+  {
+    "case": "case_005",
+    "makespan_problem3": 117146,
+    "cache_hits": 268,
+    "cache_accesses": 2394,
+    "cache_hit_bytes": 323704,
+    "cache_miss_bytes": 1982974,
+    "cache_hit_rate": 0.14033341454680714
+  },
+  {
+    "case": "case_006",
+    "makespan_problem3": 80762,
+    "cache_hits": 48,
+    "cache_accesses": 506,
+    "cache_hit_bytes": 173960,
+    "cache_miss_bytes": 2001332,
+    "cache_hit_rate": 0.07997087287591735
+  },
+  {
+    "case": "case_007",
+    "makespan_problem3": 435726,
+    "cache_hits": 496,
+    "cache_accesses": 4376,
+    "cache_hit_bytes": 846336,
+    "cache_miss_bytes": 9733632,
+    "cache_hit_rate": 0.07999419279907084
+  },
+  {
+    "case": "case_008",
+    "makespan_problem3": 485287,
+    "cache_hits": 54,
+    "cache_accesses": 1375,
+    "cache_hit_bytes": 995328,
+    "cache_miss_bytes": 15020760,
+    "cache_hit_rate": 0.062145512686993226
+  },
+  {
+    "case": "case_009",
+    "makespan_problem3": 171411,
+    "cache_hits": 490,
+    "cache_accesses": 3389,
+    "cache_hit_bytes": 460786,
+    "cache_miss_bytes": 2114154,
+    "cache_hit_rate": 0.17895018913062052
+  },
+  {
+    "case": "case_010",
+    "makespan_problem3": 81685,
+    "cache_hits": 85,
+    "cache_accesses": 666,
+    "cache_hit_bytes": 235008,
+    "cache_miss_bytes": 2304780,
+    "cache_hit_rate": 0.0925305576685928
+  },
+  {
+    "case": "case_011",
+    "makespan_problem3": 107562,
+    "cache_hits": 0,
+    "cache_accesses": 708,
+    "cache_hit_bytes": 0,
+    "cache_miss_bytes": 2719744,
+    "cache_hit_rate": 0.0
+  },
+  {
+    "case": "case_012",
+    "makespan_problem3": 57377,
+    "cache_hits": 121,
+    "cache_accesses": 972,
+    "cache_hit_bytes": 304668,
+    "cache_miss_bytes": 1108390,
+    "cache_hit_rate": 0.21560898420305466
+  },
+  {
+    "case": "case_013",
+    "makespan_problem3": 119700,
+    "cache_hits": 8,
+    "cache_accesses": 2091,
+    "cache_hit_bytes": 16384,
+    "cache_miss_bytes": 4265984,
+    "cache_hit_rate": 0.003825920612147298
+  },
+  {
+    "case": "case_014",
+    "makespan_problem3": 8341837,
+    "cache_hits": 4281,
+    "cache_accesses": 41334,
+    "cache_hit_bytes": 22410624,
+    "cache_miss_bytes": 195271876,
+    "cache_hit_rate": 0.10295096757892802
+  },
+  {
+    "case": "case_015",
+    "makespan_problem3": 177761,
+    "cache_hits": 70,
+    "cache_accesses": 899,
+    "cache_hit_bytes": 413136,
+    "cache_miss_bytes": 3033490,
+    "cache_hit_rate": 0.11986679146504436
+  },
+  {
+    "case": "case_016",
+    "makespan_problem3": 7631526,
+    "cache_hits": 0,
+    "cache_accesses": 2148,
+    "cache_hit_bytes": 0,
+    "cache_miss_bytes": 53314578,
+    "cache_hit_rate": 0.0
+  },
+  {
+    "case": "case_017",
+    "makespan_problem3": 101330,
+    "cache_hits": 186,
+    "cache_accesses": 1210,
+    "cache_hit_bytes": 322124,
+    "cache_miss_bytes": 1666222,
+    "cache_hit_rate": 0.16200600901452766
+  },
+  {
+    "case": "case_018",
+    "makespan_problem3": 424313,
+    "cache_hits": 548,
+    "cache_accesses": 3067,
+    "cache_hit_bytes": 2996224,
+    "cache_miss_bytes": 9175268,
+    "cache_hit_rate": 0.2461673556536865
+  },
+  {
+    "case": "case_019",
+    "makespan_problem3": 75927,
+    "cache_hits": 96,
+    "cache_accesses": 576,
+    "cache_hit_bytes": 296960,
+    "cache_miss_bytes": 1100436,
+    "cache_hit_rate": 0.21250955348376552
+  },
+  {
+    "case": "case_020",
+    "makespan_problem3": 1006039,
+    "cache_hits": 109,
+    "cache_accesses": 8193,
+    "cache_hit_bytes": 446464,
+    "cache_miss_bytes": 33112064,
+    "cache_hit_rate": 0.013304040034175516
+  },
+  {
+    "case": "case_021",
+    "makespan_problem3": 2568409,
+    "cache_hits": 719,
+    "cache_accesses": 4546,
+    "cache_hit_bytes": 3287040,
+    "cache_miss_bytes": 43649024,
+    "cache_hit_rate": 0.07003228903045641
+  },
+  {
+    "case": "case_022",
+    "makespan_problem3": 56229,
+    "cache_hits": 140,
+    "cache_accesses": 922,
+    "cache_hit_bytes": 320788,
+    "cache_miss_bytes": 1149202,
+    "cache_hit_rate": 0.2182246137728828
+  },
+  {
+    "case": "case_023",
+    "makespan_problem3": 82962,
+    "cache_hits": 125,
+    "cache_accesses": 878,
+    "cache_hit_bytes": 354054,
+    "cache_miss_bytes": 1921302,
+    "cache_hit_rate": 0.15560378244107737
+  },
+  {
+    "case": "case_024",
+    "makespan_problem3": 2540213,
+    "cache_hits": 12,
+    "cache_accesses": 661,
+    "cache_hit_bytes": 393216,
+    "cache_miss_bytes": 17858768,
+    "cache_hit_rate": 0.021543740121621847
+  },
+  {
+    "case": "case_025",
+    "makespan_problem3": 2473255,
+    "cache_hits": 4,
+    "cache_accesses": 24401,
+    "cache_hit_bytes": 36864,
+    "cache_miss_bytes": 59578368,
+    "cache_hit_rate": 0.0006183654539833041
+  },
+  {
+    "case": "case_026",
+    "makespan_problem3": 102441,
+    "cache_hits": 74,
+    "cache_accesses": 482,
+    "cache_hit_bytes": 620160,
+    "cache_miss_bytes": 2231054,
+    "cache_hit_rate": 0.2175073495009494
+  },
+  {
+    "case": "case_027",
+    "makespan_problem3": 950555,
+    "cache_hits": 0,
+    "cache_accesses": 1316,
+    "cache_hit_bytes": 0,
+    "cache_miss_bytes": 13590528,
+    "cache_hit_rate": 0.0
+  },
+  {
+    "case": "case_028",
+    "makespan_problem3": 23523419,
+    "cache_hits": 384,
+    "cache_accesses": 15997,
+    "cache_hit_bytes": 5723952,
+    "cache_miss_bytes": 84228432,
+    "cache_hit_rate": 0.06363313283614584
+  },
+  {
+    "case": "case_029",
+    "makespan_problem3": 35706,
+    "cache_hits": 182,
+    "cache_accesses": 768,
+    "cache_hit_bytes": 297034,
+    "cache_miss_bytes": 582236,
+    "cache_hit_rate": 0.33781887247375664
+  },
+  {
+    "case": "case_030",
+    "makespan_problem3": 1571464,
+    "cache_hits": 1586,
+    "cache_accesses": 10385,
+    "cache_hit_bytes": 5272576,
+    "cache_miss_bytes": 38465430,
+    "cache_hit_rate": 0.1205490712128029
+  },
+  {
+    "case": "case_031",
+    "makespan_problem3": 725792,
+    "cache_hits": 1110,
+    "cache_accesses": 6060,
+    "cache_hit_bytes": 4274226,
+    "cache_miss_bytes": 16031322,
+    "cache_hit_rate": 0.21049547640871352
+  },
+  {
+    "case": "case_032",
+    "makespan_problem3": 35940,
+    "cache_hits": 90,
+    "cache_accesses": 625,
+    "cache_hit_bytes": 192018,
+    "cache_miss_bytes": 709594,
+    "cache_hit_rate": 0.21297187703801634
+  },
+  {
+    "case": "case_033",
+    "makespan_problem3": 883600,
+    "cache_hits": 518,
+    "cache_accesses": 4280,
+    "cache_hit_bytes": 2788358,
+    "cache_miss_bytes": 21029834,
+    "cache_hit_rate": 0.11706841560434142
+  },
+  {
+    "case": "case_034",
+    "makespan_problem3": 423808,
+    "cache_hits": 724,
+    "cache_accesses": 4269,
+    "cache_hit_bytes": 2590252,
+    "cache_miss_bytes": 12510964,
+    "cache_hit_rate": 0.17152605459057071
+  },
+  {
+    "case": "case_035",
+    "makespan_problem3": 198915,
+    "cache_hits": 255,
+    "cache_accesses": 2214,
+    "cache_hit_bytes": 467028,
+    "cache_miss_bytes": 3086088,
+    "cache_hit_rate": 0.13144181051223772
+  },
+  {
+    "case": "case_036",
+    "makespan_problem3": 477350,
+    "cache_hits": 0,
+    "cache_accesses": 2892,
+    "cache_hit_bytes": 0,
+    "cache_miss_bytes": 11833856,
+    "cache_hit_rate": 0.0
+  },
+  {
+    "case": "case_037",
+    "makespan_problem3": 118756,
+    "cache_hits": 156,
+    "cache_accesses": 781,
+    "cache_hit_bytes": 573440,
+    "cache_miss_bytes": 2355200,
+    "cache_hit_rate": 0.1958041958041958
+  },
+  {
+    "case": "case_038",
+    "makespan_problem3": 652499,
+    "cache_hits": 1535,
+    "cache_accesses": 6894,
+    "cache_hit_bytes": 5336064,
+    "cache_miss_bytes": 14324062,
+    "cache_hit_rate": 0.27141555450865373
+  },
+  {
+    "case": "case_039",
+    "makespan_problem3": 782072,
+    "cache_hits": 1017,
+    "cache_accesses": 6101,
+    "cache_hit_bytes": 5369856,
+    "cache_miss_bytes": 22478848,
+    "cache_hit_rate": 0.1928224738932196
+  },
+  {
+    "case": "case_040",
+    "makespan_problem3": 301904,
+    "cache_hits": 138,
+    "cache_accesses": 1646,
+    "cache_hit_bytes": 249234,
+    "cache_miss_bytes": 6654516,
+    "cache_hit_rate": 0.036101249321021184
+  },
+  {
+    "case": "case_041",
+    "makespan_problem3": 2789668,
+    "cache_hits": 3145,
+    "cache_accesses": 21019,
+    "cache_hit_bytes": 13881344,
+    "cache_miss_bytes": 72375024,
+    "cache_hit_rate": 0.16093123698414938
+  },
+  {
+    "case": "case_042",
+    "makespan_problem3": 671261,
+    "cache_hits": 956,
+    "cache_accesses": 4973,
+    "cache_hit_bytes": 4593024,
+    "cache_miss_bytes": 17264756,
+    "cache_hit_rate": 0.21013222751807364
+  },
+  {
+    "case": "case_043",
+    "makespan_problem3": 527520,
+    "cache_hits": 1322,
+    "cache_accesses": 7056,
+    "cache_hit_bytes": 2611504,
+    "cache_miss_bytes": 8750446,
+    "cache_hit_rate": 0.22984646121484428
+  },
+  {
+    "case": "case_044",
+    "makespan_problem3": 95048,
+    "cache_hits": 39,
+    "cache_accesses": 697,
+    "cache_hit_bytes": 36864,
+    "cache_miss_bytes": 1441248,
+    "cache_hit_rate": 0.024939923361693837
+  },
+  {
+    "case": "case_045",
+    "makespan_problem3": 218167,
+    "cache_hits": 155,
+    "cache_accesses": 1714,
+    "cache_hit_bytes": 634880,
+    "cache_miss_bytes": 6385664,
+    "cache_hit_rate": 0.09043173862310384
+  },
+  {
+    "case": "case_046",
+    "makespan_problem3": 197923,
+    "cache_hits": 4,
+    "cache_accesses": 462,
+    "cache_hit_bytes": 2048,
+    "cache_miss_bytes": 2263648,
+    "cache_hit_rate": 0.0009039165007132466
+  },
+  {
+    "case": "case_047",
+    "makespan_problem3": 319010,
+    "cache_hits": 1783,
+    "cache_accesses": 10138,
+    "cache_hit_bytes": 891886,
+    "cache_miss_bytes": 3556426,
+    "cache_hit_rate": 0.20049987500876737
+  },
+  {
+    "case": "case_048",
+    "makespan_problem3": 213791,
+    "cache_hits": 21,
+    "cache_accesses": 490,
+    "cache_hit_bytes": 14544,
+    "cache_miss_bytes": 821496,
+    "cache_hit_rate": 0.01739629682790297
+  },
+  {
+    "case": "case_049",
+    "makespan_problem3": 200562,
+    "cache_hits": 351,
+    "cache_accesses": 2534,
+    "cache_hit_bytes": 571822,
+    "cache_miss_bytes": 2516428,
+    "cache_hit_rate": 0.18516052780701045
+  },
+  {
+    "case": "case_050",
+    "makespan_problem3": 155327,
+    "cache_hits": 441,
+    "cache_accesses": 2886,
+    "cache_hit_bytes": 614546,
+    "cache_miss_bytes": 2753478,
+    "cache_hit_rate": 0.18246485179440528
+  },
+  {
+    "case": "case_051",
+    "makespan_problem3": 616435,
+    "cache_hits": 12,
+    "cache_accesses": 193,
+    "cache_hit_bytes": 393216,
+    "cache_miss_bytes": 4882496,
+    "cache_hit_rate": 0.07453325731199884
+  },
+  {
+    "case": "case_052",
+    "makespan_problem3": 116404,
+    "cache_hits": 94,
+    "cache_accesses": 895,
+    "cache_hit_bytes": 282386,
+    "cache_miss_bytes": 2213960,
+    "cache_hit_rate": 0.11311973580585384
+  },
+  {
+    "case": "case_053",
+    "makespan_problem3": 1175003,
+    "cache_hits": 937,
+    "cache_accesses": 8633,
+    "cache_hit_bytes": 1317628,
+    "cache_miss_bytes": 11546374,
+    "cache_hit_rate": 0.10242753382656501
+  },
+  {
+    "case": "case_054",
+    "makespan_problem3": 598130,
+    "cache_hits": 2300,
+    "cache_accesses": 13423,
+    "cache_hit_bytes": 2056960,
+    "cache_miss_bytes": 10338478,
+    "cache_hit_rate": 0.16594492264008742
+  },
+  {
+    "case": "case_055",
+    "makespan_problem3": 92700,
+    "cache_hits": 132,
+    "cache_accesses": 995,
+    "cache_hit_bytes": 490516,
+    "cache_miss_bytes": 1859336,
+    "cache_hit_rate": 0.20874335915623624
+  },
+  {
+    "case": "case_056",
+    "makespan_problem3": 296446,
+    "cache_hits": 749,
+    "cache_accesses": 4923,
+    "cache_hit_bytes": 1030288,
+    "cache_miss_bytes": 3932668,
+    "cache_hit_rate": 0.2075956345371589
+  },
+  {
+    "case": "case_057",
+    "makespan_problem3": 56733,
+    "cache_hits": 148,
+    "cache_accesses": 779,
+    "cache_hit_bytes": 459676,
+    "cache_miss_bytes": 1148748,
+    "cache_hit_rate": 0.28579280090324444
+  },
+  {
+    "case": "case_058",
+    "makespan_problem3": 2875909,
+    "cache_hits": 2472,
+    "cache_accesses": 23561,
+    "cache_hit_bytes": 15413248,
+    "cache_miss_bytes": 90083328,
+    "cache_hit_rate": 0.14610187917378475
+  },
+  {
+    "case": "case_059",
+    "makespan_problem3": 339455,
+    "cache_hits": 16,
+    "cache_accesses": 2448,
+    "cache_hit_bytes": 65536,
+    "cache_miss_bytes": 9601024,
+    "cache_hit_rate": 0.006779661016949152
+  },
+  {
+    "case": "case_060",
+    "makespan_problem3": 598355,
+    "cache_hits": 791,
+    "cache_accesses": 6045,
+    "cache_hit_bytes": 2494336,
+    "cache_miss_bytes": 17132376,
+    "cache_hit_rate": 0.1270888368871974
+  },
+  {
+    "case": "case_061",
+    "makespan_problem3": 57882,
+    "cache_hits": 88,
+    "cache_accesses": 829,
+    "cache_hit_bytes": 194578,
+    "cache_miss_bytes": 1168810,
+    "cache_hit_rate": 0.14271652677007574
+  },
+  {
+    "case": "case_062",
+    "makespan_problem3": 1500492,
+    "cache_hits": 0,
+    "cache_accesses": 25835,
+    "cache_hit_bytes": 0,
+    "cache_miss_bytes": 64682496,
+    "cache_hit_rate": 0.0
+  },
+  {
+    "case": "case_063",
+    "makespan_problem3": 529831,
+    "cache_hits": 0,
+    "cache_accesses": 9243,
+    "cache_hit_bytes": 0,
+    "cache_miss_bytes": 22795776,
+    "cache_hit_rate": 0.0
+  },
+  {
+    "case": "case_064",
+    "makespan_problem3": 27007,
+    "cache_hits": 31,
+    "cache_accesses": 354,
+    "cache_hit_bytes": 11116,
+    "cache_miss_bytes": 134662,
+    "cache_hit_rate": 0.07625293254126136
+  },
+  {
+    "case": "case_065",
+    "makespan_problem3": 57651,
+    "cache_hits": 63,
+    "cache_accesses": 598,
+    "cache_hit_bytes": 119432,
+    "cache_miss_bytes": 908040,
+    "cache_hit_rate": 0.11623869068938132
+  },
+  {
+    "case": "case_066",
+    "makespan_problem3": 289956,
+    "cache_hits": 582,
+    "cache_accesses": 3903,
+    "cache_hit_bytes": 738522,
+    "cache_miss_bytes": 3722876,
+    "cache_hit_rate": 0.1655360046335252
+  },
+  {
+    "case": "case_067",
+    "makespan_problem3": 51063028,
+    "cache_hits": 200,
+    "cache_accesses": 6535,
+    "cache_hit_bytes": 5712128,
+    "cache_miss_bytes": 52014336,
+    "cache_hit_rate": 0.09895163507676479
+  },
+  {
+    "case": "case_068",
+    "makespan_problem3": 279704,
+    "cache_hits": 475,
+    "cache_accesses": 3451,
+    "cache_hit_bytes": 611958,
+    "cache_miss_bytes": 5228620,
+    "cache_hit_rate": 0.10477695871881174
+  },
+  {
+    "case": "case_069",
+    "makespan_problem3": 26973,
+    "cache_hits": 90,
+    "cache_accesses": 546,
+    "cache_hit_bytes": 95816,
+    "cache_miss_bytes": 431190,
+    "cache_hit_rate": 0.18181197178020744
+  },
+  {
+    "case": "case_070",
+    "makespan_problem3": 99176,
+    "cache_hits": 93,
+    "cache_accesses": 1054,
+    "cache_hit_bytes": 198538,
+    "cache_miss_bytes": 1608730,
+    "cache_hit_rate": 0.10985531752899957
+  },
+  {
+    "case": "case_071",
+    "makespan_problem3": 22169,
+    "cache_hits": 40,
+    "cache_accesses": 332,
+    "cache_hit_bytes": 34920,
+    "cache_miss_bytes": 331896,
+    "cache_hit_rate": 0.09519759225333682
+  },
+  {
+    "case": "case_072",
+    "makespan_problem3": 10149428,
+    "cache_hits": 3165,
+    "cache_accesses": 30056,
+    "cache_hit_bytes": 23345356,
+    "cache_miss_bytes": 182194138,
+    "cache_hit_rate": 0.11358087706492068
+  },
+  {
+    "case": "case_073",
+    "makespan_problem3": 7031896,
+    "cache_hits": 155,
+    "cache_accesses": 3510,
+    "cache_hit_bytes": 4216064,
+    "cache_miss_bytes": 10449024,
+    "cache_hit_rate": 0.2874898534533172
+  },
+  {
+    "case": "case_074",
+    "makespan_problem3": 633860,
+    "cache_hits": 364,
+    "cache_accesses": 3523,
+    "cache_hit_bytes": 2306058,
+    "cache_miss_bytes": 15172286,
+    "cache_hit_rate": 0.13193801426496699
+  },
+  {
+    "case": "case_075",
+    "makespan_problem3": 1202946,
+    "cache_hits": 448,
+    "cache_accesses": 4038,
+    "cache_hit_bytes": 663180,
+    "cache_miss_bytes": 6696810,
+    "cache_hit_rate": 0.0901061006876368
+  },
+  {
+    "case": "case_076",
+    "makespan_problem3": 3568319,
+    "cache_hits": 4486,
+    "cache_accesses": 35762,
+    "cache_hit_bytes": 11516928,
+    "cache_miss_bytes": 89910624,
+    "cache_hit_rate": 0.11354831870535533
+  },
+  {
+    "case": "case_077",
+    "makespan_problem3": 322434,
+    "cache_hits": 311,
+    "cache_accesses": 2943,
+    "cache_hit_bytes": 481542,
+    "cache_miss_bytes": 6454654,
+    "cache_hit_rate": 0.06942450876532325
+  },
+  {
+    "case": "case_078",
+    "makespan_problem3": 1520383,
+    "cache_hits": 4,
+    "cache_accesses": 538,
+    "cache_hit_bytes": 3072,
+    "cache_miss_bytes": 4756608,
+    "cache_hit_rate": 0.000645421540943929
+  },
+  {
+    "case": "case_079",
+    "makespan_problem3": 13294788,
+    "cache_hits": 3813,
+    "cache_accesses": 23714,
+    "cache_hit_bytes": 18190336,
+    "cache_miss_bytes": 228696064,
+    "cache_hit_rate": 0.07367897138116963
+  },
+  {
+    "case": "case_080",
+    "makespan_problem3": 128534,
+    "cache_hits": 168,
+    "cache_accesses": 1071,
+    "cache_hit_bytes": 868352,
+    "cache_miss_bytes": 4476928,
+    "cache_hit_rate": 0.16245210727969348
+  },
+  {
+    "case": "case_081",
+    "makespan_problem3": 108731,
+    "cache_hits": 258,
+    "cache_accesses": 3478,
+    "cache_hit_bytes": 315600,
+    "cache_miss_bytes": 3323006,
+    "cache_hit_rate": 0.08673651392868588
+  },
+  {
+    "case": "case_082",
+    "makespan_problem3": 575823,
+    "cache_hits": 483,
+    "cache_accesses": 2543,
+    "cache_hit_bytes": 814800,
+    "cache_miss_bytes": 3197228,
+    "cache_hit_rate": 0.2030893104434964
+  },
+  {
+    "case": "case_083",
+    "makespan_problem3": 904544,
+    "cache_hits": 86,
+    "cache_accesses": 2627,
+    "cache_hit_bytes": 585728,
+    "cache_miss_bytes": 9800288,
+    "cache_hit_rate": 0.056395830701589524
+  },
+  {
+    "case": "case_084",
+    "makespan_problem3": 1305897,
+    "cache_hits": 234,
+    "cache_accesses": 13199,
+    "cache_hit_bytes": 1078272,
+    "cache_miss_bytes": 40628298,
+    "cache_hit_rate": 0.025853768363114014
+  },
+  {
+    "case": "case_085",
+    "makespan_problem3": 2012065,
+    "cache_hits": 2116,
+    "cache_accesses": 15425,
+    "cache_hit_bytes": 4381002,
+    "cache_miss_bytes": 19191034,
+    "cache_hit_rate": 0.1858559014588303
+  },
+  {
+    "case": "case_086",
+    "makespan_problem3": 143524,
+    "cache_hits": 579,
+    "cache_accesses": 3878,
+    "cache_hit_bytes": 641210,
+    "cache_miss_bytes": 2709246,
+    "cache_hit_rate": 0.1913799196288505
+  },
+  {
+    "case": "case_087",
+    "makespan_problem3": 2174351,
+    "cache_hits": 3116,
+    "cache_accesses": 22266,
+    "cache_hit_bytes": 7451594,
+    "cache_miss_bytes": 40163242,
+    "cache_hit_rate": 0.15649731524854985
+  },
+  {
+    "case": "case_088",
+    "makespan_problem3": 195409,
+    "cache_hits": 263,
+    "cache_accesses": 2024,
+    "cache_hit_bytes": 347726,
+    "cache_miss_bytes": 3559092,
+    "cache_hit_rate": 0.08900491397346895
+  },
+  {
+    "case": "case_089",
+    "makespan_problem3": 617206,
+    "cache_hits": 159,
+    "cache_accesses": 3636,
+    "cache_hit_bytes": 402384,
+    "cache_miss_bytes": 6084736,
+    "cache_hit_rate": 0.06202814191813933
+  },
+  {
+    "case": "case_090",
+    "makespan_problem3": 696484,
+    "cache_hits": 10,
+    "cache_accesses": 1084,
+    "cache_hit_bytes": 25536,
+    "cache_miss_bytes": 3446592,
+    "cache_hit_rate": 0.007354567573545676
+  },
+  {
+    "case": "case_091",
+    "makespan_problem3": 4555058,
+    "cache_hits": 5594,
+    "cache_accesses": 42999,
+    "cache_hit_bytes": 22492672,
+    "cache_miss_bytes": 119350524,
+    "cache_hit_rate": 0.15857420471546624
+  },
+  {
+    "case": "case_092",
+    "makespan_problem3": 3232115,
+    "cache_hits": 258,
+    "cache_accesses": 13917,
+    "cache_hit_bytes": 1690016,
+    "cache_miss_bytes": 47908640,
+    "cache_hit_rate": 0.03407382651658948
+  },
+  {
+    "case": "case_093",
+    "makespan_problem3": 32423,
+    "cache_hits": 0,
+    "cache_accesses": 520,
+    "cache_hit_bytes": 0,
+    "cache_miss_bytes": 1064960,
+    "cache_hit_rate": 0.0
+  },
+  {
+    "case": "case_094",
+    "makespan_problem3": 55256,
+    "cache_hits": 73,
+    "cache_accesses": 451,
+    "cache_hit_bytes": 303616,
+    "cache_miss_bytes": 1435432,
+    "cache_hit_rate": 0.17458747544633615
+  },
+  {
+    "case": "case_095",
+    "makespan_problem3": 2188891,
+    "cache_hits": 44,
+    "cache_accesses": 6070,
+    "cache_hit_bytes": 811008,
+    "cache_miss_bytes": 69911964,
+    "cache_hit_rate": 0.011467391387341585
+  },
+  {
+    "case": "case_096",
+    "makespan_problem3": 84461,
+    "cache_hits": 92,
+    "cache_accesses": 1015,
+    "cache_hit_bytes": 214912,
+    "cache_miss_bytes": 1825356,
+    "cache_hit_rate": 0.10533518145655375
+  },
+  {
+    "case": "case_097",
+    "makespan_problem3": 3824876,
+    "cache_hits": 52,
+    "cache_accesses": 6375,
+    "cache_hit_bytes": 212992,
+    "cache_miss_bytes": 71661568,
+    "cache_hit_rate": 0.0029633850975922496
+  },
+  {
+    "case": "case_098",
+    "makespan_problem3": 176791,
+    "cache_hits": 108,
+    "cache_accesses": 899,
+    "cache_hit_bytes": 589830,
+    "cache_miss_bytes": 3970800,
+    "cache_hit_rate": 0.1293308161372442
+  },
+  {
+    "case": "case_099",
+    "makespan_problem3": 604444,
+    "cache_hits": 948,
+    "cache_accesses": 6090,
+    "cache_hit_bytes": 3924224,
+    "cache_miss_bytes": 11807324,
+    "cache_hit_rate": 0.24944932310539306
+  },
+  {
+    "case": "case_100",
+    "makespan_problem3": 147464,
+    "cache_hits": 175,
+    "cache_accesses": 1303,
+    "cache_hit_bytes": 467770,
+    "cache_miss_bytes": 3581820,
+    "cache_hit_rate": 0.11551045908351215
+  }
+]

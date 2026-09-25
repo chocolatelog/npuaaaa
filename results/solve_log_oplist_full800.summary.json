@@ -1,0 +1,220 @@
+{
+  "expected": 800,
+  "completed": 800,
+  "status_counts": {
+    "official": 800
+  },
+  "official_tasks": 800,
+  "unverified_tasks": 0,
+  "all_official_complete": true,
+  "all_official": {
+    "tasks": 800,
+    "mean_speedup": 2.87503930205261,
+    "baseline_mean_speedup": 2.522068909743162,
+    "wins": 266,
+    "ties": 534,
+    "losses": 0
+  },
+  "paired_historical": {
+    "tasks": 648,
+    "mean_speedup": 3.009218519027917,
+    "baseline_mean_speedup": 2.768682542464211,
+    "wins": 200,
+    "ties": 448,
+    "losses": 0
+  },
+  "versus_historical": {
+    "tasks": 648,
+    "wins": 325,
+    "ties": 323,
+    "losses": 0,
+    "mean_paired_gain_percent": 22.45517009682593
+  },
+  "large_official_tasks": 152,
+  "baseline_official_calls": 974,
+  "candidate_official_calls": 6534,
+  "candidate_errors": 98,
+  "generator_errors": 33,
+  "candidate_budget_exhausted": 97,
+  "by_scene_and_cores": {
+    "A_N2": {
+      "expected": 100,
+      "all_official_complete": true,
+      "all_official": {
+        "tasks": 100,
+        "mean_speedup": 1.7207988218869426,
+        "baseline_mean_speedup": 1.7207988218869426,
+        "wins": 0,
+        "ties": 100,
+        "losses": 0
+      },
+      "expected_paired": 81,
+      "paired_complete": true,
+      "paired_historical": {
+        "tasks": 81,
+        "mean_speedup": 1.7959903795107894,
+        "baseline_mean_speedup": 1.7959903795107894,
+        "wins": 0,
+        "ties": 81,
+        "losses": 0
+      }
+    },
+    "A_N3": {
+      "expected": 100,
+      "all_official_complete": true,
+      "all_official": {
+        "tasks": 100,
+        "mean_speedup": 2.253361442141659,
+        "baseline_mean_speedup": 2.24241664084237,
+        "wins": 4,
+        "ties": 96,
+        "losses": 0
+      },
+      "expected_paired": 81,
+      "paired_complete": true,
+      "paired_historical": {
+        "tasks": 81,
+        "mean_speedup": 2.428980613092058,
+        "baseline_mean_speedup": 2.423561805371757,
+        "wins": 3,
+        "ties": 78,
+        "losses": 0
+      }
+    },
+    "A_N4": {
+      "expected": 100,
+      "all_official_complete": true,
+      "all_official": {
+        "tasks": 100,
+        "mean_speedup": 2.7108503805563893,
+        "baseline_mean_speedup": 2.690343024244212,
+        "wins": 6,
+        "ties": 94,
+        "losses": 0
+      },
+      "expected_paired": 81,
+      "paired_complete": true,
+      "paired_historical": {
+        "tasks": 81,
+        "mean_speedup": 2.9833096191585655,
+        "baseline_mean_speedup": 2.970764492856444,
+        "wins": 3,
+        "ties": 78,
+        "losses": 0
+      }
+    },
+    "A_N5": {
+      "expected": 100,
+      "all_official_complete": true,
+      "all_official": {
+        "tasks": 100,
+        "mean_speedup": 3.0786575403584138,
+        "baseline_mean_speedup": 3.0582584525662293,
+        "wins": 5,
+        "ties": 95,
+        "losses": 0
+      },
+      "expected_paired": 81,
+      "paired_complete": true,
+      "paired_historical": {
+        "tasks": 81,
+        "mean_speedup": 3.4576623761449015,
+        "baseline_mean_speedup": 3.4405929923345973,
+        "wins": 3,
+        "ties": 78,
+        "losses": 0
+      }
+    },
+    "B_N2": {
+      "expected": 100,
+      "all_official_complete": true,
+      "all_official": {
+        "tasks": 100,
+        "mean_speedup": 2.2674874407146492,
+        "baseline_mean_speedup": 1.724636151788655,
+        "wins": 85,
+        "ties": 15,
+        "losses": 0
+      },
+      "expected_paired": 81,
+      "paired_complete": true,
+      "paired_historical": {
+        "tasks": 81,
+        "mean_speedup": 2.3087023748715803,
+        "baseline_mean_speedup": 1.7942119188739363,
+        "wins": 70,
+        "ties": 11,
+        "losses": 0
+      }
+    },
+    "B_N3": {
+      "expected": 100,
+      "all_official_complete": true,
+      "all_official": {
+        "tasks": 100,
+        "mean_speedup": 3.0657397620684037,
+        "baseline_mean_speedup": 2.2726795351245883,
+        "wins": 80,
+        "ties": 20,
+        "losses": 0
+      },
+      "expected_paired": 81,
+      "paired_complete": true,
+      "paired_historical": {
+        "tasks": 81,
+        "mean_speedup": 3.104269233218274,
+        "baseline_mean_speedup": 2.4445936223808826,
+        "wins": 65,
+        "ties": 16,
+        "losses": 0
+      }
+    },
+    "B_N4": {
+      "expected": 100,
+      "all_official_complete": true,
+      "all_official": {
+        "tasks": 100,
+        "mean_speedup": 3.677874487024023,
+        "baseline_mean_speedup": 2.713527305666703,
+        "wins": 71,
+        "ties": 29,
+        "losses": 0
+      },
+      "expected_paired": 81,
+      "paired_complete": true,
+      "paired_historical": {
+        "tasks": 81,
+        "mean_speedup": 3.710304692129354,
+        "baseline_mean_speedup": 2.995216264287469,
+        "wins": 56,
+        "ties": 25,
+        "losses": 0
+      }
+    },
+    "B_N5": {
+      "expected": 100,
+      "all_official_complete": true,
+      "all_official": {
+        "tasks": 100,
+        "mean_speedup": 4.225544541670401,
+        "baseline_mean_speedup": 3.7538913458255982,
+        "wins": 15,
+        "ties": 85,
+        "losses": 0
+      },
+      "expected_paired": 81,
+      "paired_complete": true,
+      "paired_historical": {
+        "tasks": 81,
+        "mean_speedup": 4.284528864097812,
+        "baseline_mean_speedup": 4.284528864097812,
+        "wins": 0,
+        "ties": 81,
+        "losses": 0
+      }
+    }
+  },
+  "metric": "arithmetic mean(singlecore_makespan / official_makespan)",
+  "comparison": "wins/ties/losses use freshly evaluated input portfolio unless named versus_historical",
+  "wall_seconds": 11881.969
+}

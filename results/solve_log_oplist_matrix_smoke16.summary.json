@@ -1,0 +1,90 @@
+{
+  "tasks": 16,
+  "wins": 3,
+  "ties": 13,
+  "losses": 0,
+  "baseline_mean_speedup": 2.311335217308276,
+  "mean_speedup": 2.5982242355579603,
+  "official_tasks": 16,
+  "proxy_only_tasks": 0,
+  "scope": "requested task matrix; speedup means use official tasks only",
+  "by_scene_and_cores": {
+    "A_N2": {
+      "tasks": 2,
+      "wins": 0,
+      "ties": 2,
+      "losses": 0,
+      "baseline_mean_speedup": 1.487896561369011,
+      "mean_speedup": 1.487896561369011,
+      "proxy_only_tasks": 0
+    },
+    "A_N3": {
+      "tasks": 2,
+      "wins": 0,
+      "ties": 2,
+      "losses": 0,
+      "baseline_mean_speedup": 1.9596926699144634,
+      "mean_speedup": 1.9596926699144634,
+      "proxy_only_tasks": 0
+    },
+    "A_N4": {
+      "tasks": 2,
+      "wins": 0,
+      "ties": 2,
+      "losses": 0,
+      "baseline_mean_speedup": 2.4517239069642827,
+      "mean_speedup": 2.4517239069642827,
+      "proxy_only_tasks": 0
+    },
+    "A_N5": {
+      "tasks": 2,
+      "wins": 0,
+      "ties": 2,
+      "losses": 0,
+      "baseline_mean_speedup": 2.9662787690592696,
+      "mean_speedup": 2.9662787690592696,
+      "proxy_only_tasks": 0
+    },
+    "B_N2": {
+      "tasks": 2,
+      "wins": 1,
+      "ties": 1,
+      "losses": 0,
+      "baseline_mean_speedup": 1.4989691247528771,
+      "mean_speedup": 2.164448195895608,
+      "proxy_only_tasks": 0
+    },
+    "B_N3": {
+      "tasks": 2,
+      "wins": 1,
+      "ties": 1,
+      "losses": 0,
+      "baseline_mean_speedup": 1.98697782262572,
+      "mean_speedup": 2.8523218549679816,
+      "proxy_only_tasks": 0
+    },
+    "B_N4": {
+      "tasks": 2,
+      "wins": 1,
+      "ties": 1,
+      "losses": 0,
+      "baseline_mean_speedup": 2.4853713775479913,
+      "mean_speedup": 3.249660420060473,
+      "proxy_only_tasks": 0
+    },
+    "B_N5": {
+      "tasks": 2,
+      "wins": 0,
+      "ties": 2,
+      "losses": 0,
+      "baseline_mean_speedup": 3.6537715062325944,
+      "mean_speedup": 3.6537715062325944,
+      "proxy_only_tasks": 0
+    }
+  },
+  "baseline_official_calls": 21,
+  "candidate_official_calls": 103,
+  "candidate_errors": 0,
+  "task_seconds": 870.139,
+  "wall_seconds": 222.078
+}

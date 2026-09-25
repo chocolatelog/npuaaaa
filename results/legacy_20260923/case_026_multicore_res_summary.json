@@ -1,0 +1,90 @@
+{
+  "graph": "C:\\Users\\admin\\Documents\\ChatGPT\\数学建模\\_数据解压\\data\\case_026.json",
+  "plan": "C:\\Users\\admin\\Documents\\ChatGPT\\数学建模\\case_026_multicore_res.json",
+  "num_cores": 4,
+  "iterations": 60,
+  "surrogate_score": 192763.9,
+  "surrogate_meta": {
+    "load": [
+      32362.0,
+      25590.0,
+      29070.0,
+      24738.0
+    ],
+    "boundary_bytes": 4390864.0,
+    "cross_core_bytes": 3114448.0
+  },
+  "subgraph_count": 19,
+  "exact_validation_problem": 2,
+  "exact_makespan": 107022,
+  "fallback_to_greedy": false,
+  "exact_validation_error": null,
+  "history": [
+    {
+      "iteration": 0,
+      "score": 208143.15999999997,
+      "action": "swap",
+      "temperature": 0.997
+    },
+    {
+      "iteration": 6,
+      "score": 208143.15999999997,
+      "action": "move",
+      "temperature": 0.9791880578299021
+    },
+    {
+      "iteration": 12,
+      "score": 208143.15999999997,
+      "action": "move",
+      "temperature": 0.9616943356035061
+    },
+    {
+      "iteration": 18,
+      "score": 208143.15999999997,
+      "action": "swap",
+      "temperature": 0.9445131481500655
+    },
+    {
+      "iteration": 24,
+      "score": 208143.15999999997,
+      "action": "merge_split",
+      "temperature": 0.9276389118674717
+    },
+    {
+      "iteration": 30,
+      "score": 204378.63999999998,
+      "action": "move",
+      "temperature": 0.9110661429076764
+    },
+    {
+      "iteration": 36,
+      "score": 202550.19999999998,
+      "action": "move",
+      "temperature": 0.8947894553945313
+    },
+    {
+      "iteration": 42,
+      "score": 199379.06,
+      "action": "move",
+      "temperature": 0.8788035596734672
+    },
+    {
+      "iteration": 48,
+      "score": 192763.9,
+      "action": "move",
+      "temperature": 0.8631032605924442
+    },
+    {
+      "iteration": 54,
+      "score": 192763.9,
+      "action": "move",
+      "temperature": 0.8476834558136123
+    },
+    {
+      "iteration": 59,
+      "score": 192763.9,
+      "action": "merge_split",
+      "temperature": 0.835044266956004
+    }
+  ]
+}

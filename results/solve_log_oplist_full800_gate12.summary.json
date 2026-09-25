@@ -1,0 +1,130 @@
+{
+  "expected": 12,
+  "completed": 12,
+  "status_counts": {
+    "official": 12
+  },
+  "official_tasks": 12,
+  "unverified_tasks": 0,
+  "all_official_complete": true,
+  "all_official": {
+    "tasks": 12,
+    "mean_speedup": 2.3689523008671927,
+    "baseline_mean_speedup": 1.926847417693632,
+    "wins": 4,
+    "ties": 8,
+    "losses": 0
+  },
+  "paired_historical": {
+    "tasks": 8,
+    "mean_speedup": 2.541103433555579,
+    "baseline_mean_speedup": 2.391072627451581,
+    "wins": 2,
+    "ties": 6,
+    "losses": 0
+  },
+  "versus_historical": {
+    "tasks": 8,
+    "wins": 4,
+    "ties": 4,
+    "losses": 0,
+    "mean_paired_gain_percent": 31.811672551099196
+  },
+  "large_official_tasks": 4,
+  "baseline_official_calls": 17,
+  "candidate_official_calls": 99,
+  "candidate_errors": 20,
+  "by_scene_and_cores": {
+    "A_N2": {
+      "expected": 3,
+      "all_official_complete": true,
+      "all_official": {
+        "tasks": 3,
+        "mean_speedup": 1.3279577325825258,
+        "baseline_mean_speedup": 1.3279577325825258,
+        "wins": 0,
+        "ties": 3,
+        "losses": 0
+      },
+      "expected_paired": 2,
+      "paired_complete": true,
+      "paired_historical": {
+        "tasks": 2,
+        "mean_speedup": 1.4926231204975613,
+        "baseline_mean_speedup": 1.4926231204975613,
+        "wins": 0,
+        "ties": 2,
+        "losses": 0
+      }
+    },
+    "A_N5": {
+      "expected": 3,
+      "all_official_complete": true,
+      "all_official": {
+        "tasks": 3,
+        "mean_speedup": 2.332123480953403,
+        "baseline_mean_speedup": 2.3117000036003708,
+        "wins": 1,
+        "ties": 2,
+        "losses": 0
+      },
+      "expected_paired": 2,
+      "paired_complete": true,
+      "paired_historical": {
+        "tasks": 2,
+        "mean_speedup": 2.999635639004662,
+        "baseline_mean_speedup": 2.9690004229751135,
+        "wins": 1,
+        "ties": 1,
+        "losses": 0
+      }
+    },
+    "B_N2": {
+      "expected": 3,
+      "all_official_complete": true,
+      "all_official": {
+        "tasks": 3,
+        "mean_speedup": 2.1779000772092805,
+        "baseline_mean_speedup": 1.3315581989941025,
+        "wins": 2,
+        "ties": 1,
+        "losses": 0
+      },
+      "expected_paired": 2,
+      "paired_complete": true,
+      "paired_historical": {
+        "tasks": 2,
+        "mean_speedup": 2.0674157627227796,
+        "baseline_mean_speedup": 1.497927754336335,
+        "wins": 1,
+        "ties": 1,
+        "losses": 0
+      }
+    },
+    "B_N5": {
+      "expected": 3,
+      "all_official_complete": true,
+      "all_official": {
+        "tasks": 3,
+        "mean_speedup": 3.637827912723561,
+        "baseline_mean_speedup": 2.736173735597529,
+        "wins": 1,
+        "ties": 2,
+        "losses": 0
+      },
+      "expected_paired": 2,
+      "paired_complete": true,
+      "paired_historical": {
+        "tasks": 2,
+        "mean_speedup": 3.6047392119973134,
+        "baseline_mean_speedup": 3.6047392119973134,
+        "wins": 0,
+        "ties": 2,
+        "losses": 0
+      }
+    }
+  },
+  "metric": "arithmetic mean(singlecore_makespan / official_makespan)",
+  "comparison": "wins/ties/losses use freshly evaluated input portfolio unless named versus_historical",
+  "wall_seconds": 1503.109
+}

@@ -1,0 +1,14 @@
+{
+  "tasks": 8,
+  "scope": "paired official gate, not full average",
+  "wins": 5,
+  "ties": 3,
+  "losses": 0,
+  "baseline_mean_speedup": 1.5517280642718083,
+  "mean_speedup": 1.6046846511155808,
+  "baseline_official_calls": 8,
+  "candidate_official_calls": 118,
+  "candidate_errors": 0,
+  "task_seconds": 66.408,
+  "wall_seconds": 18.5
+}

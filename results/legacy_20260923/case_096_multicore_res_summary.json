@@ -1,0 +1,90 @@
+{
+  "graph": "C:\\Users\\admin\\Documents\\ChatGPT\\数学建模\\_数据解压\\data\\case_096.json",
+  "plan": "C:\\Users\\admin\\Documents\\ChatGPT\\数学建模\\case_096_multicore_res.json",
+  "num_cores": 4,
+  "iterations": 60,
+  "surrogate_score": 168206.535,
+  "surrogate_meta": {
+    "load": [
+      23308.0,
+      23307.0,
+      24653.0,
+      22006.0
+    ],
+    "boundary_bytes": 3498750.0,
+    "cross_core_bytes": 3024622.0
+  },
+  "subgraph_count": 60,
+  "exact_validation_problem": 2,
+  "exact_makespan": 88188,
+  "fallback_to_greedy": false,
+  "exact_validation_error": null,
+  "history": [
+    {
+      "iteration": 0,
+      "score": 168836.055,
+      "action": "boundary",
+      "temperature": 0.997
+    },
+    {
+      "iteration": 6,
+      "score": 168206.535,
+      "action": "swap",
+      "temperature": 0.9791880578299021
+    },
+    {
+      "iteration": 12,
+      "score": 168206.535,
+      "action": "merge_split",
+      "temperature": 0.9616943356035061
+    },
+    {
+      "iteration": 18,
+      "score": 168206.535,
+      "action": "boundary",
+      "temperature": 0.9445131481500655
+    },
+    {
+      "iteration": 24,
+      "score": 168206.535,
+      "action": "boundary",
+      "temperature": 0.9276389118674717
+    },
+    {
+      "iteration": 30,
+      "score": 168206.535,
+      "action": "merge_split",
+      "temperature": 0.9110661429076764
+    },
+    {
+      "iteration": 36,
+      "score": 168206.535,
+      "action": "boundary",
+      "temperature": 0.8947894553945313
+    },
+    {
+      "iteration": 42,
+      "score": 168206.535,
+      "action": "boundary",
+      "temperature": 0.8788035596734672
+    },
+    {
+      "iteration": 48,
+      "score": 168206.535,
+      "action": "merge_split",
+      "temperature": 1.0
+    },
+    {
+      "iteration": 54,
+      "score": 168206.535,
+      "action": "move",
+      "temperature": 1.0
+    },
+    {
+      "iteration": 59,
+      "score": 168206.535,
+      "action": "merge_split",
+      "temperature": 1.0
+    }
+  ]
+}

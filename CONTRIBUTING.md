@@ -52,3 +52,5 @@ git checkout main && git pull --ff-only origin main && git merge --no-ff W && gi
 ```
 
 禁止提交 `results/` 下的原始大规模实验结果、断点数据库、日志、Python 缓存和本地环境目录。指标摘要和复现实验说明可以提交。
+
+2026-09-25 H 分支归档例外：依据本次明确上传全部技术文档、实验数据和记录的要求，允许归档现有 results 下的方案 JSON、实验 JSONL、manifest、summary 和研究记录。此例外不包含密钥、环境、缓存、数据库、官方完整 trace，不改变 main 分支的合并门槛。范围和复现索引见 results/README.md。

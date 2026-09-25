@@ -1,0 +1,90 @@
+{
+  "graph": "C:\\Users\\admin\\Documents\\ChatGPT\\数学建模\\_数据解压\\data\\case_016.json",
+  "plan": "C:\\Users\\admin\\Documents\\ChatGPT\\数学建模\\case_016_multicore_res.json",
+  "num_cores": 4,
+  "iterations": 60,
+  "surrogate_score": 9520123.4025,
+  "surrogate_meta": {
+    "load": [
+      1932606.0,
+      1945874.0,
+      1903972.0,
+      1932523.0
+    ],
+    "boundary_bytes": 173770376.0,
+    "cross_core_bytes": 165447040.0
+  },
+  "subgraph_count": 225,
+  "exact_validation_problem": 2,
+  "exact_makespan": 7631526,
+  "fallback_to_greedy": false,
+  "exact_validation_error": null,
+  "history": [
+    {
+      "iteration": 0,
+      "score": 9767209.732500002,
+      "action": "boundary",
+      "temperature": 0.997
+    },
+    {
+      "iteration": 6,
+      "score": 9698249.2025,
+      "action": "swap",
+      "temperature": 0.9791880578299021
+    },
+    {
+      "iteration": 12,
+      "score": 9625503.0425,
+      "action": "swap",
+      "temperature": 0.9616943356035061
+    },
+    {
+      "iteration": 18,
+      "score": 9592078.842500001,
+      "action": "swap",
+      "temperature": 0.9445131481500655
+    },
+    {
+      "iteration": 24,
+      "score": 9592078.842500001,
+      "action": "swap",
+      "temperature": 0.9276389118674717
+    },
+    {
+      "iteration": 30,
+      "score": 9560407.092500001,
+      "action": "swap",
+      "temperature": 0.9110661429076764
+    },
+    {
+      "iteration": 36,
+      "score": 9553525.8125,
+      "action": "swap",
+      "temperature": 0.8947894553945313
+    },
+    {
+      "iteration": 42,
+      "score": 9553525.8125,
+      "action": "swap",
+      "temperature": 0.8788035596734672
+    },
+    {
+      "iteration": 48,
+      "score": 9526022.002500001,
+      "action": "swap",
+      "temperature": 0.8631032605924442
+    },
+    {
+      "iteration": 54,
+      "score": 9520123.4025,
+      "action": "swap",
+      "temperature": 0.8476834558136123
+    },
+    {
+      "iteration": 59,
+      "score": 9520123.4025,
+      "action": "swap",
+      "temperature": 0.835044266956004
+    }
+  ]
+}

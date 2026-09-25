@@ -1,0 +1,90 @@
+{
+  "graph": "C:\\Users\\admin\\Documents\\ChatGPT\\数学建模\\_数据解压\\data\\case_049.json",
+  "plan": "C:\\Users\\admin\\Documents\\ChatGPT\\数学建模\\case_049_multicore_res.json",
+  "num_cores": 4,
+  "iterations": 60,
+  "surrogate_score": 261950.5125,
+  "surrogate_meta": {
+    "load": [
+      67065.0,
+      64390.0,
+      67525.0,
+      62199.0
+    ],
+    "boundary_bytes": 5123926.0,
+    "cross_core_bytes": 3900302.0
+  },
+  "subgraph_count": 104,
+  "exact_validation_problem": 2,
+  "exact_makespan": 201423,
+  "fallback_to_greedy": false,
+  "exact_validation_error": null,
+  "history": [
+    {
+      "iteration": 0,
+      "score": 282892.9325,
+      "action": "swap",
+      "temperature": 0.997
+    },
+    {
+      "iteration": 6,
+      "score": 281985.61250000005,
+      "action": "swap",
+      "temperature": 0.9791880578299021
+    },
+    {
+      "iteration": 12,
+      "score": 278137.9625,
+      "action": "merge_split",
+      "temperature": 0.9616943356035061
+    },
+    {
+      "iteration": 18,
+      "score": 276593.5125,
+      "action": "move",
+      "temperature": 0.9445131481500655
+    },
+    {
+      "iteration": 24,
+      "score": 276343.9125,
+      "action": "merge_split",
+      "temperature": 0.9276389118674717
+    },
+    {
+      "iteration": 30,
+      "score": 270443.6825,
+      "action": "merge_split",
+      "temperature": 0.9110661429076764
+    },
+    {
+      "iteration": 36,
+      "score": 268472.5825,
+      "action": "move",
+      "temperature": 0.8947894553945313
+    },
+    {
+      "iteration": 42,
+      "score": 265336.3125,
+      "action": "swap",
+      "temperature": 0.8788035596734672
+    },
+    {
+      "iteration": 48,
+      "score": 265336.3125,
+      "action": "swap",
+      "temperature": 0.8631032605924442
+    },
+    {
+      "iteration": 54,
+      "score": 263088.9025,
+      "action": "swap",
+      "temperature": 0.8476834558136123
+    },
+    {
+      "iteration": 59,
+      "score": 261950.5125,
+      "action": "swap",
+      "temperature": 0.835044266956004
+    }
+  ]
+}

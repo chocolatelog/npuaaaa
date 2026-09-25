@@ -1,0 +1,161 @@
+{
+  "config": {
+    "cases": "1,3,48",
+    "scenes": "A,B",
+    "cores": "2,5",
+    "baseline_dir": [
+      "results/plans_n5_oplist_full81",
+      "results/plans_n5_expanded_full",
+      "results/plans_guided_full"
+    ],
+    "reference_log": "results/solve_log_guided_full.jsonl",
+    "singlecore": "results/summary.csv",
+    "output_dir": "results/plans_oplist_full800_gate12",
+    "log_file": "results/solve_log_oplist_full800_gate12.jsonl",
+    "workers": 4,
+    "max_candidates": 12,
+    "evaluation_seconds": 120.0,
+    "generation_seconds": 120.0
+  },
+  "python": "3.12.7 | packaged by Anaconda, Inc. | (main, Oct  4 2024, 13:17:27) [MSC v.1929 64 bit (AMD64)]",
+  "hashes": {
+    "C:\\Users\\admin\\Documents\\ChatGPT\\数学建模\\npuaaaa\\solver\\ab_budget.py": "8f54391ea1b41b52738501c72be03715e5f2916f6e63c3ee20c7796005fec5b6",
+    "C:\\Users\\admin\\Documents\\ChatGPT\\数学建模\\npuaaaa\\solver\\ab_test.py": "c5418bec95a9c8cf9c2b31097776a15c4c36d567a71a8e53070922f8ff5dd1f2",
+    "C:\\Users\\admin\\Documents\\ChatGPT\\数学建模\\npuaaaa\\solver\\aco.py": "d825e081e7f08dcecb4c278afa54eae87569f84c19b816c1af97e66e684f7cd9",
+    "C:\\Users\\admin\\Documents\\ChatGPT\\数学建模\\npuaaaa\\solver\\aggregate.py": "ed5d103567322c96cb374a71d9c6f5d99e4206c8e5070d1442e57ce8ead85c2d",
+    "C:\\Users\\admin\\Documents\\ChatGPT\\数学建模\\npuaaaa\\solver\\archive.py": "168f692fab8ffe1418dd03972514d500f7cbbdb1bfef6607ad8ca735c0ba4c9c",
+    "C:\\Users\\admin\\Documents\\ChatGPT\\数学建模\\npuaaaa\\solver\\beam_schedule.py": "46dba974166da327ad31e9313cf189a4b58411210464e16349b034945bc1bee9",
+    "C:\\Users\\admin\\Documents\\ChatGPT\\数学建模\\npuaaaa\\solver\\bound_certificate.py": "c94a6106ac43d383dbc483f48e6f3b0a731a9e7e888611da0cfcd5f241dac64d",
+    "C:\\Users\\admin\\Documents\\ChatGPT\\数学建模\\npuaaaa\\solver\\calibrate_spill.py": "71ffa7602f838e8ab9d1efdd053324bd0b7e1d191c9447286274a85abe592959",
+    "C:\\Users\\admin\\Documents\\ChatGPT\\数学建模\\npuaaaa\\solver\\compare_baseline.py": "873c687dd0a9f85dc65e13ac96ae165b750998f1b2675c11f1bb9b0d3a9d3c08",
+    "C:\\Users\\admin\\Documents\\ChatGPT\\数学建模\\npuaaaa\\solver\\compare_optimizer_runs.py": "382670748f21201b76edb33730cb6ecd444c07dcb6ea64dcecf2557fd9d7e17c",
+    "C:\\Users\\admin\\Documents\\ChatGPT\\数学建模\\npuaaaa\\solver\\construct.py": "68990365449d9e3e660774414409d1ac4bf27ab3fc081559741505d935485ae3",
+    "C:\\Users\\admin\\Documents\\ChatGPT\\数学建模\\npuaaaa\\solver\\construct_refine.py": "776153d2c5a09c7f1128dae5c0d4d5a96691562e722e10036138947bebca2656",
+    "C:\\Users\\admin\\Documents\\ChatGPT\\数学建模\\npuaaaa\\solver\\construct_v2.py": "3be0f786f971f0c7c4f569c62914ec4283873ec9b2402c5bec509153d1db7459",
+    "C:\\Users\\admin\\Documents\\ChatGPT\\数学建模\\npuaaaa\\solver\\diagnostics.py": "bbd4b18b99c5bd7cf8a92e2a015561fbf927204511d156771d423300bb4a6dfe",
+    "C:\\Users\\admin\\Documents\\ChatGPT\\数学建模\\npuaaaa\\solver\\evaluate_official.py": "6c982f359755751f32468341d1bbda4693d4a69e4b7b0ee2e9e0ffc68ce89f81",
+    "C:\\Users\\admin\\Documents\\ChatGPT\\数学建模\\npuaaaa\\solver\\eval_metrics.py": "a2992b15fdd32e32d3a80fac6694eadb0a3013593c862333c80754a2429c9858",
+    "C:\\Users\\admin\\Documents\\ChatGPT\\数学建模\\npuaaaa\\solver\\improve_runs.py": "b2d55bfeb200f0607700c6d7c8ad23a39abde29f58ccc96684a9cbaf6b0fe3b1",
+    "C:\\Users\\admin\\Documents\\ChatGPT\\数学建模\\npuaaaa\\solver\\mamba_screen.py": "268dcb3d7463bbec11e1a7343ac6d5697688e8849de8414b506b70a1646211be",
+    "C:\\Users\\admin\\Documents\\ChatGPT\\数学建模\\npuaaaa\\solver\\mcts_schedule.py": "38d40c3be0dae5b7261a55f735995d6ab277a2af8077b8832b84c9a6f7d95c75",
+    "C:\\Users\\admin\\Documents\\ChatGPT\\数学建模\\npuaaaa\\solver\\model.py": "910b356c615830030edcdcb9ce97dbf536e3c0daacdfd16f793b39073bf22c1b",
+    "C:\\Users\\admin\\Documents\\ChatGPT\\数学建模\\npuaaaa\\solver\\mopso.py": "e07324a66b31b7015a94bfae3a762daf796da78135253eb7fbea484f22f9e22e",
+    "C:\\Users\\admin\\Documents\\ChatGPT\\数学建模\\npuaaaa\\solver\\op_list_candidates.py": "a959a26f1ee43345ce5c367efcbfcc81df4179589e717fd50c9ea0c93fc57945",
+    "C:\\Users\\admin\\Documents\\ChatGPT\\数学建模\\npuaaaa\\solver\\order_refine.py": "037103d221c9d90d0d5ccb76731477d858b74183dc35043ff8dd217ef03d26db",
+    "C:\\Users\\admin\\Documents\\ChatGPT\\数学建模\\npuaaaa\\solver\\pipeline.py": "191f1c7f3a5985c7f19390e08f661c56f7826abc6d3319ba16cf5537998f1dab",
+    "C:\\Users\\admin\\Documents\\ChatGPT\\数学建模\\npuaaaa\\solver\\pipe_local_cp.py": "81775c48f3d546f06b0072304f64c32bcec905f2806e06ddb795d782f51f0458",
+    "C:\\Users\\admin\\Documents\\ChatGPT\\数学建模\\npuaaaa\\solver\\run_all.py": "b3176e699fd98275b92a1a26a96c4b75d89f19cfb5064f7ad2edc4019e3387b1",
+    "C:\\Users\\admin\\Documents\\ChatGPT\\数学建模\\npuaaaa\\solver\\run_math_refine.py": "a43383645c338f93d1125505873784a5c83cebad4eee25721127d115ee003db5",
+    "C:\\Users\\admin\\Documents\\ChatGPT\\数学建模\\npuaaaa\\solver\\run_oplist_full.py": "6adaa7bdc7c6b6b643a59d68d5826dafd1e579a7eb3028ed539cfab9ca9dc79c",
+    "C:\\Users\\admin\\Documents\\ChatGPT\\数学建模\\npuaaaa\\solver\\sa.py": "09f26d60d4289a34caf4b3084597a977eca626efe2d3fca9e521d2e7b8daa5dd",
+    "C:\\Users\\admin\\Documents\\ChatGPT\\数学建模\\npuaaaa\\solver\\solution.py": "2e157d9b1dd80fa62ebe60a1d65c7d45d4b5169b7b268ef3c52e774450587be6",
+    "C:\\Users\\admin\\Documents\\ChatGPT\\数学建模\\npuaaaa\\solver\\stub_baseline.py": "84167579add56ec418b3714bf89e722c3e65cb3146d37c49880fd0f77bf829cb",
+    "C:\\Users\\admin\\Documents\\ChatGPT\\数学建模\\npuaaaa\\solver\\summarize_full_run.py": "860140af5cb29d810d94bb00a9360ce0fdac254d1a657adec16f85d4b534586d",
+    "C:\\Users\\admin\\Documents\\ChatGPT\\数学建模\\npuaaaa\\solver\\tabu.py": "39efd047091513863e632e138aa10014cc30c1adeadd5df63972eeedb7e09138",
+    "C:\\Users\\admin\\Documents\\ChatGPT\\数学建模\\npuaaaa\\solver\\validate_construct_pool.py": "1b0cf3aaa0e2a4e2a2d4dd17a0774b12d7322246c614e9326ae2909c4e59728d",
+    "C:\\Users\\admin\\Documents\\ChatGPT\\数学建模\\npuaaaa\\solver\\validate_v2.py": "5c37b2a09b7623511a8eee4e787b49e031355b3e8ce3f67b86f19b055c77f6a1",
+    "C:\\Users\\admin\\Documents\\ChatGPT\\数学建模\\npuaaaa\\solver\\validate_v3.py": "e8165dfe0f9470b0ae19d75061bb01d952ff8e29f312f8a84f7031c81c9c801e",
+    "C:\\Users\\admin\\Documents\\ChatGPT\\数学建模\\npuaaaa\\solver\\verify_full_official.py": "91963cf320473ea36233ce0c68b99ea97d40ead7cc3210167ea011a760cda518",
+    "C:\\Users\\admin\\Documents\\ChatGPT\\数学建模\\npuaaaa\\solver\\wavefront_schedule.py": "a25cc19db7841ec59250bdf56e0d807d7e12fd8947a5fd44abf1c62227c39458",
+    "C:\\Users\\admin\\Documents\\ChatGPT\\数学建模\\npuaaaa\\通用神经网络处理器下的多核调度问题附件\\code\\contest_io.py": "d5936908e4c261c7003b78e783f30bd7d65cb38d6b53a269ea67f0103cac848e",
+    "C:\\Users\\admin\\Documents\\ChatGPT\\数学建模\\npuaaaa\\通用神经网络处理器下的多核调度问题附件\\code\\evaluation_validation.py": "103206b8c5c25e37de50cc3193de3989d7c1e01d4a11cc5f509dedd8f9be9a64",
+    "C:\\Users\\admin\\Documents\\ChatGPT\\数学建模\\npuaaaa\\通用神经网络处理器下的多核调度问题附件\\code\\multicore_cut_evaluate_problem_1.py": "2095f188a6c24ce3899f156bef21d50dcd87cbd9368488046b1e77e2bf91af3f",
+    "C:\\Users\\admin\\Documents\\ChatGPT\\数学建模\\npuaaaa\\通用神经网络处理器下的多核调度问题附件\\code\\multicore_cut_evaluate_problem_2.py": "0b39f84d5ec0a7fba9a4c92a598a9044b97ab79c71393824c1ba130ecfe6c464",
+    "C:\\Users\\admin\\Documents\\ChatGPT\\数学建模\\npuaaaa\\通用神经网络处理器下的多核调度问题附件\\code\\multicore_cut_evaluate_problem_3.py": "eab1504dead881f4b67c0f0498cbc2dbbd9039dc3c9d198c6af58773c127eeb0",
+    "C:\\Users\\admin\\Documents\\ChatGPT\\数学建模\\npuaaaa\\通用神经网络处理器下的多核调度问题附件\\code\\schedule_step1.py": "d8fe721ff3dbe036e34a20c00cce6430960860000a49eb467e63465f76b84034",
+    "C:\\Users\\admin\\Documents\\ChatGPT\\数学建模\\npuaaaa\\通用神经网络处理器下的多核调度问题附件\\code\\schedule_step2.py": "2836baac176f4e0bdd9eec59b8d9ce254e209e5f7a251e23837ab684312fa0c3",
+    "C:\\Users\\admin\\Documents\\ChatGPT\\数学建模\\npuaaaa\\通用神经网络处理器下的多核调度问题附件\\code\\schedule_step3.py": "50053db0436f1d166dd75436693ba3af49b5c339576beb6e7299477f6b69fc7a",
+    "C:\\Users\\admin\\Documents\\ChatGPT\\数学建模\\npuaaaa\\通用神经网络处理器下的多核调度问题附件\\code\\singlecore_evaluate.py": "446b753ee134ef1fec8e052356bb077a2602fbe95572ccd3dddd7928e894b77a",
+    "C:\\Users\\admin\\Documents\\ChatGPT\\数学建模\\npuaaaa\\通用神经网络处理器下的多核调度问题附件\\code\\stub_multicore_cut_and_schedule.py": "0a3a3b79b5173b466fc05fc8d33b72d11d90b4df78995435853d91c632a35892",
+    "C:\\Users\\admin\\Documents\\ChatGPT\\数学建模\\npuaaaa\\通用神经网络处理器下的多核调度问题附件\\data\\case_001.json": "9242651a4b787734f90a8b2778c494dce2104ffb42b3ddb07129418c43b2b8d4",
+    "C:\\Users\\admin\\Documents\\ChatGPT\\数学建模\\npuaaaa\\通用神经网络处理器下的多核调度问题附件\\data\\case_003.json": "4eb7f81250b3cabc38b8d86ee6a1945b315e33e8930beb17bf93b971df7abaf4",
+    "C:\\Users\\admin\\Documents\\ChatGPT\\数学建模\\npuaaaa\\通用神经网络处理器下的多核调度问题附件\\data\\case_048.json": "6b30ec37a04faa3bd587e340ce66c344801ff776da033bad27b54fda6e5f7474",
+    "C:\\Users\\admin\\Documents\\ChatGPT\\数学建模\\npuaaaa\\results\\solve_log_guided_full.jsonl": "1b8f9af249473dbf83b625ccfd7dff03591f2a18850517017eb54d3303a2afca",
+    "C:\\Users\\admin\\Documents\\ChatGPT\\数学建模\\npuaaaa\\results\\summary.csv": "3f74943c46698eb250d49fd11b74f1f78b512a84cac5996f324590c1e4fbcf03",
+    "C:\\Users\\admin\\Documents\\ChatGPT\\数学建模\\npuaaaa\\results\\plans_guided_full\\case_001_A_N2.json": "aaea6461474745bc1ed4c8d94b78eb46d32823150a9b417931c7c3250cedc2f5",
+    "C:\\Users\\admin\\Documents\\ChatGPT\\数学建模\\npuaaaa\\results\\plans_n5_expanded_full\\case_001_A_N5.json": "b3dae29d0f436a750631fa72c2dee3456e91d22cc0a15ad9028aacf81002b61a",
+    "C:\\Users\\admin\\Documents\\ChatGPT\\数学建模\\npuaaaa\\results\\plans_guided_full\\case_001_A_N5.json": "aa9ea3d75748f85f044ee41ef2aaf2420578bc11c531f84b1efe4bc24e53c041",
+    "C:\\Users\\admin\\Documents\\ChatGPT\\数学建模\\npuaaaa\\results\\plans_guided_full\\case_001_B_N2.json": "aaea6461474745bc1ed4c8d94b78eb46d32823150a9b417931c7c3250cedc2f5",
+    "C:\\Users\\admin\\Documents\\ChatGPT\\数学建模\\npuaaaa\\results\\plans_n5_oplist_full81\\case_001_B_N5.json": "13bf796295d75d00955d02c32fe0f983f562c466c48dcafa0c934bb9c9e2d239",
+    "C:\\Users\\admin\\Documents\\ChatGPT\\数学建模\\npuaaaa\\results\\plans_n5_expanded_full\\case_001_B_N5.json": "13bf796295d75d00955d02c32fe0f983f562c466c48dcafa0c934bb9c9e2d239",
+    "C:\\Users\\admin\\Documents\\ChatGPT\\数学建模\\npuaaaa\\results\\plans_guided_full\\case_001_B_N5.json": "b3dae29d0f436a750631fa72c2dee3456e91d22cc0a15ad9028aacf81002b61a",
+    "C:\\Users\\admin\\Documents\\ChatGPT\\数学建模\\npuaaaa\\results\\plans_guided_full\\case_003_A_N2.json": "855e5598e6f344d46e54a9667398fa8143b00f8bde0084001b12d2c965a9770b",
+    "C:\\Users\\admin\\Documents\\ChatGPT\\数学建模\\npuaaaa\\results\\plans_n5_expanded_full\\case_003_A_N5.json": "4c68b29210fa9f6662ea62f60d5401b2c0661619f8658f81b8fbabf92ddee5c3",
+    "C:\\Users\\admin\\Documents\\ChatGPT\\数学建模\\npuaaaa\\results\\plans_guided_full\\case_003_A_N5.json": "4c68b29210fa9f6662ea62f60d5401b2c0661619f8658f81b8fbabf92ddee5c3",
+    "C:\\Users\\admin\\Documents\\ChatGPT\\数学建模\\npuaaaa\\results\\plans_guided_full\\case_003_B_N2.json": "0673682b84c436271aafb3a98ccef7c3cf6333b7b3e76f52cdfe9fc9049c4289",
+    "C:\\Users\\admin\\Documents\\ChatGPT\\数学建模\\npuaaaa\\results\\plans_n5_expanded_full\\case_003_B_N5.json": "4c68b29210fa9f6662ea62f60d5401b2c0661619f8658f81b8fbabf92ddee5c3",
+    "C:\\Users\\admin\\Documents\\ChatGPT\\数学建模\\npuaaaa\\results\\plans_guided_full\\case_003_B_N5.json": "4c68b29210fa9f6662ea62f60d5401b2c0661619f8658f81b8fbabf92ddee5c3",
+    "C:\\Users\\admin\\Documents\\ChatGPT\\数学建模\\npuaaaa\\results\\plans_guided_full\\case_048_A_N2.json": "94058d9a31b5b44e74077e57dd554bea93e3d9bebd9ecf160ea3d233a1a3fd44",
+    "C:\\Users\\admin\\Documents\\ChatGPT\\数学建模\\npuaaaa\\results\\plans_n5_expanded_full\\case_048_A_N5.json": "acedbfc3c10559a712535a2ba0cc7b7b541354b9bd2100642c3fbd9fa55fec46",
+    "C:\\Users\\admin\\Documents\\ChatGPT\\数学建模\\npuaaaa\\results\\plans_guided_full\\case_048_A_N5.json": "c7189128d1ed720e0c62207bf8209e727e65564f7b9b5d7b6fdc701b75f9fb59",
+    "C:\\Users\\admin\\Documents\\ChatGPT\\数学建模\\npuaaaa\\results\\plans_guided_full\\case_048_B_N2.json": "8bac88cc855a94f3977b42dfa7fe0eda130eb9c181852bb6c0f0283501b3f852",
+    "C:\\Users\\admin\\Documents\\ChatGPT\\数学建模\\npuaaaa\\results\\plans_n5_oplist_full81\\case_048_B_N5.json": "efc22b1d14bd2a06a69cf45a65a4598ef27dd0bcf6dd234ccc03d440433eafe1",
+    "C:\\Users\\admin\\Documents\\ChatGPT\\数学建模\\npuaaaa\\results\\plans_n5_expanded_full\\case_048_B_N5.json": "acedbfc3c10559a712535a2ba0cc7b7b541354b9bd2100642c3fbd9fa55fec46",
+    "C:\\Users\\admin\\Documents\\ChatGPT\\数学建模\\npuaaaa\\results\\plans_guided_full\\case_048_B_N5.json": "a72839ef341bc8d3d8128a91f59fbd53a34f9c8367e6d96f2c5c47783ba117c1"
+  },
+  "expected_keys": [
+    [
+      "case_001",
+      "A",
+      2
+    ],
+    [
+      "case_001",
+      "A",
+      5
+    ],
+    [
+      "case_001",
+      "B",
+      2
+    ],
+    [
+      "case_001",
+      "B",
+      5
+    ],
+    [
+      "case_003",
+      "A",
+      2
+    ],
+    [
+      "case_003",
+      "A",
+      5
+    ],
+    [
+      "case_003",
+      "B",
+      2
+    ],
+    [
+      "case_003",
+      "B",
+      5
+    ],
+    [
+      "case_048",
+      "A",
+      2
+    ],
+    [
+      "case_048",
+      "A",
+      5
+    ],
+    [
+      "case_048",
+      "B",
+      2
+    ],
+    [
+      "case_048",
+      "B",
+      5
+    ]
+  ],
+  "scope": "fresh A/B evaluation; official paired and full populations separate",
+  "hardware_unchanged": true,
+  "target_scope": "B_N5 paired 81 mean >= 3.8"
+}
