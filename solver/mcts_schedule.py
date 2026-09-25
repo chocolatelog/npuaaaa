@@ -59,8 +59,8 @@ def _critical_subgraphs(ctx, sol, limit=8):
     return [s for _score, s in scores[:max(1, limit)]]
 
 
-def _actions(ctx, sol, branching=16):
-    """Return normalized priors for core moves and pairwise core swaps."""
+def _actions(ctx, sol, branching=16, structural=False):
+    """Return normalized priors for core and optional partition moves."""
     critical = _critical_subgraphs(ctx, sol, limit=min(10, branching))
     loads = [0.0] * ctx.num_cores
     for s, blocks in enumerate(sol.blocks_in_sg):
@@ -85,6 +85,31 @@ def _actions(ctx, sol, branching=16):
                         default=0.0)
             actions.append((0.5 + abs(srank - trank),
                             ("swap_core", s, t)))
+    if structural:
+        mean_traffic = max(1.0, ctx.mean_block_traffic)
+        boundary = []
+        for (b, v), traffic in ctx.btraffic.items():
+            s, t = sol.sg_of_block[b], sol.sg_of_block[v]
+            if s != t and traffic > 0:
+                boundary.append((traffic, b, v, s, t))
+        boundary.sort(reverse=True)
+        for traffic, b, v, s, t in boundary[:max(4, branching)]:
+            locality = 1.0 + traffic / mean_traffic
+            if len(sol.blocks_in_sg[s]) > 1:
+                actions.append((locality, ("move_block", b, t)))
+            if len(sol.blocks_in_sg[t]) > 1:
+                actions.append((locality, ("move_block", v, s)))
+            actions.append((0.75 + traffic / mean_traffic,
+                            ("merge", s, t)))
+        for s in critical:
+            if len(sol.blocks_in_sg[s]) < 2:
+                continue
+            old = sol.core_of_sg[s]
+            target = min((c for c in range(ctx.num_cores) if c != old),
+                         key=lambda c: (loads[c], c), default=old)
+            work = sum(ctx.bdur[b] for b in sol.blocks_in_sg[s])
+            actions.append((0.5 + work / max(1.0, ctx.mean_block_dur),
+                            ("split", s, target)))
     actions.sort(key=lambda item: (-item[0], item[1]))
     unique = []
     seen = set()
@@ -99,19 +124,36 @@ def _actions(ctx, sol, branching=16):
     return [(prior / total, action) for prior, action in unique]
 
 
-def _apply(sol, action):
+def _apply(ctx, sol, action):
     child = sol.clone()
     if action[0] == "move_core":
         _kind, s, c = action
         if s >= len(child.core_of_sg) or child.core_of_sg[s] == c:
             return None
         child.move_sg_core(s, c)
-    else:
+    elif action[0] == "swap_core":
         _kind, s, t = action
         if s >= len(child.core_of_sg) or t >= len(child.core_of_sg):
             return None
         child.core_of_sg[s], child.core_of_sg[t] = (
             child.core_of_sg[t], child.core_of_sg[s])
+    elif action[0] == "move_block":
+        _kind, b, target = action
+        if (b >= len(child.sg_of_block) or
+                target >= len(child.core_of_sg) or
+                child.sg_of_block[b] == target):
+            return None
+        child.move_block(b, target)
+    elif action[0] == "merge":
+        _kind, s, t = action
+        if (s >= len(child.core_of_sg) or t >= len(child.core_of_sg) or
+                not child.merge_sg(s, t)):
+            return None
+    else:
+        _kind, s, target = action
+        if s >= len(child.core_of_sg) or not child.split_sg(s, ctx.brank):
+            return None
+        child.core_of_sg[-1] = target
     child.compact()
     return child
 
@@ -119,7 +161,8 @@ def _apply(sol, action):
 def mcts_search(ctx, root_sol, time_budget=1.0, deadline=None,
                 rng=None, archive=None, max_depth=3, branching=16,
                 c_puct=1.2, max_evals=128, stall_limit=256,
-                candidate_pool=None, candidate_cap=32):
+                candidate_pool=None, candidate_cap=32,
+                structural_actions=False):
     """Search core assignments and return the best proxy solution.
 
     Duplicate states share node statistics through a transposition table. A
@@ -169,14 +212,15 @@ def mcts_search(ctx, root_sol, time_budget=1.0, deadline=None,
 
         while depth < max_depth:
             if node.unexpanded is None:
-                node.unexpanded = _actions(ctx, node.sol, branching)
+                node.unexpanded = _actions(
+                    ctx, node.sol, branching, structural=structural_actions)
 
             next_node = None
             while node.unexpanded:
                 idx = (0 if rng.random() < 0.75
                        else rng.randrange(len(node.unexpanded)))
                 prior, action = node.unexpanded.pop(idx)
-                child_sol = _apply(node.sol, action)
+                child_sol = _apply(ctx, node.sol, action)
                 if child_sol is None:
                     duplicate_actions += 1
                     continue

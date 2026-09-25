@@ -10,11 +10,11 @@ import random
 import sys
 import time
 
-from model import Model, load_graph, BW, MEM_CAP
+from model import Model, load_graph, BW, MEM_CAP, _tarjan_scc
 from solution import Sol, Context
 from archive import ParetoArchive
 import construct
-from construct_refine import build_construct_candidates
+from construct_refine import build_construct_candidates, ConstructCandidate
 from tabu import tabu_search
 from sa import sa_search
 from aco import aco_search
@@ -75,6 +75,66 @@ def build_construct_pool(model, N, scene, ctx=None, return_candidates=False):
     """兼容入口：返回新构造池中的方案对象。"""
     items = build_construct_candidates(model, N, scene, ctx=ctx)
     return items if return_candidates else [item.sol for item in items]
+
+
+def _repair_quotient_cycles(model, sol):
+    """Merge cyclic quotient SCCs while preserving the representative core."""
+    repaired = sol.clone()
+    repaired.compact()
+    for _ in range(16):
+        succs = [set() for _ in repaired.core_of_sg]
+        for edge in model.block_edges:
+            if len(edge) == 2 and isinstance(edge[0], (tuple, list)):
+                u, v = edge[0]
+            else:
+                u, v = edge[:2]
+            source = repaired.sg_of_block[u]
+            target = repaired.sg_of_block[v]
+            if source != target:
+                succs[source].add(target)
+        cyclic = [component for component in _tarjan_scc(succs)
+                  if len(component) > 1]
+        if not cyclic:
+            return repaired
+        remap = list(range(len(repaired.core_of_sg)))
+        for component in cyclic:
+            representative = min(component)
+            for subgraph in component:
+                remap[subgraph] = representative
+        repaired = Sol([remap[subgraph]
+                        for subgraph in repaired.sg_of_block],
+                       list(repaired.core_of_sg))
+        repaired.compact()
+    return repaired
+
+
+def _legacy_n5_constructs(model, N, scene):
+    """Recover two high-value main-branch structures omitted by coarsening."""
+    if N != 5:
+        return []
+    builders = (
+        ('legacy_strip10', lambda: construct.strip_construct(
+            model, N, scene, num_strips=2*N), False),
+        ('legacy_strip40', lambda: construct.strip_construct(
+            model, N, scene, num_strips=8*N), False),
+        ('legacy_chain_uncapped', lambda: construct.chain_construct(
+            model, N, scene, max_sg_ops=None, max_subgraphs=None), True),
+    )
+    rows = []
+    for name, builder, repair_cycles in builders:
+        try:
+            sg, cores = builder()
+            sol = Sol(sg, cores)
+            sol.compact()
+            if repair_cycles:
+                sol = _repair_quotient_cycles(model, sol)
+            if sol.validate(model, N):
+                rows.append(ConstructCandidate(
+                    paradigm=name, granularity='legacy', scene=scene,
+                    refine_level='R0', sol=sol))
+        except Exception:
+            continue
+    return rows
 
 
 def _select_seed_solutions(scored, limit=6):
@@ -147,10 +207,49 @@ def _record_diagnostics(model, plan, scene, num_cores, real, log):
         log['diagnostics_error'] = repr(exc)
 
 
+def _solution_from_plan(model, plan, num_cores):
+    """Decode a persisted plan into the block/subgraph representation."""
+    schedules = plan.get('core_schedules')
+    mapping = plan.get('node_to_subgraph')
+    if not isinstance(schedules, list) or len(schedules) != num_cores:
+        raise ValueError('invalid core_schedules')
+    if not isinstance(mapping, dict):
+        raise ValueError('invalid node_to_subgraph')
+    block_to_sg = []
+    for block in range(len(model.blocks)):
+        op_ids = model.blocks[block]
+        if not op_ids:
+            block_to_sg.append(0)
+            continue
+        sg = mapping.get(str(op_ids[0]), mapping.get(op_ids[0]))
+        if sg is None:
+            raise ValueError('plan does not cover block')
+        block_to_sg.append(int(sg))
+    max_sg = max(block_to_sg, default=-1)
+    core_of_sg = [0] * (max_sg + 1)
+    for core, row in enumerate(schedules):
+        for sg in row:
+            if int(sg) >= len(core_of_sg):
+                core_of_sg.extend([0] * (int(sg) + 1 - len(core_of_sg)))
+            core_of_sg[int(sg)] = core
+    from solution import Sol
+    sol = Sol(block_to_sg, core_of_sg)
+    sol.compact()
+    if not sol.validate(model, num_cores):
+        raise ValueError('decoded plan is not valid')
+    return sol
+
+
+def _bounded_deadline(global_deadline, budget, now=None):
+    """Give one search call its own budget without exceeding the task limit."""
+    now = time.time() if now is None else now
+    return min(global_deadline, now + max(0.0, budget))
+
+
 def solve_case(graph_json, N, scene, time_budget=10.0, seed=0,
                verify_k=16, block_ops_cap=120, traffic_weight=0.2,
                use_screen=False, spill_calibrated=False, warm_plan=None,
-               use_mcts=False):
+               warm_plans=None, use_mcts=False, use_beam=False):
     """求解一个 (用例, 核数, 场景)。use_screen=True 时 SA/TS 启用
     Mamba 式 SSM 粗筛层；spill_calibrated=True 时启用 NNLS 校准的
     spill 系数（默认启发式）。返回 dict。"""
@@ -175,6 +274,8 @@ def solve_case(graph_json, N, scene, time_budget=10.0, seed=0,
     else:
         items = build_construct_pool(model, N, scene, ctx=ctx,
                                      return_candidates=True)
+        legacy_items = _legacy_n5_constructs(model, N, scene)
+        items.extend(legacy_items)
         pool = [item.sol for item in items]
     scored = []
     for index, sol in enumerate(pool):
@@ -197,7 +298,9 @@ def solve_case(graph_json, N, scene, time_budget=10.0, seed=0,
     log = {'construct_best': [mk_best, ad_best],
            'construct_seed_count': len(seed_solutions),
            'construct_seed_paradigms': [getattr(row[4], 'paradigm', None)
-                                        for row in seed_rows]}
+                                        for row in seed_rows],
+           'legacy_construct_count': len(legacy_items)
+           if 'legacy_items' in locals() else 0}
 
     # 超大图的邻域搜索会使单个任务远超总预算；保留构造解代理结果，
     # 由全量统计单独标记为时间预算兜底。官方真值评估对这类图也受限。
@@ -218,50 +321,71 @@ def solve_case(graph_json, N, scene, time_budget=10.0, seed=0,
     t_left = max(0.0, deadline - time.time())
     budget = min(t_left * 0.25, max(0.05, t_left))
     per_seed = budget / max(1, len(seed_solutions))
+    stage_start, stage_evals = time.time(), ctx.n_evals
     for seed_sol in seed_solutions:
         if time.time() >= deadline:
             break
         sol, f, mk, ad = tabu_search(ctx, seed_sol.clone(), per_seed,
                                      archive=archive, rng=rng,
-                                     deadline=deadline)
+                                     deadline=_bounded_deadline(
+                                         deadline, per_seed))
         if f is not None and f < f_best:
             best_sol, f_best, mk_best, ad_best = sol.clone(), f, mk, ad
     log['after_tabu'] = [mk_best, ad_best]
+    log.setdefault('search_stage_evals', {})['tabu'] = ctx.n_evals-stage_evals
+    log.setdefault('search_stage_seconds', {})['tabu'] = time.time()-stage_start
 
     t_left = max(0.0, deadline - time.time())
     budget = min(t_left * 0.40, max(0.05, t_left))
     per_seed = budget / max(1, len(seed_solutions))
+    stage_start, stage_evals = time.time(), ctx.n_evals
     for seed_sol in seed_solutions:
         if time.time() >= deadline:
             break
         start_sol = seed_sol.clone()
         sol, f, mk, ad = sa_search(ctx, start_sol, per_seed,
                                    archive=archive, rng=rng,
-                                   deadline=deadline)
+                                   deadline=_bounded_deadline(
+                                       deadline, per_seed))
         if f is not None and f < f_best:
             best_sol, f_best, mk_best, ad_best = sol.clone(), f, mk, ad
     log['after_sa'] = [mk_best, ad_best]
+    log['search_stage_evals']['sa'] = ctx.n_evals-stage_evals
+    log['search_stage_seconds']['sa'] = time.time()-stage_start
 
     t_left = max(0.0, deadline - time.time())
     budget = min(t_left * 0.25, max(0.05, t_left))
+    stage_start, stage_evals = time.time(), ctx.n_evals
     sol, f, mk, ad = aco_search(ctx, budget, archive=archive,
-                                rng=rng, deadline=deadline)
+                                rng=rng,
+                                deadline=_bounded_deadline(deadline, budget))
     if f is not None and f < f_best:
         best_sol, f_best, mk_best, ad_best = sol.clone(), f, mk, ad
     log['after_aco'] = [mk_best, ad_best]
+    log['search_stage_evals']['aco'] = ctx.n_evals-stage_evals
+    log['search_stage_seconds']['aco'] = time.time()-stage_start
 
     t_left = max(0.0, deadline - time.time())
     budget = min(t_left * 0.25, max(0.05, t_left))
+    stage_start, stage_evals = time.time(), ctx.n_evals
     sol, f, mk, ad = mopso_search(ctx, budget, archive=archive,
-                                  rng=rng, deadline=deadline)
+                                  rng=rng,
+                                  deadline=_bounded_deadline(deadline, budget))
     if f is not None and f < f_best:
         best_sol, f_best, mk_best, ad_best = sol.clone(), f, mk, ad
     log['after_mopso'] = [mk_best, ad_best]
+    log['search_stage_evals']['mopso'] = ctx.n_evals-stage_evals
+    log['search_stage_seconds']['mopso'] = time.time()-stage_start
 
     # MCTS is an additive candidate generator.  It gets a small extra budget
     # and a separate archive, so it cannot consume the original search time or
     # evict candidates produced by the established pipeline.
     mcts_candidates = []
+    beam_candidates = []
+    wavefront_candidates = []
+    guided_high_yield = (scene, N) in {
+        ('A', 3), ('A', 4), ('A', 5), ('B', 4), ('B', 5)}
+    guided_evals = 192 if guided_high_yield else 64
     if use_mcts:
         try:
             from mcts_schedule import mcts_search
@@ -271,8 +395,8 @@ def solve_case(graph_json, N, scene, time_budget=10.0, seed=0,
             mcts_ranked = []
             mcts_sol, mcts_f, mcts_mk, mcts_ad, mcts_stats = mcts_search(
                 ctx, best_sol, mcts_budget, deadline=mcts_deadline, rng=rng,
-                archive=mcts_archive, max_depth=3, branching=16,
-                max_evals=128, stall_limit=256,
+                archive=mcts_archive, max_depth=3, branching=20,
+                max_evals=guided_evals, stall_limit=256,
                 candidate_pool=mcts_ranked, candidate_cap=32)
             log['mcts'] = mcts_stats
             log['mcts']['budget'] = mcts_budget
@@ -286,6 +410,41 @@ def solve_case(graph_json, N, scene, time_budget=10.0, seed=0,
             mcts_candidates.extend(item[3].clone() for item in mcts_ranked)
         except Exception as exc:
             log['mcts_error'] = repr(exc)
+
+    if use_beam:
+        try:
+            from beam_schedule import beam_search
+            beam_budget = min(4.0, max(2.0, total_budget * 0.20))
+            beam_deadline = time.time() + beam_budget
+            beam_archive = ParetoArchive(cap=24)
+            beam_ranked = []
+            beam_sol, beam_f, beam_mk, beam_ad, beam_stats = beam_search(
+                ctx, best_sol, beam_budget, deadline=beam_deadline,
+                archive=beam_archive, max_depth=4, width=8, branching=24,
+                max_evals=guided_evals, candidate_pool=beam_ranked,
+                candidate_cap=32, structural_actions=True)
+            log['beam'] = beam_stats
+            log['beam']['budget'] = beam_budget
+            log['beam']['proxy_improved'] = beam_f < f_best
+            log['after_beam'] = [beam_mk, beam_ad]
+            beam_candidates.append(beam_sol.clone())
+            beam_candidates.extend(
+                item[2].clone() for item in sorted(
+                    beam_archive.items,
+                    key=lambda it: ctx.fitness(it[0], it[1])))
+            beam_candidates.extend(item[3].clone() for item in beam_ranked)
+        except Exception as exc:
+            log['beam_error'] = repr(exc)
+
+    if N == 5:
+        try:
+            from wavefront_schedule import generate_candidates
+            wavefront_rows, wavefront_stats = generate_candidates(
+                ctx, best_sol, max_actions=24)
+            log['wavefront'] = wavefront_stats
+            wavefront_candidates.extend(row[2].clone() for row in wavefront_rows)
+        except Exception as exc:
+            log['wavefront_error'] = repr(exc)
 
     # 2.5 大用例专属：逐案真值在线校正 + 歧义裁决。
     # 小用例最终会全量真值校验，无需此处；大用例（>1.2万op）搜索完全
@@ -382,6 +541,8 @@ def solve_case(graph_json, N, scene, time_budget=10.0, seed=0,
     base_cands.extend(entry[1] for entry in scored[:max(3, len(seed_rows))]
                       if entry[1] is not None)
     base_cands.extend(lru_ranked)
+    legacy_cands = ([item.sol for item in legacy_items]
+                    if 'legacy_items' in locals() else [])
     n_ops = len(graph_json['ops'])
     VERIFY_CAP = 12000
     if n_ops > VERIFY_CAP:
@@ -401,9 +562,11 @@ def solve_case(graph_json, N, scene, time_budget=10.0, seed=0,
             return (mk_a, ad_a or 0) < (mk_b, ad_b or 0)
 
         best_source = None
+        best_record = None
+        official_trace = []
 
         def verify_group(candidates, limit, source):
-            nonlocal best_key, best_plan, real, best_source
+            nonlocal best_key, best_plan, real, best_source, best_record
             verified = 0
             for solx in candidates:
                 if verified >= limit:
@@ -422,6 +585,18 @@ def solve_case(graph_json, N, scene, time_budget=10.0, seed=0,
                 seen.add(sig)
                 verified += 1
                 rx = real_evaluate(graph_json, planx, scene)
+                record = {
+                    'source': source,
+                    'proxy_makespan': _mkx,
+                    'proxy_added': _adx,
+                    'official_makespan': (
+                        rx.get('makespan') if rx and not rx.get('error')
+                        else None),
+                    'official_added': (
+                        rx.get('added_copy_bytes')
+                        if rx and not rx.get('error') else None),
+                }
+                official_trace.append(record)
                 if rx is None or rx.get('error'):
                     continue
                 if best_key is None or lexi_better(
@@ -429,32 +604,100 @@ def solve_case(graph_json, N, scene, time_budget=10.0, seed=0,
                         best_key[0], best_key[1]):
                     best_key = (rx['makespan'], rx['added_copy_bytes'])
                     best_plan, real, best_source = planx, rx, source
+                    best_record = record
             return verified
 
         base_verified = verify_group(base_cands, max_verify, 'base')
-        mcts_limit = 0
-        if use_mcts and mcts_candidates:
-            mcts_limit = 4 if n_ops > 6000 else 8
+        legacy_verified = verify_group(legacy_cands, 3, 'legacy_main')
+        guided_limit = 8 if guided_high_yield and n_ops <= 6000 else 4
+        if use_mcts and use_beam:
+            mcts_limit = (guided_limit + 1) // 2
+            beam_limit = guided_limit // 2
+        else:
+            mcts_limit = guided_limit if use_mcts else 0
+            beam_limit = guided_limit if use_beam else 0
         mcts_verified = verify_group(
             mcts_candidates, mcts_limit, 'mcts') if mcts_limit else 0
+        beam_verified = verify_group(
+            beam_candidates, beam_limit, 'beam') if beam_limit else 0
+        wavefront_limit = 4 if wavefront_candidates else 0
+        wavefront_verified = verify_group(
+            wavefront_candidates, wavefront_limit, 'wavefront') if wavefront_limit else 0
+        warm_candidates = list(warm_plans or ())
         if warm_plan is not None:
-            warm_real = real_evaluate(graph_json, warm_plan, scene)
+            warm_candidates.insert(0, {'plan': warm_plan,
+                                       'source': 'legacy_argument'})
+        warm_verified = 0
+        warm_errors = []
+        if N == 5 and warm_candidates:
+            try:
+                from wavefront_schedule import generate_candidates
+                for warm_candidate in warm_candidates[:8]:
+                    warm_plan0 = (warm_candidate.get('plan')
+                                  if isinstance(warm_candidate, dict)
+                                  else warm_candidate)
+                    try:
+                        warm_sol = _solution_from_plan(model, warm_plan0, N)
+                    except Exception:
+                        continue
+                    wf_rows, _wf_stats = generate_candidates(
+                        ctx, warm_sol, max_actions=8)
+                    wavefront_candidates.extend(row[2].clone() for row in wf_rows)
+                if wavefront_candidates:
+                    log.setdefault('wavefront', {})['warm_candidates'] = len(wavefront_candidates)
+            except Exception as exc:
+                log['wavefront_warm_error'] = repr(exc)
+        for warm_index, candidate in enumerate(warm_candidates):
+            candidate_plan = (candidate.get('plan')
+                              if isinstance(candidate, dict) else candidate)
+            candidate_source = (candidate.get('source', str(warm_index))
+                                if isinstance(candidate, dict)
+                                else str(warm_index))
+            warm_real = real_evaluate(graph_json, candidate_plan, scene)
             if warm_real is not None and not warm_real.get('error'):
-                log['warm_start_makespan'] = warm_real['makespan']
+                warm_verified += 1
+                warm_record = {
+                    'source': 'warm_portfolio',
+                    'warm_source': candidate_source,
+                    'proxy_makespan': None,
+                    'proxy_added': None,
+                    'official_makespan': warm_real['makespan'],
+                    'official_added': warm_real['added_copy_bytes'],
+                }
+                official_trace.append(warm_record)
+                log.setdefault('warm_start_makespans', []).append({
+                    'source': candidate_source,
+                    'makespan': warm_real['makespan'],
+                })
                 if best_key is None or lexi_better(
                         warm_real['makespan'], warm_real['added_copy_bytes'],
                         best_key[0], best_key[1]):
-                    best_plan, real = warm_plan, warm_real
-                    best_source = 'warm_start'
+                    best_key = (warm_real['makespan'],
+                                warm_real['added_copy_bytes'])
+                    best_plan, real = candidate_plan, warm_real
+                    best_source = 'warm_portfolio'
+                    best_record = warm_record
                     log['warm_start_used'] = True
             else:
-                log['warm_start_error'] = (
-                    warm_real.get('error') if warm_real else 'unavailable')
+                warm_errors.append({
+                    'source': candidate_source,
+                    'error': (warm_real.get('error') if warm_real
+                              else 'unavailable'),
+                })
         plan = best_plan
         log['official_verified_candidates'] = len(seen)
         log['official_verified_base_candidates'] = base_verified
+        log['official_verified_legacy_candidates'] = legacy_verified
         log['official_verified_mcts_candidates'] = mcts_verified
+        log['official_verified_beam_candidates'] = beam_verified
+        log['official_verified_wavefront_candidates'] = wavefront_verified
+        log['official_verified_warm_candidates'] = warm_verified
+        if warm_errors:
+            log['warm_start_errors'] = warm_errors
         log['official_selected_source'] = best_source
+        for record in official_trace:
+            record['selected'] = record is best_record
+        log['official_candidate_trace'] = official_trace
     log['final_est'] = [mk_final, ad_final]
     log['n_evals'] = ctx.n_evals
     log['pareto_size'] = len(archive.items)

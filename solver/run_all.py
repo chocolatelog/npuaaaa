@@ -42,6 +42,50 @@ def stable_seed(case, scene, n, base_seed=0):
                           'little')
 
 
+def load_warm_candidates(case, scene, n, directories, portfolio=False):
+    """Load exact and zero-padded lower-core plans as guarded candidates."""
+    specs = [(scene, n)]
+    if portfolio and n == 5:
+        if scene in ('A', 'B'):
+            other_scene = 'B' if scene == 'A' else 'A'
+            specs = [(candidate_scene, cores)
+                     for candidate_scene in (scene, other_scene)
+                     for cores in range(2, n+1)]
+        else:
+            specs.extend((scene, cores) for cores in range(2, n))
+
+    candidates = []
+    seen = set()
+    for directory in directories or ():
+        label = os.path.basename(os.path.normpath(directory)) or directory
+        for source_scene, source_cores in specs:
+            path = os.path.join(
+                directory, f'{case}_{source_scene}_N{source_cores}.json')
+            if not os.path.isfile(path):
+                continue
+            try:
+                with open(path, encoding='utf-8') as stream:
+                    plan = json.load(stream)
+                schedules = plan.get('core_schedules')
+                if not isinstance(schedules, list) or len(schedules) != source_cores:
+                    continue
+                if source_cores < n:
+                    plan = dict(plan)
+                    plan['core_schedules'] = (list(schedules) +
+                                              [[] for _ in range(n-source_cores)])
+                signature = json.dumps(plan, sort_keys=True, separators=(',', ':'))
+                if signature in seen:
+                    continue
+                seen.add(signature)
+                candidates.append({
+                    'plan': plan,
+                    'source': f'{label}:{source_scene}:N{source_cores}',
+                })
+            except (OSError, ValueError, TypeError, json.JSONDecodeError):
+                continue
+    return candidates
+
+
 def solve_task(task):
     from model import load_graph
     from pipeline import solve_case
@@ -51,20 +95,17 @@ def solve_task(task):
     n_ops = len(graph['ops'])
     n_eligible = sum(1 for o in graph['ops']
                      if o['op'] not in ('COPY_IN', 'COPY_OUT'))
-    warm_plan = None
-    if task.get('warm_start_dir'):
-        warm_path = os.path.join(task['warm_start_dir'],
-                                 f'{case}_{scene}_N{n}.json')
-        if os.path.isfile(warm_path):
-            with open(warm_path, encoding='utf-8') as f:
-                warm_plan = json.load(f)
+    warm_plans = load_warm_candidates(
+        case, scene, n, task.get('warm_start_dirs', ()),
+        portfolio=task.get('warm_portfolio', False))
     res = solve_case(graph, N=n, scene=scene,
                      time_budget=task.get('budget') or budget_for(n_ops),
                      seed=task.get('seed', stable_seed(case, scene, n)),
                      verify_k=task.get('verify_k', 16),
                      block_ops_cap=block_cap_for(n_eligible),
-                     warm_plan=warm_plan,
-                     use_mcts=task.get('use_mcts', False))
+                     warm_plans=warm_plans,
+                     use_mcts=task.get('use_mcts', False),
+                     use_beam=task.get('use_beam', False))
     out_plan = os.path.join(task.get('out_plans', OUT_PLANS),
                             f'{case}_{scene}_N{n}.json')
     with open(out_plan, 'w', encoding='utf-8') as f:
@@ -101,20 +142,24 @@ def main():
                         help='最多送官方评估器核验的候选数（小图 16-32）')
     parser.add_argument('--mcts', action='store_true',
                         help='启用有界 PUCT 调度树搜索实验')
-    parser.add_argument('--warm-start-dir', default=None)
+    parser.add_argument('--beam', action='store_true',
+                        help='启用等预算结构 Beam Search 实验')
+    parser.add_argument('--warm-start-dir', action='append', default=[],
+                        help='可重复；从一个或多个历史方案目录追加官方保底候选')
+    parser.add_argument('--warm-portfolio', action='store_true',
+                        help='5核同时复核另一场景N5和同场景N2/N3/N4补空核方案')
     parser.add_argument('--output-dir', default=OUT_PLANS)
     parser.add_argument('--log-file', default=OUT_LOG)
     args = parser.parse_args()
 
     OUT_PLANS = os.path.abspath(args.output_dir)
     OUT_LOG = os.path.abspath(args.log_file)
-    warm_start_dir = (os.path.abspath(args.warm_start_dir)
-                      if args.warm_start_dir else None)
-    if (warm_start_dir and
-            os.path.normcase(warm_start_dir) ==
-            os.path.normcase(OUT_PLANS)):
+    warm_start_dirs = [os.path.abspath(path)
+                       for path in args.warm_start_dir]
+    if any(os.path.normcase(path) == os.path.normcase(OUT_PLANS)
+           for path in warm_start_dirs):
         parser.error('--warm-start-dir must differ from --output-dir')
-    if warm_start_dir and not os.path.isdir(warm_start_dir):
+    if any(not os.path.isdir(path) for path in warm_start_dirs):
         parser.error('--warm-start-dir does not exist')
     os.makedirs(OUT_PLANS, exist_ok=True)
     cases = parse_cases(args.cases)
@@ -142,7 +187,9 @@ def main():
                                                       args.seed),
                                   'verify_k': args.verify_k,
                                   'use_mcts': args.mcts,
-                                  'warm_start_dir': warm_start_dir,
+                                  'use_beam': args.beam,
+                                  'warm_start_dirs': warm_start_dirs,
+                                  'warm_portfolio': args.warm_portfolio,
                                   'out_plans': OUT_PLANS})
     print(f'{len(tasks)} tasks to solve '
           f'({len(done)} already done), workers={args.workers}')
