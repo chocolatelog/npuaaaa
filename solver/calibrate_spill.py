@@ -15,6 +15,44 @@ sys.path.insert(0, HERE)
 RESULTS = os.path.normpath(os.path.join(HERE, '..', 'results'))
 ATTACH = os.path.normpath(os.path.join(
     HERE, '..', '通用神经网络处理器下的多核调度问题附件'))
+SEGMENTED_OUT = os.path.join(RESULTS, 'spill_coefs_segmented_v1.json')
+L1_CAP = 524288.0
+
+
+def feature_vector(row):
+    """返回可在代理阶段获得的分段拟合特征。"""
+    sig = row['sig']
+    peak = row['peak']
+    return [sig['L1p'], sig['L1w'], sig['UBp'], sig['UBw'],
+            peak['L1'], peak['UB'], row['partition_added'] / 1e6,
+            row['n_ops'] / 1000.0, 1.0]
+
+
+def segment_key(row):
+    """按规模、L1 压力、核数和场景划分，保持段数量可控。"""
+    n_ops = row['n_ops']
+    size = 'small' if n_ops <= 2000 else ('medium' if n_ops <= 6000 else 'large')
+    pressure = row['peak']['L1'] / L1_CAP
+    pressure_bin = 'low' if pressure <= 0.85 else ('mid' if pressure <= 1.25 else 'high')
+    core_bin = 'lowcore' if row['N'] <= 2 else 'highcore'
+    return f"{row['scene']}|{size}|{pressure_bin}|{core_bin}"
+
+
+def split_by_case(data):
+    """按算例切分，强制关键失败样本留出，防止同一算例泄漏。"""
+    cases = sorted({row['case'] for row in data})
+    holdout = {'case_044', 'case_067'}
+    holdout.update(cases[::5])
+    train = [row for row in data if row['case'] not in holdout]
+    test = [row for row in data if row['case'] in holdout]
+    return train, test, sorted(holdout)
+
+
+def scene_from_parts(parts):
+    """把官方 problem 编号映射到题目场景。"""
+    if len(parts) > 3 and parts[2] == 'problem':
+        return {1: 'A', 2: 'B', 3: 'C'}.get(int(parts[3]))
+    return None
 
 
 def block_cap_for(n_eligible):
@@ -37,9 +75,12 @@ def decode_plan(model, plan):
 def collect():
     from model import load_graph, Model
     data = []
+    stats = {'files': 0, 'valid': 0, 'skipped_missing_plan': 0,
+             'skipped_invalid_plan': 0, 'by_scene': {s: 0 for s in 'ABC'}}
     graphs = {}
     files = sorted(glob.glob(os.path.join(RESULTS, 'official', '*_res.json')))
     for path in files:
+        stats['files'] += 1
         name = os.path.basename(path)[:-len('_res.json')]
         parts = name.split('_')
         case = '_'.join(parts[:2])
@@ -52,12 +93,20 @@ def collect():
             scene, n = 'A', 1
             plan = None
         else:
-            scene = 'A' if parts[2] == 'problem' and parts[3] == '1' else 'B'
-            n = int(parts[-1][1:])
+            scene = scene_from_parts(parts)
+            if scene is None:
+                stats['skipped_invalid_plan'] += 1
+                continue
+            n = int(parts[4][1:])
             pp = os.path.join(RESULTS, 'plans', f'{case}_{scene}_N{n}.json')
             if not os.path.exists(pp):
+                stats['skipped_missing_plan'] += 1
                 continue
-            plan = json.load(open(pp, encoding='utf-8'))
+            try:
+                plan = json.load(open(pp, encoding='utf-8'))
+            except (OSError, ValueError):
+                stats['skipped_invalid_plan'] += 1
+                continue
         if case not in graphs:
             g = load_graph(os.path.join(ATTACH, 'data', f'{case}.json'))
             n_el = sum(1 for o in g['ops']
@@ -68,16 +117,27 @@ def collect():
             nb = len(model.blocks)
             sg_of_block, core_of_sg = [0] * nb, [0]
         else:
-            sg_of_block, core_of_sg = decode_plan(model, plan)
+            try:
+                sg_of_block, core_of_sg = decode_plan(model, plan)
+            except (KeyError, TypeError, ValueError, IndexError):
+                stats['skipped_invalid_plan'] += 1
+                continue
         _, _, info = model.evaluate(sg_of_block, core_of_sg, scene,
                                     max(n, 1), use_cache=False)
         sig = info['spill_sig']
         data.append({
             'case': case, 'scene': scene, 'N': n,
             'real': float(real_spill),
-            'x': [sig['L1p'], sig['L1w'], sig['UBp'], sig['UBw'], 1.0],
+            'sig': {key: float(sig.get(key, 0.0))
+                    for key in ('L1p', 'L1w', 'UBp', 'UBw')},
+            'peak': {key: float(info.get('peak_memory_bytes', {}).get(key, 0.0))
+                     for key in ('L1', 'UB')},
+            'partition_added': float(info.get('partition_added_bytes', 0.0)),
+            'n_ops': len(model.graph_json['ops']),
         })
-    return data
+        stats['valid'] += 1
+        stats['by_scene'][scene] += 1
+    return data, stats
 
 
 def nnls(X, y, iters=20000, lr=0.01, l2=0.0):
@@ -139,35 +199,79 @@ def spearman(a, b):
 
 
 def main():
-    data = collect()
+    data, collect_stats = collect()
     print(f'样本: {len(data)}')
-    # 80/20 按用例划分
-    cases = sorted({d['case'] for d in data})
-    test_cases = set(cases[::5])
-    tr = [d for d in data if d['case'] not in test_cases]
-    te = [d for d in data if d['case'] in test_cases]
-    X = [d['x'] for d in tr]
-    y = [d['real'] for d in tr]
-    w = nnls(X, y)
-    print('NNLS 系数 [a·L1p, b·L1w, c·UBp, d·UBw, e] =',
-          [round(v, 4) for v in w])
-    r2_tr, mape_tr = evaluate_fit(X, y, w)
-    r2_te, mape_te = evaluate_fit([d['x'] for d in te], [d['real'] for d in te], w)
-    print(f'训练集 R2={r2_tr:.3f} MAPE={mape_tr:.1%} | 留出集 R2={r2_te:.3f} MAPE={mape_te:.1%}')
-    # 排序能力对比（全局，按场景）
-    for scene in ('A', 'B'):
-        sub = [d for d in data if d['scene'] == scene]
-        reals = [d['real'] for d in sub]
-        pred_h = [2 * (max(d['x'][0], d['x'][1]) + max(d['x'][2], d['x'][3]))
-                  for d in sub]
-        pred_c = [max(0.0, sum(w[j] * d['x'][j] for j in range(5)))
-                  for d in sub]
-        print(f'场景{scene}: 真值排序相关 启发式={spearman(pred_h, reals):.3f} '
-              f'校准后={spearman(pred_c, reals):.3f} (n={len(sub)})')
-    with open(os.path.join(HERE, 'spill_coefs.json'), 'w') as f:
-        json.dump({'coefs': w,
-                   'note': 'spill_bytes = a*L1p+b*L1w+c*UBp+d*UBw+e, NNLS on official results'}, f, indent=1)
-    print('saved -> solver/spill_coefs.json')
+    print('样本有效性:', collect_stats)
+    train, test, holdout_cases = split_by_case(data)
+    print('留出算例:', ','.join(holdout_cases))
+
+    # 全局父模型只用于分段收缩和小样本回退；不覆盖当前 active 系数文件。
+    parent_x = [feature_vector(row) for row in train]
+    parent_y = [row['real'] for row in train]
+    parent = nnls(parent_x, parent_y)
+    grouped = {}
+    for row in train:
+        grouped.setdefault(segment_key(row), []).append(row)
+    models = {}
+    for key, rows in grouped.items():
+        if len(rows) < 30:
+            continue
+        local = nnls([feature_vector(row) for row in rows],
+                     [row['real'] for row in rows])
+        weight = len(rows) / (len(rows) + 50.0)
+        models[key] = [weight * a + (1.0 - weight) * b
+                       for a, b in zip(local, parent)]
+
+    def predict(row, coefs):
+        return max(0.0, sum(a * b for a, b in
+                            zip(coefs, feature_vector(row))))
+
+    def segmented_predict(row):
+        return predict(row, models.get(segment_key(row), parent))
+
+    print('全局特征数:', len(parent), '有效分段:', len(models))
+    print('全局父模型系数:', [round(float(v), 6) for v in parent])
+
+    report = {
+        'schema_version': 'spill-segmented-v1',
+        'feature_names': ['L1p', 'L1w', 'UBp', 'UBw', 'peak_L1',
+                          'peak_UB', 'partition_added_MB', 'n_ops_k', 'bias'],
+        'split': {'holdout_cases': holdout_cases,
+                  'train_rows': len(train), 'test_rows': len(test)},
+        'collection': collect_stats,
+        'parent_coefs': [float(v) for v in parent],
+        'segments': {key: [float(v) for v in value]
+                     for key, value in models.items()},
+    }
+    metrics = {}
+    for label, rows, fn in (
+            ('训练集', train, segmented_predict),
+            ('留出集', test, segmented_predict)):
+        pred = [fn(row) for row in rows]
+        real = [row['real'] for row in rows]
+        positive = [(p, t) for p, t in zip(pred, real) if t > 0]
+        mape = (sum(abs(p - t) / t for p, t in positive) /
+                max(1, len(positive)))
+        mae = sum(abs(p - t) for p, t in zip(pred, real)) / max(1, len(real))
+        metrics[label] = {'mae': mae, 'positive_mape': mape,
+                          'spearman': spearman(pred, real),
+                          'rows': len(rows)}
+        print(f'{label}: MAE={mae:.1f} 正spill MAPE={mape:.1%} '
+              f'排序相关={spearman(pred, real):.3f} (n={len(rows)})')
+
+    report['metrics'] = metrics
+    with open(SEGMENTED_OUT, 'w', encoding='utf-8') as f:
+        json.dump(report, f, ensure_ascii=False, indent=1)
+    print('saved ->', SEGMENTED_OUT)
+
+    # 仅在留出集上报告关键失败算例，不能把它们用于拟合。
+    for case in ('case_044', 'case_067'):
+        rows = [row for row in test if row['case'] == case]
+        if rows:
+            vals = [segmented_predict(row) for row in rows]
+            print(f'{case}: proxy spill [{min(vals):.1f}, {max(vals):.1f}] '
+                  f'real [{min(row["real"] for row in rows):.1f}, '
+                  f'{max(row["real"] for row in rows):.1f}]')
 
 
 if __name__ == '__main__':

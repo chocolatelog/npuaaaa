@@ -374,6 +374,25 @@ def _keep_non_regressions(children, parents):
     return kept
 
 
+def _retain_candidates(ctx, model, items, num_cores, limit=48):
+    """旁路保留已生成候选；不改变种子、评分或搜索顺序。"""
+    if not getattr(ctx, 'retain_constructs', False):
+        return
+    if not hasattr(ctx, 'construct_reservoir'):
+        ctx.construct_reservoir = []
+    seen = {item.signature for item in ctx.construct_reservoir}
+    for item in items:
+        if len(ctx.construct_reservoir) >= limit:
+            break
+        signature = make_signature(item.sol)
+        if signature in seen or not item.sol.validate(model, num_cores):
+            continue
+        seen.add(signature)
+        ctx.construct_reservoir.append(replace(item, sol=item.sol.clone(),
+                                              metrics=dict(item.metrics or {}),
+                                              signature=signature))
+
+
 def build_construct_candidates(model, num_cores, scene, ctx=None, seed=0,
                                max_base=12, max_r1=8, max_r2=6, max_r3=4,
                                final_seeds=6):
@@ -383,17 +402,21 @@ def build_construct_candidates(model, num_cores, scene, ctx=None, seed=0,
     base = _evaluate(generate_base_candidates(model, num_cores, scene), ctx)
     if ctx is None:
         return base
+    _retain_candidates(ctx, model, base, num_cores)
     base = _deduplicate(base, max_base, True, True)
     base_r1 = base[:max_r1]
     r1 = _evaluate([_refine_core(x, model, scene, ctx) for x in base_r1], ctx)
+    _retain_candidates(ctx, model, r1, num_cores)
     r1 = _keep_non_regressions(r1, base_r1)
     r1 = _deduplicate(r1, max_r1, True, True)
     r1_r2 = r1[:max_r2]
     r2 = _evaluate([_refine_boundary(x, model, scene, ctx) for x in r1_r2], ctx)
+    _retain_candidates(ctx, model, r2, num_cores)
     r2 = _keep_non_regressions(r2, r1_r2)
     r2 = _deduplicate(r2, max_r2, True, False)
     r2_r3 = r2[:max_r3]
     r3 = _evaluate([_refine_order(x, model, scene, ctx) for x in r2_r3], ctx)
+    _retain_candidates(ctx, model, r3, num_cores)
     r3 = _keep_non_regressions(r3, r2_r3)
     r3 = _deduplicate(r3, max_r3)
     all_items = base + r1 + r2 + r3

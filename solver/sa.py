@@ -4,7 +4,7 @@ import random
 
 
 def sa_search(ctx, sol, time_budget, deadline=None, T0_frac=0.15,
-              cool=0.995, restarts=2, archive=None, rng=None, max_evals=None):
+              cool=0.995, restarts=2, archive=None, rng=None, max_evals=None, max_rounds=None):
     """返回 (best_sol, best_fitness, best_mk, best_added)。"""
     import time
     rng = rng or random.Random()
@@ -18,14 +18,19 @@ def sa_search(ctx, sol, time_budget, deadline=None, T0_frac=0.15,
     best_mk, best_ad = mk_cur, ad_cur
     if archive is not None:
         archive.insert(mk_cur, ad_cur, cur)
+    steps = 0
     while True:
+        if max_rounds is not None and steps >= max_rounds:
+            return best, f_best, best_mk, best_ad
         # 温度按初始适应度比例设定
         T = max(1.0, f_cur * T0_frac)
         while T > max(1.0, f_best * 1e-4):
-            if time.time() >= t_end or (
+            if (max_rounds is None and time.time() >= t_end) or (
+                    max_rounds is not None and steps >= max_rounds) or (
                     max_evals is not None and ctx.n_evals - evals0 >= max_evals):
                 return best, f_best, best_mk, best_ad
             # 锦标赛生成：4 个候选动作，SSM 预测后仅完整仿真预测最优者
+            steps += 1
             n_try = 4
             cands = []
             for _ in range(n_try):
@@ -67,10 +72,11 @@ def sa_search(ctx, sol, time_budget, deadline=None, T0_frac=0.15,
                     best, f_best = cand.clone(), f_new
                     best_mk, best_ad = mk_new, ad_new
             T *= cool
+        steps += 1  # 无降温步时仍计一次重启，保证固定模式有界
         # 重启：从最优解扰动出发
         cur = best.clone()
         for _ in range(max(2, ctx.nb // 50)):
             ctx.random_move(cur, rng)
         f_cur, mk_cur, ad_cur = ctx.eval_fitness(cur)
-        if time.time() >= t_end:
+        if max_rounds is None and time.time() >= t_end:
             return best, f_best, best_mk, best_ad
