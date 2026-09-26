@@ -16,7 +16,8 @@ from model import Model, load_graph, BW, MEM_CAP
 from solution import Sol, Context
 from archive import ParetoArchive
 import construct
-from construct_refine import build_construct_candidates
+from construct_refine import (build_construct_candidates,
+                              build_large_construct_candidates)
 from tabu import tabu_search
 from sa import sa_search
 from aco import aco_search
@@ -158,14 +159,55 @@ def _select_seed_solutions(scored, limit=6):
     return selected[:limit]
 
 
-def _proxy_for_plan(model, plan, scene, num_cores):
-    sg = [plan['node_to_subgraph'][str(block[0])] for block in model.blocks]
+def _project_plan_to_blocks(model, plan):
+    """将原算子方案投影到当前块模型；块内拆分时返回 None。
+
+    B/C 原算子候选可以表达比搜索块更细的切分，但当前快速代理只接受
+    一个块对应一个子图。保留 None 作为明确的可表达性信号，避免把无损
+    映射失败伪装成搜索失败或让全量任务直接报错。
+    """
+    mapping = {int(k): int(v) for k, v in plan.get('node_to_subgraph', {}).items()}
+    sg = []
+    for block in model.blocks:
+        groups = {mapping.get(int(op)) for op in block}
+        if None in groups or len(groups) != 1:
+            return None
+        sg.append(next(iter(groups)))
     cores = [0] * (max(sg) + 1)
     for c, order in enumerate(plan['core_schedules']):
         for s in order:
             cores[s] = c
-    if model.plan_from(sg, plan['core_schedules']) != plan:
+    try:
+        projected = model.plan_from(sg, plan['core_schedules'])
+    except (KeyError, IndexError, TypeError, ValueError):
+        return None
+    if projected != plan:
+        return None
+    return projected
+
+
+def _proxy_for_plan(model, plan, scene, num_cores, graph=None):
+    projected = _project_plan_to_blocks(model, plan)
+    if projected is None:
+        if scene in ('B', 'C') and graph is not None:
+            from scene_b_features import SceneBFeatures
+            features = SceneBFeatures(graph).evaluate(plan, scene)
+            added = max(0, features['partition_added_bytes'])
+            return features['lower_bound'], added, {
+                'orders': plan['core_schedules'], 'partition_raw_bytes': features['boundary_bytes'],
+                'partition_added_bytes': added, 'total_added_bytes': added,
+                'proxy_representation': 'original_operations',
+                'proxy_scope': 'compute_and_boundary_without_spill_prediction',
+                'spill_prediction_available': False,
+                'memory_overage': {p: features['per_pool'][p]['overage'] for p in ('L1', 'UB')},
+                'peak_memory_bytes': {p: features['per_pool'][p]['peak'] for p in ('L1', 'UB')}}
         raise ValueError('后处理方案不能无损映射回块模型')
+    mapping = {int(k): int(v) for k, v in plan['node_to_subgraph'].items()}
+    sg = [mapping[int(block[0])] for block in model.blocks]
+    cores = [0] * (max(sg) + 1)
+    for c, order in enumerate(plan['core_schedules']):
+        for s in order:
+            cores[s] = c
     return model.evaluate(sg, cores, scene, num_cores, use_cache=False,
                           orders_override=plan['core_schedules'])
 
@@ -197,7 +239,10 @@ def solve_case(graph_json, N, scene, time_budget=10.0, seed=0,
                use_lru_spill=False, event_rerank=False, task_order_refine=False,
                partition_polish=False, construct_reservoir=False,
                fast_candidate_eval=False, search_rounds=None,
-               terminal_swaps=False, terminal_cache=False):
+               terminal_swaps=False, terminal_window=False, terminal_cache=False,
+               bandwidth_proxy=False, contention_weight=0.0,
+               large_case_reservoir=False, bc_refine=False,
+               c_cache_search=False):
     """求解一个 (用例, 核数, 场景)。use_screen=True 时 SA/TS 启用
     Mamba 式 SSM 粗筛层；spill_calibrated=True 时启用 NNLS 校准的
     spill 系数（默认启发式）。返回 dict。"""
@@ -207,15 +252,18 @@ def solve_case(graph_json, N, scene, time_budget=10.0, seed=0,
         if isinstance(search_rounds, bool) or not isinstance(search_rounds, int) or search_rounds < 1:
             raise ValueError('固定轮数必须为正整数')
         if any((use_screen, event_rerank, task_order_refine, partition_polish,
-                construct_reservoir, fast_candidate_eval)):
+                construct_reservoir, fast_candidate_eval, terminal_window)):
             raise ValueError('固定轮数模式暂不支持额外限时后处理或学习筛选；请独立进行固定候选消融')
     t0 = time.time()
+    n_ops = len(graph_json.get('ops', ()))
     model = Model(graph_json, block_ops_cap=block_ops_cap)
     model.use_lru_spill = bool(use_lru_spill)
+    model.use_bandwidth_proxy = bool(bandwidth_proxy)
     if spill_calibrated and scene in ('A', 'B'):
         _apply_spill_coefs(model, N)
     ctx = Context(model, N, scene, traffic_weight=traffic_weight,
-                  screen_enabled=use_screen, seed=seed)
+                  screen_enabled=use_screen, seed=seed,
+                  contention_weight=(contention_weight if bandwidth_proxy else 0.0))
     ctx.retain_constructs = bool(construct_reservoir and event_rerank and scene == 'A')
     rng = random.Random(seed)
     archive = ParetoArchive(cap=48)
@@ -223,12 +271,18 @@ def solve_case(graph_json, N, scene, time_budget=10.0, seed=0,
     # 1. 构造池
     # 大图的官方真值评估本身受 verify_cap 限制，构造池按方案中的
     # 时间预算降级规则只保留 R0，避免精化层吞掉主搜索预算。
+    items = []
     if len(graph_json['ops']) > 12000:
-        # 超大图的边界流量矩阵构造会超过总预算；按方案的超时兜底规则
-        # 使用单个 HEFT 代表进入搜索，专项构造池验证仍覆盖完整 R0 矩阵。
-        sg, core = construct.heft_construct(model, N, scene,
-                                             max_sg_ops=1280)
-        pool = [Sol(sg, core)]
+        # 默认仍使用单个 HEFT 保底；大图专项实验显式打开候选储备池后，
+        # 才比较四类低成本构造来源，避免改变历史实验的搜索路径。
+        if large_case_reservoir:
+            items = build_large_construct_candidates(
+                model, N, scene, max_sg_ops=1280, max_candidates=4)
+            pool = [item.sol for item in items]
+        else:
+            sg, core = construct.heft_construct(model, N, scene,
+                                                 max_sg_ops=1280)
+            pool = [Sol(sg, core)]
     else:
         items = build_construct_pool(model, N, scene, ctx=ctx,
                                      return_candidates=True)
@@ -238,8 +292,7 @@ def solve_case(graph_json, N, scene, time_budget=10.0, seed=0,
         sol.compact()
         mk, ad, _ = ctx.evaluate(sol)
         archive.insert(mk, ad, sol)
-        meta = (items[index] if len(graph_json['ops']) <= 12000 and
-                'items' in locals() else None)
+        meta = (items[index] if index < len(items) else None)
         scored.append((ctx.fitness(mk, ad), sol, mk, ad, meta))
     scored.sort(key=lambda x: x[0])
     seed_rows = _select_seed_solutions(scored, min(6, len(scored)))
@@ -251,7 +304,16 @@ def solve_case(graph_json, N, scene, time_budget=10.0, seed=0,
            'search_rounds': search_rounds, 'construct_best': [mk_best, ad_best],
            'construct_seed_count': len(seed_solutions),
            'construct_seed_paradigms': [getattr(row[4], 'paradigm', None)
-                                        for row in seed_rows]}
+                                        for row in seed_rows],
+           'large_case_reservoir': bool(large_case_reservoir and
+                                        len(graph_json['ops']) > 12000)}
+    if len(graph_json['ops']) > 12000 and large_case_reservoir:
+        log['large_case_candidates'] = [
+            {'paradigm': item.paradigm, 'reason': item.reason,
+             'signature': item.signature,
+             'proxy_makespan': row[2],
+             'proxy_added_copy_bytes': row[3]}
+            for row in scored for item in ([row[4]] if row[4] is not None else [])]
 
     # 超大图的邻域搜索会使单个任务远超总预算；保留构造解代理结果，
     # 由全量统计单独标记为时间预算兜底。官方真值评估对这类图也受限。
@@ -260,8 +322,12 @@ def solve_case(graph_json, N, scene, time_budget=10.0, seed=0,
         mk_final, ad_final, info = ctx.evaluate(best_sol)
         plan = model.plan_from(best_sol.sg_of_block, info['orders'])
         log['large_case_fallback'] = True
-        if terminal_swaps:
-            log['terminal_swaps'] = {'skipped': '大图尚无原官方保底，末端交换未执行'}
+        log['large_case_selected_source'] = (
+            getattr(best_row[4], 'paradigm', 'heft')
+            if best_row[4] is not None else 'heft')
+        if terminal_swaps or terminal_window:
+            log['terminal_swaps' if terminal_swaps else 'terminal_window'] = {
+                'skipped': '大图尚无原官方保底，末端顺序精化未执行'}
         log['final_est'] = [mk_final, ad_final]
         log['n_evals'] = ctx.n_evals
         return {'plan': plan, 'est': (mk_final, ad_final), 'real': None,
@@ -393,6 +459,27 @@ def solve_case(graph_json, N, scene, time_budget=10.0, seed=0,
     plan = model.plan_from(best_sol.sg_of_block, info['orders'])
     log['search_best_est'] = [mk_final, ad_final]
     log['official_candidates'] = []
+    bc_candidates = []
+    bc_audit = None
+    # B/C 的原算子精化只生成合法方案；真值仍统一走下面的原官方循环。
+    # 大图没有可接受的官方保底时不生成候选，避免代理结果冒充正式选择。
+    if scene in ('B', 'C') and n_ops <= 12000 and (bc_refine or c_cache_search):
+        try:
+            if scene == 'C' and c_cache_search:
+                from bc_search import beam_search_candidates
+                bc_candidates, bc_audit = beam_search_candidates(
+                    graph_json, plan, scene, depth=2, width=4,
+                    max_states=64, max_candidates=6, seed=seed)
+                bc_audit['search'] = 'beam'
+            else:
+                from bc_refine import generate_bc_candidates
+                bc_candidates, bc_audit = generate_bc_candidates(
+                    graph_json, plan, scene, max_candidates=6)
+                bc_audit['search'] = 'one_step'
+            log['bc_refine'] = bc_audit
+        except Exception as exc:
+            log['bc_refine'] = {'scene': scene, 'error': repr(exc),
+                                'generated': 0, 'returned': 0}
     real = None
     cands = [best_sol]
     if archive.items:
@@ -458,6 +545,48 @@ def solve_case(graph_json, N, scene, time_budget=10.0, seed=0,
                 best_plan, real = planx, rx
                 mk_final, ad_final, info = mkx, adx, infox
                 log['selected_plan_id'] = plan_id
+        # 新 B/C 候选与原流程共享同一官方确认门槛；任何异常均回退父方案。
+        for bc_plan in bc_candidates:
+            sig = json.dumps({'n': bc_plan['node_to_subgraph'],
+                              'c': bc_plan['core_schedules']}, sort_keys=True)
+            if sig in seen:
+                continue
+            seen.add(sig)
+            metrics = next((row for row in (bc_audit or {}).get('candidate_metrics', [])
+                            if row.get('plan_id') == hashlib.sha256(
+                                json.dumps(bc_plan, sort_keys=True,
+                                           separators=(',', ':')).encode('utf-8')).hexdigest()), {})
+            rx = real_evaluate(graph_json, bc_plan, scene)
+            plan_id = hashlib.sha256(sig.encode('utf-8')).hexdigest()
+            block_proxy_plan = _project_plan_to_blocks(model, bc_plan)
+            block_proxy_eligible = block_proxy_plan is not None
+            log['official_candidates'].append({
+                'plan_id': plan_id, 'source': 'bc_refine',
+                'proxy_makespan': metrics.get('proxy_lower_bound'),
+                'proxy_boundary_cycles': metrics.get('proxy_boundary_cycles'),
+                'proxy_total_added_bytes': None,
+                'proxy_lifetime_pressure': metrics.get('lifetime_pressure'),
+                'proxy_cache_reuse_bytes': metrics.get('cache_reuse_bytes'),
+                'proxy_cache_hit_potential_bytes': metrics.get('cache_hit_potential_bytes'),
+                'proxy_cache_miss_bytes': metrics.get('cache_miss_bytes'),
+                'proxy_l1_peak_bytes': metrics.get('l1_peak_bytes'),
+                'proxy_ub_peak_bytes': metrics.get('ub_peak_bytes'),
+                'block_proxy_eligible': block_proxy_eligible,
+                'selection_reject_reason': None,
+                'official': rx})
+            if rx is None or rx.get('error'):
+                continue
+            # B/C 新模块使用严格官方字典序；A 的历史 0.3% 容差不外溢。
+            bc_better = (best_key is None or
+                         (rx['makespan'], rx['added_copy_bytes']) < best_key)
+            if bc_better:
+                best_key = (rx['makespan'], rx['added_copy_bytes'])
+                best_plan, real = bc_plan, rx
+                mk_final, ad_final, info = _proxy_for_plan(
+                    model, bc_plan, scene, N, graph=graph_json)
+                log['selected_plan_id'] = plan_id
+                if bc_audit is not None:
+                    bc_audit['selected_plan_id'] = plan_id
         plan = best_plan
         baseline = copy.deepcopy((plan, real, mk_final, ad_final, info,
                                   log.get('selected_plan_id')))
@@ -580,10 +709,11 @@ def solve_case(graph_json, N, scene, time_budget=10.0, seed=0,
             audit['total_postprocess_seconds'] = time.perf_counter() - baseline_seconds
             log['fast_candidate_eval'] = audit
         # E03/E04 的输入是完整旧流程最终方案，必须在上面的原官方守卫之后。
-        if terminal_swaps:
+        if terminal_swaps or terminal_window:
             from run_all import valid_official
             if scene != 'A' or not valid_official(real):
-                log['terminal_swaps'] = {'skipped': '只处理具有有效原官方保底的场景 A'}
+                log['terminal_swaps' if terminal_swaps else 'terminal_window'] = {
+                    'skipped': '只处理具有有效原官方保底的场景 A'}
             else:
                 from task_order_search import refine_plan_orders
                 extra_started = time.perf_counter()
@@ -594,13 +724,17 @@ def solve_case(graph_json, N, scene, time_budget=10.0, seed=0,
                     if terminal_cache:
                         screen_evaluate, cache = _cached_candidate_evaluator()
                     proposed, proposed_real, audit = refine_plan_orders(
-                        graph_json, plan, real, real_evaluate, enable_swaps=True,
+                        graph_json, plan, real, real_evaluate,
+                        enable_swaps=terminal_swaps,
+                        enable_window=terminal_window,
                         search_seconds=search_seconds, max_evals=4000,
                         candidate_evaluator=screen_evaluate, rerank_keep=8)
                     # 指标与候选记录先写入临时容器，异常不能留下半次选中记录。
                     stage_log = {'official_candidates': []}
+                    stage_name = ('terminal_swap_challenger'
+                                  if terminal_swaps else 'terminal_window_challenger')
                     metrics = _record_postprocess(model, proposed, audit,
-                        'terminal_swap_challenger', scene, N, stage_log)
+                        stage_name, scene, N, stage_log)
                     for row in stage_log['official_candidates']:
                         row['evaluation_source'] = 'original_official'
                     audit['baseline_plan_id'] = log.get('selected_plan_id')
@@ -615,9 +749,11 @@ def solve_case(graph_json, N, scene, time_budget=10.0, seed=0,
                     mk_final, ad_final, info = metrics
                     log['official_candidates'].extend(stage_log['official_candidates'])
                     log['selected_plan_id'] = stage_log['selected_plan_id']
-                    log['terminal_swaps'] = audit
+                    log_key = 'terminal_swaps' if terminal_swaps else 'terminal_window'
+                    log[log_key] = audit
                 except Exception as exc:
-                    log['terminal_swaps'] = {'error': repr(exc), 'fallback_used': True,
+                    log_key = 'terminal_swaps' if terminal_swaps else 'terminal_window'
+                    log[log_key] = {'error': repr(exc), 'fallback_used': True,
                         'baseline_plan_id': log.get('selected_plan_id'),
                         'search_seconds_limit': search_seconds,
                         'cache_stats': dict(cache.stats) if cache is not None else None,
@@ -631,11 +767,15 @@ def solve_case(graph_json, N, scene, time_budget=10.0, seed=0,
                          'calibrated_gated' if log['spill_calibrated'] else 'heuristic')
     log['spill_calibration_blend'] = (float(model.spill_calibration_blend)
                                      if log['spill_calibrated'] else 0.0)
+    log['proxy_representation'] = info.get('proxy_representation', 'blocks')
+    log['proxy_scope'] = info.get('proxy_scope', 'legacy_block_proxy')
+    log['spill_prediction_available'] = info.get('spill_prediction_available', True)
     log['proxy_partition_raw_bytes'] = float(
         info.get('partition_raw_bytes', 0.0))
     log['proxy_partition_added_bytes'] = float(
         info.get('partition_added_bytes', 0.0))
-    log['proxy_spill_added_bytes'] = float(info.get('spill_bytes', 0.0))
+    log['proxy_spill_added_bytes'] = (float(info.get('spill_bytes', 0.0))
+                                    if log['spill_prediction_available'] else None)
     log['proxy_total_added_bytes'] = float(
         info.get('total_added_bytes', ad_final))
     log['proxy_memory_overage'] = {

@@ -1,0 +1,271 @@
+{
+  "N": 5,
+  "count": 20,
+  "wins": 13,
+  "losses": 0,
+  "significant": 3,
+  "mean_gain": 0.0031448046105841234,
+  "gate_passed": true,
+  "rows": [
+    {
+      "case": "case_016",
+      "N": 5,
+      "baseline": 2086358,
+      "final": 2086358,
+      "gain": 0.0,
+      "bytes_delta": {
+        "added_copy_bytes": 0,
+        "scheduled_copy_bytes": 0,
+        "partition_added": 0,
+        "spill_added": 0
+      }
+    },
+    {
+      "case": "case_020",
+      "N": 5,
+      "baseline": 107650,
+      "final": 107650,
+      "gain": 0.0,
+      "bytes_delta": {
+        "added_copy_bytes": 0,
+        "scheduled_copy_bytes": 0,
+        "partition_added": 0,
+        "spill_added": 0
+      }
+    },
+    {
+      "case": "case_025",
+      "N": 5,
+      "baseline": 970679,
+      "final": 970515,
+      "gain": 0.0001689538972203808,
+      "bytes_delta": {
+        "added_copy_bytes": 0,
+        "scheduled_copy_bytes": 0,
+        "partition_added": 0,
+        "spill_added": 0
+      }
+    },
+    {
+      "case": "case_028",
+      "N": 5,
+      "baseline": 7831529,
+      "final": 7830678,
+      "gain": 0.00010866332742942575,
+      "bytes_delta": {
+        "added_copy_bytes": 0,
+        "scheduled_copy_bytes": 0,
+        "partition_added": 0,
+        "spill_added": 0
+      }
+    },
+    {
+      "case": "case_030",
+      "N": 5,
+      "baseline": 558384,
+      "final": 558363,
+      "gain": 3.760852746492738e-05,
+      "bytes_delta": {
+        "added_copy_bytes": 0,
+        "scheduled_copy_bytes": 0,
+        "partition_added": 0,
+        "spill_added": 0
+      }
+    },
+    {
+      "case": "case_041",
+      "N": 5,
+      "baseline": 1215514,
+      "final": 1211703,
+      "gain": 0.0031352991409395736,
+      "bytes_delta": {
+        "added_copy_bytes": 79872,
+        "scheduled_copy_bytes": 79872,
+        "partition_added": 0,
+        "spill_added": 79872
+      }
+    },
+    {
+      "case": "case_047",
+      "N": 5,
+      "baseline": 79283,
+      "final": 79046,
+      "gain": 0.002989291525295479,
+      "bytes_delta": {
+        "added_copy_bytes": 0,
+        "scheduled_copy_bytes": 0,
+        "partition_added": 0,
+        "spill_added": 0
+      }
+    },
+    {
+      "case": "case_053",
+      "N": 5,
+      "baseline": 324434,
+      "final": 317969,
+      "gain": 0.019927011348995438,
+      "bytes_delta": {
+        "added_copy_bytes": 0,
+        "scheduled_copy_bytes": 0,
+        "partition_added": 0,
+        "spill_added": 0
+      }
+    },
+    {
+      "case": "case_054",
+      "N": 5,
+      "baseline": 186750,
+      "final": 186373,
+      "gain": 0.0020187416331994834,
+      "bytes_delta": {
+        "added_copy_bytes": 0,
+        "scheduled_copy_bytes": 0,
+        "partition_added": 0,
+        "spill_added": 0
+      }
+    },
+    {
+      "case": "case_058",
+      "N": 5,
+      "baseline": 879159,
+      "final": 878395,
+      "gain": 0.0008690123174533992,
+      "bytes_delta": {
+        "added_copy_bytes": 0,
+        "scheduled_copy_bytes": 0,
+        "partition_added": 0,
+        "spill_added": 0
+      }
+    },
+    {
+      "case": "case_062",
+      "N": 5,
+      "baseline": 572833,
+      "final": 572833,
+      "gain": 0.0,
+      "bytes_delta": {
+        "added_copy_bytes": 0,
+        "scheduled_copy_bytes": 0,
+        "partition_added": 0,
+        "spill_added": 0
+      }
+    },
+    {
+      "case": "case_063",
+      "N": 5,
+      "baseline": 215955,
+      "final": 215955,
+      "gain": 0.0,
+      "bytes_delta": {
+        "added_copy_bytes": 0,
+        "scheduled_copy_bytes": 0,
+        "partition_added": 0,
+        "spill_added": 0
+      }
+    },
+    {
+      "case": "case_067",
+      "N": 5,
+      "baseline": 11863423,
+      "final": 11838474,
+      "gain": 0.0021030186650177196,
+      "bytes_delta": {
+        "added_copy_bytes": 614400,
+        "scheduled_copy_bytes": 614400,
+        "partition_added": 0,
+        "spill_added": 614400
+      }
+    },
+    {
+      "case": "case_079",
+      "N": 5,
+      "baseline": 6075315,
+      "final": 6073325,
+      "gain": 0.00032755503212589243,
+      "bytes_delta": {
+        "added_copy_bytes": 0,
+        "scheduled_copy_bytes": 0,
+        "partition_added": 0,
+        "spill_added": 0
+      }
+    },
+    {
+      "case": "case_082",
+      "N": 5,
+      "baseline": 147471,
+      "final": 144922,
+      "gain": 0.01728475429067411,
+      "bytes_delta": {
+        "added_copy_bytes": 0,
+        "scheduled_copy_bytes": 0,
+        "partition_added": 0,
+        "spill_added": 0
+      }
+    },
+    {
+      "case": "case_084",
+      "N": 5,
+      "baseline": 376464,
+      "final": 376464,
+      "gain": 0.0,
+      "bytes_delta": {
+        "added_copy_bytes": 0,
+        "scheduled_copy_bytes": 0,
+        "partition_added": 0,
+        "spill_added": 0
+      }
+    },
+    {
+      "case": "case_085",
+      "N": 5,
+      "baseline": 621337,
+      "final": 619692,
+      "gain": 0.002647516565084662,
+      "bytes_delta": {
+        "added_copy_bytes": 0,
+        "scheduled_copy_bytes": 0,
+        "partition_added": 0,
+        "spill_added": 0
+      }
+    },
+    {
+      "case": "case_091",
+      "N": 5,
+      "baseline": 1869902,
+      "final": 1848812,
+      "gain": 0.011278665940781973,
+      "bytes_delta": {
+        "added_copy_bytes": 168960,
+        "scheduled_copy_bytes": 168960,
+        "partition_added": 0,
+        "spill_added": 168960
+      }
+    },
+    {
+      "case": "case_092",
+      "N": 5,
+      "baseline": 1020971,
+      "final": 1020971,
+      "gain": 0.0,
+      "bytes_delta": {
+        "added_copy_bytes": 0,
+        "scheduled_copy_bytes": 0,
+        "partition_added": 0,
+        "spill_added": 0
+      }
+    },
+    {
+      "case": "case_097",
+      "N": 5,
+      "baseline": 2063819,
+      "final": 2063819,
+      "gain": 0.0,
+      "bytes_delta": {
+        "added_copy_bytes": 0,
+        "scheduled_copy_bytes": 0,
+        "partition_added": 0,
+        "spill_added": 0
+      }
+    }
+  ]
+}

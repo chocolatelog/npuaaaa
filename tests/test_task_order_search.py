@@ -63,6 +63,45 @@ def test_swaps_respect_combined_precedence_and_core_order():
     assert all(replay_tasks(durations,preds,c['orders']) is not None for c in candidates)
 
 
+def test_window_neighborhood_reorders_local_core_window():
+    from task_order_search import search_orders
+
+    durations = {0: 5, 1: 7, 2: 6, 3: 7}
+    preds = {0: set(), 1: {0}, 2: set(), 3: set()}
+    orders = [[0, 2], [1, 3]]
+    candidates, stats = search_orders(
+        durations, preds, orders, same_wait=0, cross_wait=10,
+        rounds=1, seconds=None, max_evals=100, max_sources=0,
+        enable_window=True, window_size=2, window_candidates=32)
+
+    assert stats['by_neighborhood']['window']['evaluations'] > 0
+    assert candidates
+    assert candidates[0]['orders'] == [[0, 2], [3, 1]]
+    assert orders == [[0, 2], [1, 3]]
+
+
+def test_window_neighborhood_respects_size_and_budget():
+    from task_order_search import search_orders
+
+    durations = {i: 1 for i in range(8)}
+    preds = {i: set() for i in durations}
+    orders = [list(range(4)), list(range(4, 8))]
+    _candidates, stats = search_orders(
+        durations, preds, orders, same_wait=0, cross_wait=0,
+        rounds=3, seconds=None, max_evals=9, max_sources=0,
+        enable_window=True, window_size=2, window_candidates=5)
+
+    assert stats['evaluations'] <= 9
+    assert stats['by_neighborhood']['window']['evaluations'] <= 5
+
+
+def test_pipeline_exposes_window_refine_switch():
+    import inspect
+    import pipeline
+
+    assert 'terminal_window' in inspect.signature(pipeline.solve_case).parameters
+
+
 def test_reranking_checks_original_official_before_accepting(monkeypatch):
     import inspect
     import task_order_search as search

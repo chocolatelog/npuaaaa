@@ -1,2 +1,10 @@
 # 官方源码使用已验证的 LF 换行，避免检出/归档时转换导致字节指纹失效。
 /通用神经网络处理器下的多核调度问题附件/code/*.py text eol=lf
+# 实验身份使用文件字节摘要；保持求解器、测试及归档数据的原始字节。
+/solver/*.py -text whitespace=cr-at-eol,-blank-at-eof
+/tests/*.py -text whitespace=cr-at-eol,-blank-at-eof
+/tests/fixtures/*.json -text whitespace=cr-at-eol,-blank-at-eof
+/results/**/*.json -text whitespace=cr-at-eol,-blank-at-eof
+/results/**/*.jsonl -text whitespace=cr-at-eol,-blank-at-eof
+/results/**/*.csv -text whitespace=cr-at-eol,-blank-at-eof
+/requirements-reproduce.txt -text

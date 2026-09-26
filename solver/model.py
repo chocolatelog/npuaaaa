@@ -7,7 +7,7 @@
    - 精确计算切分新增的 DDR 搬运量（与官方评估器的边界 COPY 插入规则一致）；
    - 轻量事件仿真估计 Makespan（Task 等待、跨核延迟、共享带宽、容量压力）；
    - 派生每核合法的子图执行顺序（拓扑一致）。
-任何分配方案都可行（DAG 的商图必无环），搜索只需处理分配决策。
+分组可能使商图成环，构造与搜索必须显式检查合法性。
 """
 import heapq
 import json
@@ -77,7 +77,18 @@ MEM_CAP = L1_CAP + UB_CAP
 
 
 class Model:
-    def __init__(self, graph_json, block_ops_cap=120):
+    def __init__(self, graph_json, block_ops_cap=120, block_policy='legacy', block_work_cap=None,
+                 pack_frontiers=False,frontier_width=None,preserve_entries=False,layer_window=None,entry_ancestors=False):
+        if block_policy not in ('legacy', 'bounded'):
+            raise ValueError('未知块化策略')
+        self.block_policy = block_policy
+        self.block_work_cap = block_work_cap
+        self.pack_frontiers = bool(pack_frontiers)
+        self.frontier_width=frontier_width
+        self.preserve_entries=bool(preserve_entries)
+        self.layer_window=layer_window
+        self.entry_ancestors=entry_ancestors
+        self.coarsening_audit = {'policy': block_policy}
         self.graph_json = graph_json
         ops = graph_json['ops']
         self.op_by_id = {o['id']: o for o in ops}
@@ -137,6 +148,8 @@ class Model:
         self.spill_calibration_blend = 1.0
         self.use_lru_spill = False   # op 级 LRU spill 仿真开关
         self.use_overlap = False     # overlap 因子开关
+        # 仅在问题一代理消融中启用；不改变官方评测或默认搜索。
+        self.use_bandwidth_proxy = False
         self.op_lifetimes = None     # 惰性构建
         self.block_step_span = None  # 块在 op 全局步号中的闭区间
         self._build_blocks()
@@ -205,7 +218,20 @@ class Model:
         随后对块商图做 SCC 缩聚，保证块 DAG 无环。"""
         ops_cap = self.block_ops_cap
         n = len(self.eligible)
-        if n <= ops_cap:
+        if self.block_policy == 'bounded':
+            from bounded_coarsening import coarsen
+            edge_traffic = defaultdict(int)
+            for tid, tensor in self.tensor_by_id.items():
+                for p in self._tensor_eligible_producers(tid):
+                    for c in self._tensor_eligible_consumers(tid):
+                        if p != c:
+                            edge_traffic[p, c] += tensor['size']
+            blocks, self.coarsening_audit = coarsen(
+                self.topo, self.eligible_preds, edge_traffic,
+                max_ops=ops_cap, work={op:self.work_m[op]+self.work_v[op] for op in self.eligible},
+                max_work=self.block_work_cap,pack_frontiers=self.pack_frontiers,frontier_width=self.frontier_width,
+                preserve_entries=self.preserve_entries,layer_window=self.layer_window,entry_ancestors=self.entry_ancestors)
+        elif n <= ops_cap:
             blocks = [[op] for op in self.topo]
         else:
             edge_traffic = defaultdict(int)
@@ -267,6 +293,8 @@ class Model:
             sccs = _tarjan_scc(succs)
             if all(len(scc) == 1 for scc in sccs):
                 break
+            if self.block_policy == 'bounded':
+                raise ValueError('有界块化产生环，拒绝通过合并环掩盖错误')
             keep = set()
             for scc in sccs:
                 if len(scc) == 1:
@@ -465,7 +493,8 @@ class Model:
         Tessel 式顺序精修；顺序必须拓扑可行。"""
         key = None
         if use_cache and orders_override is None:
-            key = (tuple(sg_of_block), tuple(core_of_sg), scene, num_cores)
+            key = (tuple(sg_of_block), tuple(core_of_sg), scene, num_cores,
+                   bool(self.use_bandwidth_proxy))
             hit = self._eval_cache.get(key)
             if hit is not None:
                 return hit
@@ -703,6 +732,35 @@ class Model:
             added_a if scene == 'A' else added_b) + spill_bytes
         makespan = max(makespan + spill_time,
                        total_copy_bytes / BW if total_copy_bytes > 0 else 0.0)
+        bandwidth_info = None
+        if self.use_bandwidth_proxy:
+            # 代理只观察当前派生顺序中的搬运请求，不改 durs、事件语义或官方结果。
+            try:
+                from bandwidth_proxy import simulate_bandwidth
+                in_bytes = sg_in if scene == 'A' else sg_in_b
+                out_bytes = sg_out if scene == 'A' else sg_out_b
+                last_end = max(end_time, default=0.0)
+                requests = []
+                for s in range(K):
+                    size = float(in_bytes[s] + out_bytes[s])
+                    if size <= 0:
+                        continue
+                    start = max(0.0, float(end_time[s]) - float(durs[s]))
+                    requests.append({
+                        'request_id': f's{s}', 'start': start, 'size': size,
+                        'core': core_of_sg[s],
+                        'critical': end_time[s] >= last_end - max(1.0, durs[s]),
+                    })
+                simulated = simulate_bandwidth(requests, bandwidth=BW)
+                bandwidth_info = {
+                    name: simulated[name] for name in (
+                        'makespan', 'total_contention_cycles',
+                        'critical_path_wait', 'per_core_contention_cycles',
+                        'max_concurrency', 'request_count', 'mode')
+                }
+            except Exception as exc:
+                # 代理诊断失败不能影响候选合法性或回退路径。
+                bandwidth_info = {'error': repr(exc), 'request_count': 0}
         # 场景 C（B + 只读 L2）：FIFO 复用距离近似 + 双池带宽下界。
         # 两遍仿真：第一遍得各子图结束时序 → 按复用距离估计每子图
         # L2 命中字节 → 从 sg_in_b 扣除后第二遍仿真，使搜索能"看见" L2。
@@ -795,6 +853,8 @@ class Model:
             'peak_memory_bytes': peak_memory,
             'memory_overage': dict(sig),
         }
+        if bandwidth_info is not None:
+            info['bandwidth_proxy'] = bandwidth_info
         result = (makespan, added, info)
         if use_cache and key is not None:
             if len(self._eval_cache) > 8192:

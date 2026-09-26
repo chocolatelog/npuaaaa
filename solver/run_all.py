@@ -15,6 +15,8 @@ import time
 from importlib.metadata import PackageNotFoundError, version
 from pathlib import Path
 from concurrent.futures import ProcessPoolExecutor, as_completed
+from runtime_resources import (resolve_workers, initialize_worker_threads,
+                               collect_runtime_environment)
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 ATTACH = os.path.normpath(os.path.join(
@@ -177,6 +179,7 @@ def block_cap_for(n_eligible):
 
 
 def solve_task(task):
+    initialize_worker_threads()
     task_started = time.perf_counter()
     from model import load_graph
     from pipeline import solve_case
@@ -205,8 +208,14 @@ def solve_task(task):
                      construct_reservoir=bool(task.get('construct_reservoir', False)),
                      fast_candidate_eval=bool(task.get('fast_candidate_eval', False)),
                      search_rounds=task.get('search_rounds'),
-                     terminal_swaps=bool(task.get('terminal_swaps', False)),
-                     terminal_cache=bool(task.get('terminal_cache', False)))
+                      terminal_swaps=bool(task.get('terminal_swaps', False)),
+                      terminal_window=bool(task.get('terminal_window', False)),
+                     terminal_cache=bool(task.get('terminal_cache', False)),
+                     bandwidth_proxy=bool(task.get('bandwidth_proxy', False)),
+                     contention_weight=float(task.get('contention_weight', 0.0)),
+                     large_case_reservoir=bool(task.get('large_case_reservoir', False)),
+                     bc_refine=bool(task.get('bc_refine', False)),
+                     c_cache_search=bool(task.get('c_cache_search', False)))
         if checkpoint:
             res = checkpoint.write('baseline', res)
     if checkpoint:
@@ -284,7 +293,7 @@ def main():
     parser.add_argument('--cases', default='1-100')
     parser.add_argument('--cores', default='2,3,4,5')
     parser.add_argument('--scenes', default='A,B')
-    parser.add_argument('--workers', type=int, default=8)
+    parser.add_argument('--workers', default='auto', help='正整数或auto，按处理器和内存选择并发')
     parser.add_argument('--budget', type=float, default=None)
     parser.add_argument('--search-rounds', type=int, default=None, help='固定元启发式轮数；用于复现和计数对照，替代限时停止')
     parser.add_argument('--seed-base', type=int, default=0, help='重复实验种子组；0 保持历史种子')
@@ -308,17 +317,39 @@ def main():
                         help='场景 A 新增精化候选使用计数式副本，最终强制原官方复核')
     parser.add_argument('--terminal-swaps', action='store_true',
                         help='完整流程原官方确认后执行迁移/交换，最多八份副本筛选和两份原官方确认')
+    parser.add_argument('--terminal-window', action='store_true',
+                        help='场景 A 固定切分后执行关键路径短窗口重排；默认关闭')
     parser.add_argument('--terminal-cache', action='store_true',
                         help='为末端交换的副本精评启用每任务局部模板缓存；必须启用 --terminal-swaps')
+    parser.add_argument('--bandwidth-proxy', action='store_true',
+                        help='问题一候选层启用共享外存带宽竞争代理；不改变官方评测')
+    parser.add_argument('--contention-weight', type=float, default=0.0,
+                        help='带宽竞争代理在候选适应度中的权重；仅与--bandwidth-proxy联用')
+    parser.add_argument('--large-case-reservoir', action='store_true',
+                        help='问题一超大图显式比较四类低成本构造来源；默认关闭')
+    parser.add_argument('--bc-refine', action='store_true',
+                        help='问题二 B/问题三 C 开启原算子候选精化；默认关闭')
+    parser.add_argument('--c-cache-search', action='store_true',
+                        help='问题三开启 FIFO 缓存感知束搜索；必须与--bc-refine联用')
     parser.add_argument('--shared-budget', action='store_true',
                         help='场景 A 现场共同候选池、最多六资源一官方、显卡批特征及候选级续跑')
     args = parser.parse_args()
+    initialize_worker_threads()
+    try:
+        resolution = resolve_workers(args.workers)
+        args.workers = resolution.workers
+    except (ValueError, RuntimeError) as exc:
+        parser.error(str(exc))
     if args.terminal_cache and not args.terminal_swaps:
         parser.error('--terminal-cache 必须与 --terminal-swaps 一起使用')
-    if args.search_rounds is not None and (args.search_rounds < 1 or any((args.event_rerank, args.task_order_refine, args.partition_polish, args.construct_reservoir, args.fast_candidate_eval))):
+    if args.search_rounds is not None and (args.search_rounds < 1 or any((args.event_rerank, args.task_order_refine, args.partition_polish, args.construct_reservoir, args.fast_candidate_eval, args.terminal_window))):
         parser.error('固定轮数必须为正，且暂不与额外后处理开关混用')
     if args.construct_reservoir and not args.event_rerank:
         parser.error('--construct-reservoir 必须与 --event-rerank 一起使用')
+    if args.c_cache_search and not args.bc_refine:
+        parser.error('--c-cache-search 必须与 --bc-refine 一起使用')
+    if args.contention_weight < 0 or (args.contention_weight > 0 and not args.bandwidth_proxy):
+        parser.error('--contention-weight必须非负，且正值必须与--bandwidth-proxy一起使用')
     if args.workers < 1 or args.max_tasks < 0 or (args.budget is not None and
                                                 (not math.isfinite(args.budget) or args.budget <= 0)):
         parser.error('并发数、预算必须为正，分批任务数不能为负')
@@ -329,8 +360,8 @@ def main():
     cases = parse_cases(args.cases)
     cores = list(dict.fromkeys(int(x) for x in args.cores.split(',')))
     scenes = list(dict.fromkeys(args.scenes.split(',')))
-    if any(n not in (2, 3, 4, 5) for n in cores) or any(s not in ('A', 'B', 'C') for s in scenes):
-        parser.error('核心数为 2/3/4/5，场景为 A/B/C')
+    if any(n not in (1, 2, 3, 4, 5) for n in cores) or any(s not in ('A', 'B', 'C') for s in scenes):
+        parser.error('核心数为 1/2/3/4/5，场景为 A/B/C')
     if args.shared_budget:
         if scenes != ['A']:
             parser.error('共同预算本轮仅允许场景 A')
@@ -341,6 +372,11 @@ def main():
     # 同日志和同方案目录分别加锁，拒绝不同日志同时覆盖同一批方案。
     with process_lock(Path(OUT_LOG).with_suffix('.lock')):
         with process_lock(Path(OUT_PLANS) / 'process.lock'):
+            # 动态资源采样只作运行旁证，不混入恢复身份。
+            report = collect_runtime_environment(include_torch=args.shared_budget)
+            report['worker_resolution'] = resolution.to_dict()
+            report_path = Path(OUT_LOG).with_suffix(f'.runtime-{time.time_ns()}.json')
+            report_path.write_text(json.dumps(report, ensure_ascii=False, indent=2), encoding='utf-8')
             run_jobs(args, cases, cores, scenes)
 
 
@@ -361,9 +397,14 @@ def run_jobs(args, cases, cores, scenes):
             'construct_reservoir': args.construct_reservoir,
             'fast_candidate_eval': args.fast_candidate_eval,
             'terminal_swaps': args.terminal_swaps, 'terminal_cache': args.terminal_cache,
+            'terminal_window': args.terminal_window,
             'shared_budget': args.shared_budget,
             'shared_version': 'online-shared-v1' if args.shared_budget else None,
             'spill_calibrated': args.spill_calibrated, 'lru_spill': args.lru_spill,
+            'bandwidth_proxy': args.bandwidth_proxy,
+            'contention_weight': args.contention_weight,
+            'large_case_reservoir': args.large_case_reservoir,
+            'bc_refine': args.bc_refine, 'c_cache_search': args.c_cache_search,
             'output_dir': OUT_PLANS})
     if args.shared_budget:
         import zipfile
@@ -404,9 +445,15 @@ def run_jobs(args, cases, cores, scenes):
                                   'partition_polish': args.partition_polish,
                                   'construct_reservoir': args.construct_reservoir,
                                   'fast_candidate_eval': args.fast_candidate_eval,
-                                  'terminal_swaps': args.terminal_swaps,
-                                  'shared_budget': args.shared_budget,
-                                  'terminal_cache': args.terminal_cache})
+                                   'terminal_swaps': args.terminal_swaps,
+                                   'terminal_window': args.terminal_window,
+                                   'shared_budget': args.shared_budget,
+                                  'terminal_cache': args.terminal_cache,
+                                  'bandwidth_proxy': args.bandwidth_proxy,
+                                  'contention_weight': args.contention_weight,
+                                  'large_case_reservoir': args.large_case_reservoir,
+                                  'bc_refine': args.bc_refine,
+                                  'c_cache_search': args.c_cache_search})
     remaining = len(tasks)
     if args.max_tasks:
         tasks = tasks[:args.max_tasks]
@@ -416,7 +463,7 @@ def run_jobs(args, cases, cores, scenes):
           f'官方成功 {official_count}，代理已求解/官方待评 {pending_count}，并发 {args.workers}', flush=True)
     t0 = time.time()
     if tasks:
-        with ProcessPoolExecutor(max_workers=args.workers) as ex:
+        with ProcessPoolExecutor(max_workers=args.workers, initializer=initialize_worker_threads) as ex:
             futs = {ex.submit(solve_task, t): t for t in tasks}
             n_done, failed = 0, 0
             for fut in as_completed(futs):

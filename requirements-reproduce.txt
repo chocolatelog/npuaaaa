@@ -1,0 +1,8 @@
+# 当前实测环境：Python 3.12.13；RTX 3070 8GB。
+# 先按原实验计划中的单行命令从PyTorch官方cu124索引安装GPU版本，避免误装CPU版本。
+# 正式评估器仍运行CPU；安装torch本身不使搜索自动使用GPU。
+torch==2.6.0
+numpy==2.4.6
+scipy==1.17.1
+tqdm==4.67.3
+pytest==8.3.4

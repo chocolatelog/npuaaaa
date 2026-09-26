@@ -1,5 +1,6 @@
 """固定子图切分，在完整依赖约束下搜索迁核与核内插入位置。"""
 import heapq
+import itertools
 import math
 import time
 
@@ -57,13 +58,53 @@ def replay_tasks(durations, preds, orders, same_wait=100, cross_wait=1000,
             'orders': [list(order) for order in orders], 'finish': finish}
 
 
+def _window_reorders(state, max_window_tasks=6):
+    """Generate deterministic permutations of a critical local core window."""
+    orders = state['orders']
+    finish = state.get('finish', {})
+    focus = list(dict.fromkeys(state.get('critical', ())))
+    if finish:
+        focus.extend(sorted(finish, key=lambda task: (-finish[task], task)))
+    seen_windows = set()
+    limit = max(2, int(max_window_tasks))
+    for core, order in enumerate(orders):
+        if len(order) < 2:
+            continue
+        positions = sorted({order.index(task) for task in focus if task in order})
+        if len(positions) < 2:
+            positions = list(range(max(0, len(order) - limit), len(order)))
+        if len(positions) < 2:
+            continue
+        if positions[-1] - positions[0] + 1 <= limit:
+            start, stop = positions[0], positions[-1] + 1
+        else:
+            stop = min(len(order), positions[-1] + 1)
+            start = max(0, stop - limit)
+        window = tuple(order[start:stop])
+        if len(window) < 2 or window in seen_windows:
+            continue
+        seen_windows.add(window)
+        for permutation in itertools.permutations(window):
+            if permutation == window:
+                continue
+            child = [list(item) for item in orders]
+            child[core][start:stop] = permutation
+            yield child
+
+
 def search_orders(durations, preds, orders, same_wait=100, cross_wait=1000,
                   bandwidth_floor=0, beam_width=4, rounds=3, max_evals=4000,
-                  seconds=2.0, max_sources=12, keep=2, enable_swaps=False):
+                  seconds=2.0, max_sources=12, keep=2, enable_swaps=False,
+                  enable_window=False, window_size=6, window_candidates=500):
     if enable_swaps:
         return _search_with_swaps(durations, preds, orders, same_wait, cross_wait,
                                   bandwidth_floor, beam_width, rounds, max_evals,
-                                  seconds, max_sources, keep)
+                                  seconds, max_sources, keep,
+                                  enable_window=enable_window,
+                                  window_size=window_size,
+                                  window_candidates=window_candidates)
+    if enable_window and (int(window_size) < 2 or int(window_candidates) < 1):
+        raise ValueError('窗口大小至少为2，窗口候选预算必须为正')
     started = time.perf_counter()
     def evaluate(candidate):
         return replay_tasks(durations, preds, candidate, same_wait, cross_wait,
@@ -80,6 +121,12 @@ def search_orders(durations, preds, orders, same_wait=100, cross_wait=1000,
     beam, alternatives = [initial], {}
     stats = {'evaluations': 1, 'valid': 1, 'invalid': 0, 'depth': 0,
              'base_makespan': initial['makespan'], 'max_evals': max_evals}
+    if enable_window:
+        stats['by_neighborhood'] = {
+            'migration': {'evaluations': 0, 'valid': 0, 'improvements': 0},
+            'window': {'evaluations': 0, 'valid': 0, 'improvements': 0},
+        }
+    window_evaluations = 0
     def exhausted():
         return stats['evaluations'] >= max_evals or (seconds is not None and time.perf_counter() - started >= seconds)
     for depth in range(rounds):
@@ -100,10 +147,18 @@ def search_orders(durations, preds, orders, same_wait=100, cross_wait=1000,
                         seen.add(sig)
                         result = evaluate(candidate)
                         stats['evaluations'] += 1
+                        if enable_window:
+                            stats['by_neighborhood']['migration']['evaluations'] += 1
                         if result is None:
                             stats['invalid'] += 1
                             continue
                         stats['valid'] += 1
+                        if enable_window:
+                            migration = stats['by_neighborhood']['migration']
+                            migration['valid'] += 1
+                            if (result['makespan'], result['task_makespan']) < (
+                                    initial['makespan'], initial['task_makespan']):
+                                migration['improvements'] += 1
                         proposals.append(result)
                         alternatives[sig] = result
                     if exhausted():
@@ -112,6 +167,31 @@ def search_orders(durations, preds, orders, same_wait=100, cross_wait=1000,
                     break
             if exhausted():
                 break
+            if enable_window and window_evaluations < int(window_candidates):
+                for candidate in _window_reorders(state, window_size):
+                    if exhausted() or window_evaluations >= int(window_candidates):
+                        break
+                    sig = signature(candidate)
+                    if sig in seen:
+                        continue
+                    seen.add(sig)
+                    result = evaluate(candidate)
+                    stats['evaluations'] += 1
+                    window_evaluations += 1
+                    window_stats = stats['by_neighborhood']['window']
+                    window_stats['evaluations'] += 1
+                    if result is None:
+                        stats['invalid'] += 1
+                        continue
+                    stats['valid'] += 1
+                    window_stats['valid'] += 1
+                    if (result['makespan'], result['task_makespan']) < (
+                            initial['makespan'], initial['task_makespan']):
+                        window_stats['improvements'] += 1
+                    proposals.append(result)
+                    alternatives[sig] = result
+                if exhausted():
+                    break
         # 父状态保留：单层未改进也不会使束内最优变差。
         unique = {signature(s['orders']): s for s in proposals}
         beam = sorted(unique.values(), key=score)[:beam_width]
@@ -130,7 +210,8 @@ def search_orders(durations, preds, orders, same_wait=100, cross_wait=1000,
 
 def _search_with_swaps(durations, preds, orders, same_wait, cross_wait,
                        bandwidth_floor, beam_width, rounds, max_evals,
-                       seconds, max_sources, keep):
+                       seconds, max_sources, keep, enable_window=False,
+                       window_size=6, window_candidates=500):
     """迁移和交换交错供候选，避免迁移先耗尽共享预算。
 
     小于等于二十任务枚举全部跨核对；更大方案只展开关键路径及
@@ -149,9 +230,14 @@ def _search_with_swaps(durations, preds, orders, same_wait, cross_wait,
     initial=evaluate(orders)
     if initial is None:
         raise ValueError('输入方案覆盖不完整或数据依赖与核内顺序成环')
+    if enable_window and (int(window_size) < 2 or int(window_candidates) < 1):
+        raise ValueError('窗口大小至少为2，窗口候选预算必须为正')
+    neighborhood_names = ('migration', 'swap', 'window') if enable_window else (
+        'migration', 'swap')
     stats={'evaluations':1,'valid':1,'invalid':0,'depth':0,'base_makespan':initial['makespan'],
-           'max_evals':max_evals,'by_neighborhood':{k:{'evaluations':0,'valid':0,'improvements':0}
-                                                  for k in ('migration','swap')}}
+           'max_evals':max_evals,'by_neighborhood':{
+               k:{'evaluations':0,'valid':0,'improvements':0}
+               for k in neighborhood_names}}
     def exhausted():
         return stats['evaluations']>=max_evals or (seconds is not None and time.perf_counter()-started>=seconds)
     def migrations(state):
@@ -191,16 +277,26 @@ def _search_with_swaps(durations, preds, orders, same_wait, cross_wait,
                 child[ca][ia],child[cb][ib]=b,a
                 yield child
     seen={sig(orders)};beam=[initial];alternatives={}
-    # 尚未加入窗口邻域；其预留额度释放给迁移与交换，按 4:3 交错。
-    cadence=('swap','migration','migration','swap','migration','swap','migration')
+    # 窗口邻域只有在显式打开时加入，避免改变已有交换实验。
+    cadence = (('swap', 'window', 'migration', 'migration',
+                'swap', 'migration', 'window') if enable_window else
+               ('swap','migration','migration','swap','migration','swap','migration'))
+    window_evaluations = 0
     for depth in range(rounds):
         proposals=list(beam)
         for state in beam:
-            generators={'migration':iter(migrations(state)),'swap':iter(swaps(state))}
+            generators={'migration':iter(migrations(state)),
+                        'swap':iter(swaps(state))}
+            if enable_window:
+                generators['window'] = iter(_window_reorders(state, window_size))
             active=set(generators)
             while active and not exhausted():
                 for kind in cadence:
                     if kind not in active or exhausted():
+                        continue
+                    if (kind == 'window' and
+                            window_evaluations >= int(window_candidates)):
+                        active.discard('window')
                         continue
                     while True:
                         try:child=next(generators[kind])
@@ -210,6 +306,8 @@ def _search_with_swaps(durations, preds, orders, same_wait, cross_wait,
                         if key in seen:
                             continue
                         seen.add(key);result=evaluate(child)
+                        if kind == 'window':
+                            window_evaluations += 1
                         stats['evaluations']+=1;stats['by_neighborhood'][kind]['evaluations']+=1
                         if result is None:
                             stats['invalid']+=1
@@ -233,6 +331,7 @@ def _search_with_swaps(durations, preds, orders, same_wait, cross_wait,
 
 
 def refine_plan_orders(graph, plan, baseline, official_evaluator, enable_swaps=False,
+                       enable_window=False, window_size=6, window_candidates=500,
                        search_seconds=2.0, max_evals=4000, candidate_evaluator=None,
                        rerank_keep=8):
     """对合法官方基线做固定切分后处理；回调提供官方评估。"""
@@ -243,10 +342,13 @@ def refine_plan_orders(graph, plan, baseline, official_evaluator, enable_swaps=F
     view = derive_multicore_plan(graph, plan)
     durations = {s: data['duration'] for s, data in estimate['tasks'].items()}
     candidates, stats = search_orders(durations, view['subgraph_preds'],
-                                      plan['core_schedules'],
-                                      bandwidth_floor=estimate['total_copy_bytes'] / 60,
-                                      enable_swaps=enable_swaps,seconds=search_seconds,max_evals=max_evals,
-                                      keep=rerank_keep if candidate_evaluator is not None else 2)
+                                       plan['core_schedules'],
+                                       bandwidth_floor=estimate['total_copy_bytes'] / 60,
+                                       enable_swaps=enable_swaps,seconds=search_seconds,max_evals=max_evals,
+                                       enable_window=enable_window,
+                                       window_size=window_size,
+                                       window_candidates=window_candidates,
+                                       keep=rerank_keep if candidate_evaluator is not None else 2)
     if abs(stats['base_makespan'] - estimate['makespan']) > 1e-6:
         raise ValueError('轻量任务重放与同方案精评不一致')
     selected, best, records, errors = plan, baseline, [], []

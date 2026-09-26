@@ -1,0 +1,109 @@
+{
+  "expected": 1200,
+  "completed": 168,
+  "groups": [
+    {
+      "capacity_bytes": 1048576,
+      "capacity_mib": 1.0,
+      "cache_bandwidth": 250,
+      "count": 100,
+      "complete": true,
+      "mean_makespan": 746808.3,
+      "mean_added_copy_bytes": 14059504.4,
+      "mean_scheduled_copy_bytes": 16466804.94,
+      "mean_spill_added": 2420376.12,
+      "mean_cache_hit_rate": 0.18864098987594066,
+      "mean_ratio_vs_default": 1.0,
+      "slower_than_default": 0
+    },
+    {
+      "capacity_bytes": 0,
+      "capacity_mib": 0.0,
+      "cache_bandwidth": 250,
+      "count": 7,
+      "complete": false,
+      "mean_makespan": null
+    },
+    {
+      "capacity_bytes": 524288,
+      "capacity_mib": 0.5,
+      "cache_bandwidth": 250,
+      "count": 7,
+      "complete": false,
+      "mean_makespan": null
+    },
+    {
+      "capacity_bytes": 2097152,
+      "capacity_mib": 2.0,
+      "cache_bandwidth": 250,
+      "count": 6,
+      "complete": false,
+      "mean_makespan": null
+    },
+    {
+      "capacity_bytes": 3145728,
+      "capacity_mib": 3.0,
+      "cache_bandwidth": 250,
+      "count": 6,
+      "complete": false,
+      "mean_makespan": null
+    },
+    {
+      "capacity_bytes": 4194304,
+      "capacity_mib": 4.0,
+      "cache_bandwidth": 250,
+      "count": 6,
+      "complete": false,
+      "mean_makespan": null
+    },
+    {
+      "capacity_bytes": 1048576,
+      "capacity_mib": 1.0,
+      "cache_bandwidth": 60,
+      "count": 6,
+      "complete": false,
+      "mean_makespan": null
+    },
+    {
+      "capacity_bytes": 1048576,
+      "capacity_mib": 1.0,
+      "cache_bandwidth": 100,
+      "count": 6,
+      "complete": false,
+      "mean_makespan": null
+    },
+    {
+      "capacity_bytes": 1048576,
+      "capacity_mib": 1.0,
+      "cache_bandwidth": 200,
+      "count": 6,
+      "complete": false,
+      "mean_makespan": null
+    },
+    {
+      "capacity_bytes": 1048576,
+      "capacity_mib": 1.0,
+      "cache_bandwidth": 300,
+      "count": 6,
+      "complete": false,
+      "mean_makespan": null
+    },
+    {
+      "capacity_bytes": 1048576,
+      "capacity_mib": 1.0,
+      "cache_bandwidth": 400,
+      "count": 6,
+      "complete": false,
+      "mean_makespan": null
+    },
+    {
+      "capacity_bytes": 1048576,
+      "capacity_mib": 1.0,
+      "cache_bandwidth": 500,
+      "count": 6,
+      "complete": false,
+      "mean_makespan": null
+    }
+  ],
+  "scope": "原官方评测器的非默认硬件参数敏感性；固定方案；不并入默认竞赛成绩"
+}

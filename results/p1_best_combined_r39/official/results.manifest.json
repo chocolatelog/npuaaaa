@@ -1,0 +1,3031 @@
+{
+  "fingerprint": "be46ec9a6d19abe95d20bcded27b927f5e8498a785a7d12075f76ddae209d6c6",
+  "protocol_version": 2,
+  "settings": {
+    "jobs": [
+      {
+        "case": "case_001",
+        "N": 2,
+        "kind": "problem_1",
+        "plan_scene": "A"
+      },
+      {
+        "case": "case_001",
+        "N": 3,
+        "kind": "problem_1",
+        "plan_scene": "A"
+      },
+      {
+        "case": "case_001",
+        "N": 4,
+        "kind": "problem_1",
+        "plan_scene": "A"
+      },
+      {
+        "case": "case_002",
+        "N": 2,
+        "kind": "problem_1",
+        "plan_scene": "A"
+      },
+      {
+        "case": "case_002",
+        "N": 3,
+        "kind": "problem_1",
+        "plan_scene": "A"
+      },
+      {
+        "case": "case_002",
+        "N": 4,
+        "kind": "problem_1",
+        "plan_scene": "A"
+      },
+      {
+        "case": "case_003",
+        "N": 2,
+        "kind": "problem_1",
+        "plan_scene": "A"
+      },
+      {
+        "case": "case_003",
+        "N": 3,
+        "kind": "problem_1",
+        "plan_scene": "A"
+      },
+      {
+        "case": "case_003",
+        "N": 4,
+        "kind": "problem_1",
+        "plan_scene": "A"
+      },
+      {
+        "case": "case_004",
+        "N": 2,
+        "kind": "problem_1",
+        "plan_scene": "A"
+      },
+      {
+        "case": "case_004",
+        "N": 3,
+        "kind": "problem_1",
+        "plan_scene": "A"
+      },
+      {
+        "case": "case_004",
+        "N": 4,
+        "kind": "problem_1",
+        "plan_scene": "A"
+      },
+      {
+        "case": "case_005",
+        "N": 2,
+        "kind": "problem_1",
+        "plan_scene": "A"
+      },
+      {
+        "case": "case_005",
+        "N": 3,
+        "kind": "problem_1",
+        "plan_scene": "A"
+      },
+      {
+        "case": "case_005",
+        "N": 4,
+        "kind": "problem_1",
+        "plan_scene": "A"
+      },
+      {
+        "case": "case_006",
+        "N": 2,
+        "kind": "problem_1",
+        "plan_scene": "A"
+      },
+      {
+        "case": "case_006",
+        "N": 3,
+        "kind": "problem_1",
+        "plan_scene": "A"
+      },
+      {
+        "case": "case_006",
+        "N": 4,
+        "kind": "problem_1",
+        "plan_scene": "A"
+      },
+      {
+        "case": "case_007",
+        "N": 2,
+        "kind": "problem_1",
+        "plan_scene": "A"
+      },
+      {
+        "case": "case_007",
+        "N": 3,
+        "kind": "problem_1",
+        "plan_scene": "A"
+      },
+      {
+        "case": "case_007",
+        "N": 4,
+        "kind": "problem_1",
+        "plan_scene": "A"
+      },
+      {
+        "case": "case_008",
+        "N": 2,
+        "kind": "problem_1",
+        "plan_scene": "A"
+      },
+      {
+        "case": "case_008",
+        "N": 3,
+        "kind": "problem_1",
+        "plan_scene": "A"
+      },
+      {
+        "case": "case_008",
+        "N": 4,
+        "kind": "problem_1",
+        "plan_scene": "A"
+      },
+      {
+        "case": "case_009",
+        "N": 2,
+        "kind": "problem_1",
+        "plan_scene": "A"
+      },
+      {
+        "case": "case_009",
+        "N": 3,
+        "kind": "problem_1",
+        "plan_scene": "A"
+      },
+      {
+        "case": "case_009",
+        "N": 4,
+        "kind": "problem_1",
+        "plan_scene": "A"
+      },
+      {
+        "case": "case_010",
+        "N": 2,
+        "kind": "problem_1",
+        "plan_scene": "A"
+      },
+      {
+        "case": "case_010",
+        "N": 3,
+        "kind": "problem_1",
+        "plan_scene": "A"
+      },
+      {
+        "case": "case_010",
+        "N": 4,
+        "kind": "problem_1",
+        "plan_scene": "A"
+      },
+      {
+        "case": "case_011",
+        "N": 2,
+        "kind": "problem_1",
+        "plan_scene": "A"
+      },
+      {
+        "case": "case_011",
+        "N": 3,
+        "kind": "problem_1",
+        "plan_scene": "A"
+      },
+      {
+        "case": "case_011",
+        "N": 4,
+        "kind": "problem_1",
+        "plan_scene": "A"
+      },
+      {
+        "case": "case_012",
+        "N": 2,
+        "kind": "problem_1",
+        "plan_scene": "A"
+      },
+      {
+        "case": "case_012",
+        "N": 3,
+        "kind": "problem_1",
+        "plan_scene": "A"
+      },
+      {
+        "case": "case_012",
+        "N": 4,
+        "kind": "problem_1",
+        "plan_scene": "A"
+      },
+      {
+        "case": "case_013",
+        "N": 2,
+        "kind": "problem_1",
+        "plan_scene": "A"
+      },
+      {
+        "case": "case_013",
+        "N": 3,
+        "kind": "problem_1",
+        "plan_scene": "A"
+      },
+      {
+        "case": "case_013",
+        "N": 4,
+        "kind": "problem_1",
+        "plan_scene": "A"
+      },
+      {
+        "case": "case_014",
+        "N": 2,
+        "kind": "problem_1",
+        "plan_scene": "A"
+      },
+      {
+        "case": "case_014",
+        "N": 3,
+        "kind": "problem_1",
+        "plan_scene": "A"
+      },
+      {
+        "case": "case_014",
+        "N": 4,
+        "kind": "problem_1",
+        "plan_scene": "A"
+      },
+      {
+        "case": "case_015",
+        "N": 2,
+        "kind": "problem_1",
+        "plan_scene": "A"
+      },
+      {
+        "case": "case_015",
+        "N": 3,
+        "kind": "problem_1",
+        "plan_scene": "A"
+      },
+      {
+        "case": "case_015",
+        "N": 4,
+        "kind": "problem_1",
+        "plan_scene": "A"
+      },
+      {
+        "case": "case_016",
+        "N": 2,
+        "kind": "problem_1",
+        "plan_scene": "A"
+      },
+      {
+        "case": "case_016",
+        "N": 3,
+        "kind": "problem_1",
+        "plan_scene": "A"
+      },
+      {
+        "case": "case_016",
+        "N": 4,
+        "kind": "problem_1",
+        "plan_scene": "A"
+      },
+      {
+        "case": "case_017",
+        "N": 2,
+        "kind": "problem_1",
+        "plan_scene": "A"
+      },
+      {
+        "case": "case_017",
+        "N": 3,
+        "kind": "problem_1",
+        "plan_scene": "A"
+      },
+      {
+        "case": "case_017",
+        "N": 4,
+        "kind": "problem_1",
+        "plan_scene": "A"
+      },
+      {
+        "case": "case_018",
+        "N": 2,
+        "kind": "problem_1",
+        "plan_scene": "A"
+      },
+      {
+        "case": "case_018",
+        "N": 3,
+        "kind": "problem_1",
+        "plan_scene": "A"
+      },
+      {
+        "case": "case_018",
+        "N": 4,
+        "kind": "problem_1",
+        "plan_scene": "A"
+      },
+      {
+        "case": "case_019",
+        "N": 2,
+        "kind": "problem_1",
+        "plan_scene": "A"
+      },
+      {
+        "case": "case_019",
+        "N": 3,
+        "kind": "problem_1",
+        "plan_scene": "A"
+      },
+      {
+        "case": "case_019",
+        "N": 4,
+        "kind": "problem_1",
+        "plan_scene": "A"
+      },
+      {
+        "case": "case_020",
+        "N": 2,
+        "kind": "problem_1",
+        "plan_scene": "A"
+      },
+      {
+        "case": "case_020",
+        "N": 3,
+        "kind": "problem_1",
+        "plan_scene": "A"
+      },
+      {
+        "case": "case_020",
+        "N": 4,
+        "kind": "problem_1",
+        "plan_scene": "A"
+      },
+      {
+        "case": "case_021",
+        "N": 2,
+        "kind": "problem_1",
+        "plan_scene": "A"
+      },
+      {
+        "case": "case_021",
+        "N": 3,
+        "kind": "problem_1",
+        "plan_scene": "A"
+      },
+      {
+        "case": "case_021",
+        "N": 4,
+        "kind": "problem_1",
+        "plan_scene": "A"
+      },
+      {
+        "case": "case_022",
+        "N": 2,
+        "kind": "problem_1",
+        "plan_scene": "A"
+      },
+      {
+        "case": "case_022",
+        "N": 3,
+        "kind": "problem_1",
+        "plan_scene": "A"
+      },
+      {
+        "case": "case_022",
+        "N": 4,
+        "kind": "problem_1",
+        "plan_scene": "A"
+      },
+      {
+        "case": "case_023",
+        "N": 2,
+        "kind": "problem_1",
+        "plan_scene": "A"
+      },
+      {
+        "case": "case_023",
+        "N": 3,
+        "kind": "problem_1",
+        "plan_scene": "A"
+      },
+      {
+        "case": "case_023",
+        "N": 4,
+        "kind": "problem_1",
+        "plan_scene": "A"
+      },
+      {
+        "case": "case_024",
+        "N": 2,
+        "kind": "problem_1",
+        "plan_scene": "A"
+      },
+      {
+        "case": "case_024",
+        "N": 3,
+        "kind": "problem_1",
+        "plan_scene": "A"
+      },
+      {
+        "case": "case_024",
+        "N": 4,
+        "kind": "problem_1",
+        "plan_scene": "A"
+      },
+      {
+        "case": "case_025",
+        "N": 2,
+        "kind": "problem_1",
+        "plan_scene": "A"
+      },
+      {
+        "case": "case_025",
+        "N": 3,
+        "kind": "problem_1",
+        "plan_scene": "A"
+      },
+      {
+        "case": "case_025",
+        "N": 4,
+        "kind": "problem_1",
+        "plan_scene": "A"
+      },
+      {
+        "case": "case_026",
+        "N": 2,
+        "kind": "problem_1",
+        "plan_scene": "A"
+      },
+      {
+        "case": "case_026",
+        "N": 3,
+        "kind": "problem_1",
+        "plan_scene": "A"
+      },
+      {
+        "case": "case_026",
+        "N": 4,
+        "kind": "problem_1",
+        "plan_scene": "A"
+      },
+      {
+        "case": "case_027",
+        "N": 2,
+        "kind": "problem_1",
+        "plan_scene": "A"
+      },
+      {
+        "case": "case_027",
+        "N": 3,
+        "kind": "problem_1",
+        "plan_scene": "A"
+      },
+      {
+        "case": "case_027",
+        "N": 4,
+        "kind": "problem_1",
+        "plan_scene": "A"
+      },
+      {
+        "case": "case_028",
+        "N": 2,
+        "kind": "problem_1",
+        "plan_scene": "A"
+      },
+      {
+        "case": "case_028",
+        "N": 3,
+        "kind": "problem_1",
+        "plan_scene": "A"
+      },
+      {
+        "case": "case_028",
+        "N": 4,
+        "kind": "problem_1",
+        "plan_scene": "A"
+      },
+      {
+        "case": "case_029",
+        "N": 2,
+        "kind": "problem_1",
+        "plan_scene": "A"
+      },
+      {
+        "case": "case_029",
+        "N": 3,
+        "kind": "problem_1",
+        "plan_scene": "A"
+      },
+      {
+        "case": "case_029",
+        "N": 4,
+        "kind": "problem_1",
+        "plan_scene": "A"
+      },
+      {
+        "case": "case_030",
+        "N": 2,
+        "kind": "problem_1",
+        "plan_scene": "A"
+      },
+      {
+        "case": "case_030",
+        "N": 3,
+        "kind": "problem_1",
+        "plan_scene": "A"
+      },
+      {
+        "case": "case_030",
+        "N": 4,
+        "kind": "problem_1",
+        "plan_scene": "A"
+      },
+      {
+        "case": "case_031",
+        "N": 2,
+        "kind": "problem_1",
+        "plan_scene": "A"
+      },
+      {
+        "case": "case_031",
+        "N": 3,
+        "kind": "problem_1",
+        "plan_scene": "A"
+      },
+      {
+        "case": "case_031",
+        "N": 4,
+        "kind": "problem_1",
+        "plan_scene": "A"
+      },
+      {
+        "case": "case_032",
+        "N": 2,
+        "kind": "problem_1",
+        "plan_scene": "A"
+      },
+      {
+        "case": "case_032",
+        "N": 3,
+        "kind": "problem_1",
+        "plan_scene": "A"
+      },
+      {
+        "case": "case_032",
+        "N": 4,
+        "kind": "problem_1",
+        "plan_scene": "A"
+      },
+      {
+        "case": "case_033",
+        "N": 2,
+        "kind": "problem_1",
+        "plan_scene": "A"
+      },
+      {
+        "case": "case_033",
+        "N": 3,
+        "kind": "problem_1",
+        "plan_scene": "A"
+      },
+      {
+        "case": "case_033",
+        "N": 4,
+        "kind": "problem_1",
+        "plan_scene": "A"
+      },
+      {
+        "case": "case_034",
+        "N": 2,
+        "kind": "problem_1",
+        "plan_scene": "A"
+      },
+      {
+        "case": "case_034",
+        "N": 3,
+        "kind": "problem_1",
+        "plan_scene": "A"
+      },
+      {
+        "case": "case_034",
+        "N": 4,
+        "kind": "problem_1",
+        "plan_scene": "A"
+      },
+      {
+        "case": "case_035",
+        "N": 2,
+        "kind": "problem_1",
+        "plan_scene": "A"
+      },
+      {
+        "case": "case_035",
+        "N": 3,
+        "kind": "problem_1",
+        "plan_scene": "A"
+      },
+      {
+        "case": "case_035",
+        "N": 4,
+        "kind": "problem_1",
+        "plan_scene": "A"
+      },
+      {
+        "case": "case_036",
+        "N": 2,
+        "kind": "problem_1",
+        "plan_scene": "A"
+      },
+      {
+        "case": "case_036",
+        "N": 3,
+        "kind": "problem_1",
+        "plan_scene": "A"
+      },
+      {
+        "case": "case_036",
+        "N": 4,
+        "kind": "problem_1",
+        "plan_scene": "A"
+      },
+      {
+        "case": "case_037",
+        "N": 2,
+        "kind": "problem_1",
+        "plan_scene": "A"
+      },
+      {
+        "case": "case_037",
+        "N": 3,
+        "kind": "problem_1",
+        "plan_scene": "A"
+      },
+      {
+        "case": "case_037",
+        "N": 4,
+        "kind": "problem_1",
+        "plan_scene": "A"
+      },
+      {
+        "case": "case_038",
+        "N": 2,
+        "kind": "problem_1",
+        "plan_scene": "A"
+      },
+      {
+        "case": "case_038",
+        "N": 3,
+        "kind": "problem_1",
+        "plan_scene": "A"
+      },
+      {
+        "case": "case_038",
+        "N": 4,
+        "kind": "problem_1",
+        "plan_scene": "A"
+      },
+      {
+        "case": "case_039",
+        "N": 2,
+        "kind": "problem_1",
+        "plan_scene": "A"
+      },
+      {
+        "case": "case_039",
+        "N": 3,
+        "kind": "problem_1",
+        "plan_scene": "A"
+      },
+      {
+        "case": "case_039",
+        "N": 4,
+        "kind": "problem_1",
+        "plan_scene": "A"
+      },
+      {
+        "case": "case_040",
+        "N": 2,
+        "kind": "problem_1",
+        "plan_scene": "A"
+      },
+      {
+        "case": "case_040",
+        "N": 3,
+        "kind": "problem_1",
+        "plan_scene": "A"
+      },
+      {
+        "case": "case_040",
+        "N": 4,
+        "kind": "problem_1",
+        "plan_scene": "A"
+      },
+      {
+        "case": "case_041",
+        "N": 2,
+        "kind": "problem_1",
+        "plan_scene": "A"
+      },
+      {
+        "case": "case_041",
+        "N": 3,
+        "kind": "problem_1",
+        "plan_scene": "A"
+      },
+      {
+        "case": "case_041",
+        "N": 4,
+        "kind": "problem_1",
+        "plan_scene": "A"
+      },
+      {
+        "case": "case_042",
+        "N": 2,
+        "kind": "problem_1",
+        "plan_scene": "A"
+      },
+      {
+        "case": "case_042",
+        "N": 3,
+        "kind": "problem_1",
+        "plan_scene": "A"
+      },
+      {
+        "case": "case_042",
+        "N": 4,
+        "kind": "problem_1",
+        "plan_scene": "A"
+      },
+      {
+        "case": "case_043",
+        "N": 2,
+        "kind": "problem_1",
+        "plan_scene": "A"
+      },
+      {
+        "case": "case_043",
+        "N": 3,
+        "kind": "problem_1",
+        "plan_scene": "A"
+      },
+      {
+        "case": "case_043",
+        "N": 4,
+        "kind": "problem_1",
+        "plan_scene": "A"
+      },
+      {
+        "case": "case_044",
+        "N": 2,
+        "kind": "problem_1",
+        "plan_scene": "A"
+      },
+      {
+        "case": "case_044",
+        "N": 3,
+        "kind": "problem_1",
+        "plan_scene": "A"
+      },
+      {
+        "case": "case_044",
+        "N": 4,
+        "kind": "problem_1",
+        "plan_scene": "A"
+      },
+      {
+        "case": "case_045",
+        "N": 2,
+        "kind": "problem_1",
+        "plan_scene": "A"
+      },
+      {
+        "case": "case_045",
+        "N": 3,
+        "kind": "problem_1",
+        "plan_scene": "A"
+      },
+      {
+        "case": "case_045",
+        "N": 4,
+        "kind": "problem_1",
+        "plan_scene": "A"
+      },
+      {
+        "case": "case_046",
+        "N": 2,
+        "kind": "problem_1",
+        "plan_scene": "A"
+      },
+      {
+        "case": "case_046",
+        "N": 3,
+        "kind": "problem_1",
+        "plan_scene": "A"
+      },
+      {
+        "case": "case_046",
+        "N": 4,
+        "kind": "problem_1",
+        "plan_scene": "A"
+      },
+      {
+        "case": "case_047",
+        "N": 2,
+        "kind": "problem_1",
+        "plan_scene": "A"
+      },
+      {
+        "case": "case_047",
+        "N": 3,
+        "kind": "problem_1",
+        "plan_scene": "A"
+      },
+      {
+        "case": "case_047",
+        "N": 4,
+        "kind": "problem_1",
+        "plan_scene": "A"
+      },
+      {
+        "case": "case_048",
+        "N": 2,
+        "kind": "problem_1",
+        "plan_scene": "A"
+      },
+      {
+        "case": "case_048",
+        "N": 3,
+        "kind": "problem_1",
+        "plan_scene": "A"
+      },
+      {
+        "case": "case_048",
+        "N": 4,
+        "kind": "problem_1",
+        "plan_scene": "A"
+      },
+      {
+        "case": "case_049",
+        "N": 2,
+        "kind": "problem_1",
+        "plan_scene": "A"
+      },
+      {
+        "case": "case_049",
+        "N": 3,
+        "kind": "problem_1",
+        "plan_scene": "A"
+      },
+      {
+        "case": "case_049",
+        "N": 4,
+        "kind": "problem_1",
+        "plan_scene": "A"
+      },
+      {
+        "case": "case_050",
+        "N": 2,
+        "kind": "problem_1",
+        "plan_scene": "A"
+      },
+      {
+        "case": "case_050",
+        "N": 3,
+        "kind": "problem_1",
+        "plan_scene": "A"
+      },
+      {
+        "case": "case_050",
+        "N": 4,
+        "kind": "problem_1",
+        "plan_scene": "A"
+      },
+      {
+        "case": "case_051",
+        "N": 2,
+        "kind": "problem_1",
+        "plan_scene": "A"
+      },
+      {
+        "case": "case_051",
+        "N": 3,
+        "kind": "problem_1",
+        "plan_scene": "A"
+      },
+      {
+        "case": "case_051",
+        "N": 4,
+        "kind": "problem_1",
+        "plan_scene": "A"
+      },
+      {
+        "case": "case_052",
+        "N": 2,
+        "kind": "problem_1",
+        "plan_scene": "A"
+      },
+      {
+        "case": "case_052",
+        "N": 3,
+        "kind": "problem_1",
+        "plan_scene": "A"
+      },
+      {
+        "case": "case_052",
+        "N": 4,
+        "kind": "problem_1",
+        "plan_scene": "A"
+      },
+      {
+        "case": "case_053",
+        "N": 2,
+        "kind": "problem_1",
+        "plan_scene": "A"
+      },
+      {
+        "case": "case_053",
+        "N": 3,
+        "kind": "problem_1",
+        "plan_scene": "A"
+      },
+      {
+        "case": "case_053",
+        "N": 4,
+        "kind": "problem_1",
+        "plan_scene": "A"
+      },
+      {
+        "case": "case_054",
+        "N": 2,
+        "kind": "problem_1",
+        "plan_scene": "A"
+      },
+      {
+        "case": "case_054",
+        "N": 3,
+        "kind": "problem_1",
+        "plan_scene": "A"
+      },
+      {
+        "case": "case_054",
+        "N": 4,
+        "kind": "problem_1",
+        "plan_scene": "A"
+      },
+      {
+        "case": "case_055",
+        "N": 2,
+        "kind": "problem_1",
+        "plan_scene": "A"
+      },
+      {
+        "case": "case_055",
+        "N": 3,
+        "kind": "problem_1",
+        "plan_scene": "A"
+      },
+      {
+        "case": "case_055",
+        "N": 4,
+        "kind": "problem_1",
+        "plan_scene": "A"
+      },
+      {
+        "case": "case_056",
+        "N": 2,
+        "kind": "problem_1",
+        "plan_scene": "A"
+      },
+      {
+        "case": "case_056",
+        "N": 3,
+        "kind": "problem_1",
+        "plan_scene": "A"
+      },
+      {
+        "case": "case_056",
+        "N": 4,
+        "kind": "problem_1",
+        "plan_scene": "A"
+      },
+      {
+        "case": "case_057",
+        "N": 2,
+        "kind": "problem_1",
+        "plan_scene": "A"
+      },
+      {
+        "case": "case_057",
+        "N": 3,
+        "kind": "problem_1",
+        "plan_scene": "A"
+      },
+      {
+        "case": "case_057",
+        "N": 4,
+        "kind": "problem_1",
+        "plan_scene": "A"
+      },
+      {
+        "case": "case_058",
+        "N": 2,
+        "kind": "problem_1",
+        "plan_scene": "A"
+      },
+      {
+        "case": "case_058",
+        "N": 3,
+        "kind": "problem_1",
+        "plan_scene": "A"
+      },
+      {
+        "case": "case_058",
+        "N": 4,
+        "kind": "problem_1",
+        "plan_scene": "A"
+      },
+      {
+        "case": "case_059",
+        "N": 2,
+        "kind": "problem_1",
+        "plan_scene": "A"
+      },
+      {
+        "case": "case_059",
+        "N": 3,
+        "kind": "problem_1",
+        "plan_scene": "A"
+      },
+      {
+        "case": "case_059",
+        "N": 4,
+        "kind": "problem_1",
+        "plan_scene": "A"
+      },
+      {
+        "case": "case_060",
+        "N": 2,
+        "kind": "problem_1",
+        "plan_scene": "A"
+      },
+      {
+        "case": "case_060",
+        "N": 3,
+        "kind": "problem_1",
+        "plan_scene": "A"
+      },
+      {
+        "case": "case_060",
+        "N": 4,
+        "kind": "problem_1",
+        "plan_scene": "A"
+      },
+      {
+        "case": "case_061",
+        "N": 2,
+        "kind": "problem_1",
+        "plan_scene": "A"
+      },
+      {
+        "case": "case_061",
+        "N": 3,
+        "kind": "problem_1",
+        "plan_scene": "A"
+      },
+      {
+        "case": "case_061",
+        "N": 4,
+        "kind": "problem_1",
+        "plan_scene": "A"
+      },
+      {
+        "case": "case_062",
+        "N": 2,
+        "kind": "problem_1",
+        "plan_scene": "A"
+      },
+      {
+        "case": "case_062",
+        "N": 3,
+        "kind": "problem_1",
+        "plan_scene": "A"
+      },
+      {
+        "case": "case_062",
+        "N": 4,
+        "kind": "problem_1",
+        "plan_scene": "A"
+      },
+      {
+        "case": "case_063",
+        "N": 2,
+        "kind": "problem_1",
+        "plan_scene": "A"
+      },
+      {
+        "case": "case_063",
+        "N": 3,
+        "kind": "problem_1",
+        "plan_scene": "A"
+      },
+      {
+        "case": "case_063",
+        "N": 4,
+        "kind": "problem_1",
+        "plan_scene": "A"
+      },
+      {
+        "case": "case_064",
+        "N": 2,
+        "kind": "problem_1",
+        "plan_scene": "A"
+      },
+      {
+        "case": "case_064",
+        "N": 3,
+        "kind": "problem_1",
+        "plan_scene": "A"
+      },
+      {
+        "case": "case_064",
+        "N": 4,
+        "kind": "problem_1",
+        "plan_scene": "A"
+      },
+      {
+        "case": "case_065",
+        "N": 2,
+        "kind": "problem_1",
+        "plan_scene": "A"
+      },
+      {
+        "case": "case_065",
+        "N": 3,
+        "kind": "problem_1",
+        "plan_scene": "A"
+      },
+      {
+        "case": "case_065",
+        "N": 4,
+        "kind": "problem_1",
+        "plan_scene": "A"
+      },
+      {
+        "case": "case_066",
+        "N": 2,
+        "kind": "problem_1",
+        "plan_scene": "A"
+      },
+      {
+        "case": "case_066",
+        "N": 3,
+        "kind": "problem_1",
+        "plan_scene": "A"
+      },
+      {
+        "case": "case_066",
+        "N": 4,
+        "kind": "problem_1",
+        "plan_scene": "A"
+      },
+      {
+        "case": "case_067",
+        "N": 2,
+        "kind": "problem_1",
+        "plan_scene": "A"
+      },
+      {
+        "case": "case_067",
+        "N": 3,
+        "kind": "problem_1",
+        "plan_scene": "A"
+      },
+      {
+        "case": "case_067",
+        "N": 4,
+        "kind": "problem_1",
+        "plan_scene": "A"
+      },
+      {
+        "case": "case_068",
+        "N": 2,
+        "kind": "problem_1",
+        "plan_scene": "A"
+      },
+      {
+        "case": "case_068",
+        "N": 3,
+        "kind": "problem_1",
+        "plan_scene": "A"
+      },
+      {
+        "case": "case_068",
+        "N": 4,
+        "kind": "problem_1",
+        "plan_scene": "A"
+      },
+      {
+        "case": "case_069",
+        "N": 2,
+        "kind": "problem_1",
+        "plan_scene": "A"
+      },
+      {
+        "case": "case_069",
+        "N": 3,
+        "kind": "problem_1",
+        "plan_scene": "A"
+      },
+      {
+        "case": "case_069",
+        "N": 4,
+        "kind": "problem_1",
+        "plan_scene": "A"
+      },
+      {
+        "case": "case_070",
+        "N": 2,
+        "kind": "problem_1",
+        "plan_scene": "A"
+      },
+      {
+        "case": "case_070",
+        "N": 3,
+        "kind": "problem_1",
+        "plan_scene": "A"
+      },
+      {
+        "case": "case_070",
+        "N": 4,
+        "kind": "problem_1",
+        "plan_scene": "A"
+      },
+      {
+        "case": "case_071",
+        "N": 2,
+        "kind": "problem_1",
+        "plan_scene": "A"
+      },
+      {
+        "case": "case_071",
+        "N": 3,
+        "kind": "problem_1",
+        "plan_scene": "A"
+      },
+      {
+        "case": "case_071",
+        "N": 4,
+        "kind": "problem_1",
+        "plan_scene": "A"
+      },
+      {
+        "case": "case_072",
+        "N": 2,
+        "kind": "problem_1",
+        "plan_scene": "A"
+      },
+      {
+        "case": "case_072",
+        "N": 3,
+        "kind": "problem_1",
+        "plan_scene": "A"
+      },
+      {
+        "case": "case_072",
+        "N": 4,
+        "kind": "problem_1",
+        "plan_scene": "A"
+      },
+      {
+        "case": "case_073",
+        "N": 2,
+        "kind": "problem_1",
+        "plan_scene": "A"
+      },
+      {
+        "case": "case_073",
+        "N": 3,
+        "kind": "problem_1",
+        "plan_scene": "A"
+      },
+      {
+        "case": "case_073",
+        "N": 4,
+        "kind": "problem_1",
+        "plan_scene": "A"
+      },
+      {
+        "case": "case_074",
+        "N": 2,
+        "kind": "problem_1",
+        "plan_scene": "A"
+      },
+      {
+        "case": "case_074",
+        "N": 3,
+        "kind": "problem_1",
+        "plan_scene": "A"
+      },
+      {
+        "case": "case_074",
+        "N": 4,
+        "kind": "problem_1",
+        "plan_scene": "A"
+      },
+      {
+        "case": "case_075",
+        "N": 2,
+        "kind": "problem_1",
+        "plan_scene": "A"
+      },
+      {
+        "case": "case_075",
+        "N": 3,
+        "kind": "problem_1",
+        "plan_scene": "A"
+      },
+      {
+        "case": "case_075",
+        "N": 4,
+        "kind": "problem_1",
+        "plan_scene": "A"
+      },
+      {
+        "case": "case_076",
+        "N": 2,
+        "kind": "problem_1",
+        "plan_scene": "A"
+      },
+      {
+        "case": "case_076",
+        "N": 3,
+        "kind": "problem_1",
+        "plan_scene": "A"
+      },
+      {
+        "case": "case_076",
+        "N": 4,
+        "kind": "problem_1",
+        "plan_scene": "A"
+      },
+      {
+        "case": "case_077",
+        "N": 2,
+        "kind": "problem_1",
+        "plan_scene": "A"
+      },
+      {
+        "case": "case_077",
+        "N": 3,
+        "kind": "problem_1",
+        "plan_scene": "A"
+      },
+      {
+        "case": "case_077",
+        "N": 4,
+        "kind": "problem_1",
+        "plan_scene": "A"
+      },
+      {
+        "case": "case_078",
+        "N": 2,
+        "kind": "problem_1",
+        "plan_scene": "A"
+      },
+      {
+        "case": "case_078",
+        "N": 3,
+        "kind": "problem_1",
+        "plan_scene": "A"
+      },
+      {
+        "case": "case_078",
+        "N": 4,
+        "kind": "problem_1",
+        "plan_scene": "A"
+      },
+      {
+        "case": "case_079",
+        "N": 2,
+        "kind": "problem_1",
+        "plan_scene": "A"
+      },
+      {
+        "case": "case_079",
+        "N": 3,
+        "kind": "problem_1",
+        "plan_scene": "A"
+      },
+      {
+        "case": "case_079",
+        "N": 4,
+        "kind": "problem_1",
+        "plan_scene": "A"
+      },
+      {
+        "case": "case_080",
+        "N": 2,
+        "kind": "problem_1",
+        "plan_scene": "A"
+      },
+      {
+        "case": "case_080",
+        "N": 3,
+        "kind": "problem_1",
+        "plan_scene": "A"
+      },
+      {
+        "case": "case_080",
+        "N": 4,
+        "kind": "problem_1",
+        "plan_scene": "A"
+      },
+      {
+        "case": "case_081",
+        "N": 2,
+        "kind": "problem_1",
+        "plan_scene": "A"
+      },
+      {
+        "case": "case_081",
+        "N": 3,
+        "kind": "problem_1",
+        "plan_scene": "A"
+      },
+      {
+        "case": "case_081",
+        "N": 4,
+        "kind": "problem_1",
+        "plan_scene": "A"
+      },
+      {
+        "case": "case_082",
+        "N": 2,
+        "kind": "problem_1",
+        "plan_scene": "A"
+      },
+      {
+        "case": "case_082",
+        "N": 3,
+        "kind": "problem_1",
+        "plan_scene": "A"
+      },
+      {
+        "case": "case_082",
+        "N": 4,
+        "kind": "problem_1",
+        "plan_scene": "A"
+      },
+      {
+        "case": "case_083",
+        "N": 2,
+        "kind": "problem_1",
+        "plan_scene": "A"
+      },
+      {
+        "case": "case_083",
+        "N": 3,
+        "kind": "problem_1",
+        "plan_scene": "A"
+      },
+      {
+        "case": "case_083",
+        "N": 4,
+        "kind": "problem_1",
+        "plan_scene": "A"
+      },
+      {
+        "case": "case_084",
+        "N": 2,
+        "kind": "problem_1",
+        "plan_scene": "A"
+      },
+      {
+        "case": "case_084",
+        "N": 3,
+        "kind": "problem_1",
+        "plan_scene": "A"
+      },
+      {
+        "case": "case_084",
+        "N": 4,
+        "kind": "problem_1",
+        "plan_scene": "A"
+      },
+      {
+        "case": "case_085",
+        "N": 2,
+        "kind": "problem_1",
+        "plan_scene": "A"
+      },
+      {
+        "case": "case_085",
+        "N": 3,
+        "kind": "problem_1",
+        "plan_scene": "A"
+      },
+      {
+        "case": "case_085",
+        "N": 4,
+        "kind": "problem_1",
+        "plan_scene": "A"
+      },
+      {
+        "case": "case_086",
+        "N": 2,
+        "kind": "problem_1",
+        "plan_scene": "A"
+      },
+      {
+        "case": "case_086",
+        "N": 3,
+        "kind": "problem_1",
+        "plan_scene": "A"
+      },
+      {
+        "case": "case_086",
+        "N": 4,
+        "kind": "problem_1",
+        "plan_scene": "A"
+      },
+      {
+        "case": "case_087",
+        "N": 2,
+        "kind": "problem_1",
+        "plan_scene": "A"
+      },
+      {
+        "case": "case_087",
+        "N": 3,
+        "kind": "problem_1",
+        "plan_scene": "A"
+      },
+      {
+        "case": "case_087",
+        "N": 4,
+        "kind": "problem_1",
+        "plan_scene": "A"
+      },
+      {
+        "case": "case_088",
+        "N": 2,
+        "kind": "problem_1",
+        "plan_scene": "A"
+      },
+      {
+        "case": "case_088",
+        "N": 3,
+        "kind": "problem_1",
+        "plan_scene": "A"
+      },
+      {
+        "case": "case_088",
+        "N": 4,
+        "kind": "problem_1",
+        "plan_scene": "A"
+      },
+      {
+        "case": "case_089",
+        "N": 2,
+        "kind": "problem_1",
+        "plan_scene": "A"
+      },
+      {
+        "case": "case_089",
+        "N": 3,
+        "kind": "problem_1",
+        "plan_scene": "A"
+      },
+      {
+        "case": "case_089",
+        "N": 4,
+        "kind": "problem_1",
+        "plan_scene": "A"
+      },
+      {
+        "case": "case_090",
+        "N": 2,
+        "kind": "problem_1",
+        "plan_scene": "A"
+      },
+      {
+        "case": "case_090",
+        "N": 3,
+        "kind": "problem_1",
+        "plan_scene": "A"
+      },
+      {
+        "case": "case_090",
+        "N": 4,
+        "kind": "problem_1",
+        "plan_scene": "A"
+      },
+      {
+        "case": "case_091",
+        "N": 2,
+        "kind": "problem_1",
+        "plan_scene": "A"
+      },
+      {
+        "case": "case_091",
+        "N": 3,
+        "kind": "problem_1",
+        "plan_scene": "A"
+      },
+      {
+        "case": "case_091",
+        "N": 4,
+        "kind": "problem_1",
+        "plan_scene": "A"
+      },
+      {
+        "case": "case_092",
+        "N": 2,
+        "kind": "problem_1",
+        "plan_scene": "A"
+      },
+      {
+        "case": "case_092",
+        "N": 3,
+        "kind": "problem_1",
+        "plan_scene": "A"
+      },
+      {
+        "case": "case_092",
+        "N": 4,
+        "kind": "problem_1",
+        "plan_scene": "A"
+      },
+      {
+        "case": "case_093",
+        "N": 2,
+        "kind": "problem_1",
+        "plan_scene": "A"
+      },
+      {
+        "case": "case_093",
+        "N": 3,
+        "kind": "problem_1",
+        "plan_scene": "A"
+      },
+      {
+        "case": "case_093",
+        "N": 4,
+        "kind": "problem_1",
+        "plan_scene": "A"
+      },
+      {
+        "case": "case_094",
+        "N": 2,
+        "kind": "problem_1",
+        "plan_scene": "A"
+      },
+      {
+        "case": "case_094",
+        "N": 3,
+        "kind": "problem_1",
+        "plan_scene": "A"
+      },
+      {
+        "case": "case_094",
+        "N": 4,
+        "kind": "problem_1",
+        "plan_scene": "A"
+      },
+      {
+        "case": "case_095",
+        "N": 2,
+        "kind": "problem_1",
+        "plan_scene": "A"
+      },
+      {
+        "case": "case_095",
+        "N": 3,
+        "kind": "problem_1",
+        "plan_scene": "A"
+      },
+      {
+        "case": "case_095",
+        "N": 4,
+        "kind": "problem_1",
+        "plan_scene": "A"
+      },
+      {
+        "case": "case_096",
+        "N": 2,
+        "kind": "problem_1",
+        "plan_scene": "A"
+      },
+      {
+        "case": "case_096",
+        "N": 3,
+        "kind": "problem_1",
+        "plan_scene": "A"
+      },
+      {
+        "case": "case_096",
+        "N": 4,
+        "kind": "problem_1",
+        "plan_scene": "A"
+      },
+      {
+        "case": "case_097",
+        "N": 2,
+        "kind": "problem_1",
+        "plan_scene": "A"
+      },
+      {
+        "case": "case_097",
+        "N": 3,
+        "kind": "problem_1",
+        "plan_scene": "A"
+      },
+      {
+        "case": "case_097",
+        "N": 4,
+        "kind": "problem_1",
+        "plan_scene": "A"
+      },
+      {
+        "case": "case_098",
+        "N": 2,
+        "kind": "problem_1",
+        "plan_scene": "A"
+      },
+      {
+        "case": "case_098",
+        "N": 3,
+        "kind": "problem_1",
+        "plan_scene": "A"
+      },
+      {
+        "case": "case_098",
+        "N": 4,
+        "kind": "problem_1",
+        "plan_scene": "A"
+      },
+      {
+        "case": "case_099",
+        "N": 2,
+        "kind": "problem_1",
+        "plan_scene": "A"
+      },
+      {
+        "case": "case_099",
+        "N": 3,
+        "kind": "problem_1",
+        "plan_scene": "A"
+      },
+      {
+        "case": "case_099",
+        "N": 4,
+        "kind": "problem_1",
+        "plan_scene": "A"
+      },
+      {
+        "case": "case_100",
+        "N": 2,
+        "kind": "problem_1",
+        "plan_scene": "A"
+      },
+      {
+        "case": "case_100",
+        "N": 3,
+        "kind": "problem_1",
+        "plan_scene": "A"
+      },
+      {
+        "case": "case_100",
+        "N": 4,
+        "kind": "problem_1",
+        "plan_scene": "A"
+      },
+      {
+        "case": "case_001",
+        "N": 1,
+        "kind": "singlecore",
+        "plan_scene": null
+      },
+      {
+        "case": "case_002",
+        "N": 1,
+        "kind": "singlecore",
+        "plan_scene": null
+      },
+      {
+        "case": "case_003",
+        "N": 1,
+        "kind": "singlecore",
+        "plan_scene": null
+      },
+      {
+        "case": "case_004",
+        "N": 1,
+        "kind": "singlecore",
+        "plan_scene": null
+      },
+      {
+        "case": "case_005",
+        "N": 1,
+        "kind": "singlecore",
+        "plan_scene": null
+      },
+      {
+        "case": "case_006",
+        "N": 1,
+        "kind": "singlecore",
+        "plan_scene": null
+      },
+      {
+        "case": "case_007",
+        "N": 1,
+        "kind": "singlecore",
+        "plan_scene": null
+      },
+      {
+        "case": "case_008",
+        "N": 1,
+        "kind": "singlecore",
+        "plan_scene": null
+      },
+      {
+        "case": "case_009",
+        "N": 1,
+        "kind": "singlecore",
+        "plan_scene": null
+      },
+      {
+        "case": "case_010",
+        "N": 1,
+        "kind": "singlecore",
+        "plan_scene": null
+      },
+      {
+        "case": "case_011",
+        "N": 1,
+        "kind": "singlecore",
+        "plan_scene": null
+      },
+      {
+        "case": "case_012",
+        "N": 1,
+        "kind": "singlecore",
+        "plan_scene": null
+      },
+      {
+        "case": "case_013",
+        "N": 1,
+        "kind": "singlecore",
+        "plan_scene": null
+      },
+      {
+        "case": "case_014",
+        "N": 1,
+        "kind": "singlecore",
+        "plan_scene": null
+      },
+      {
+        "case": "case_015",
+        "N": 1,
+        "kind": "singlecore",
+        "plan_scene": null
+      },
+      {
+        "case": "case_016",
+        "N": 1,
+        "kind": "singlecore",
+        "plan_scene": null
+      },
+      {
+        "case": "case_017",
+        "N": 1,
+        "kind": "singlecore",
+        "plan_scene": null
+      },
+      {
+        "case": "case_018",
+        "N": 1,
+        "kind": "singlecore",
+        "plan_scene": null
+      },
+      {
+        "case": "case_019",
+        "N": 1,
+        "kind": "singlecore",
+        "plan_scene": null
+      },
+      {
+        "case": "case_020",
+        "N": 1,
+        "kind": "singlecore",
+        "plan_scene": null
+      },
+      {
+        "case": "case_021",
+        "N": 1,
+        "kind": "singlecore",
+        "plan_scene": null
+      },
+      {
+        "case": "case_022",
+        "N": 1,
+        "kind": "singlecore",
+        "plan_scene": null
+      },
+      {
+        "case": "case_023",
+        "N": 1,
+        "kind": "singlecore",
+        "plan_scene": null
+      },
+      {
+        "case": "case_024",
+        "N": 1,
+        "kind": "singlecore",
+        "plan_scene": null
+      },
+      {
+        "case": "case_025",
+        "N": 1,
+        "kind": "singlecore",
+        "plan_scene": null
+      },
+      {
+        "case": "case_026",
+        "N": 1,
+        "kind": "singlecore",
+        "plan_scene": null
+      },
+      {
+        "case": "case_027",
+        "N": 1,
+        "kind": "singlecore",
+        "plan_scene": null
+      },
+      {
+        "case": "case_028",
+        "N": 1,
+        "kind": "singlecore",
+        "plan_scene": null
+      },
+      {
+        "case": "case_029",
+        "N": 1,
+        "kind": "singlecore",
+        "plan_scene": null
+      },
+      {
+        "case": "case_030",
+        "N": 1,
+        "kind": "singlecore",
+        "plan_scene": null
+      },
+      {
+        "case": "case_031",
+        "N": 1,
+        "kind": "singlecore",
+        "plan_scene": null
+      },
+      {
+        "case": "case_032",
+        "N": 1,
+        "kind": "singlecore",
+        "plan_scene": null
+      },
+      {
+        "case": "case_033",
+        "N": 1,
+        "kind": "singlecore",
+        "plan_scene": null
+      },
+      {
+        "case": "case_034",
+        "N": 1,
+        "kind": "singlecore",
+        "plan_scene": null
+      },
+      {
+        "case": "case_035",
+        "N": 1,
+        "kind": "singlecore",
+        "plan_scene": null
+      },
+      {
+        "case": "case_036",
+        "N": 1,
+        "kind": "singlecore",
+        "plan_scene": null
+      },
+      {
+        "case": "case_037",
+        "N": 1,
+        "kind": "singlecore",
+        "plan_scene": null
+      },
+      {
+        "case": "case_038",
+        "N": 1,
+        "kind": "singlecore",
+        "plan_scene": null
+      },
+      {
+        "case": "case_039",
+        "N": 1,
+        "kind": "singlecore",
+        "plan_scene": null
+      },
+      {
+        "case": "case_040",
+        "N": 1,
+        "kind": "singlecore",
+        "plan_scene": null
+      },
+      {
+        "case": "case_041",
+        "N": 1,
+        "kind": "singlecore",
+        "plan_scene": null
+      },
+      {
+        "case": "case_042",
+        "N": 1,
+        "kind": "singlecore",
+        "plan_scene": null
+      },
+      {
+        "case": "case_043",
+        "N": 1,
+        "kind": "singlecore",
+        "plan_scene": null
+      },
+      {
+        "case": "case_044",
+        "N": 1,
+        "kind": "singlecore",
+        "plan_scene": null
+      },
+      {
+        "case": "case_045",
+        "N": 1,
+        "kind": "singlecore",
+        "plan_scene": null
+      },
+      {
+        "case": "case_046",
+        "N": 1,
+        "kind": "singlecore",
+        "plan_scene": null
+      },
+      {
+        "case": "case_047",
+        "N": 1,
+        "kind": "singlecore",
+        "plan_scene": null
+      },
+      {
+        "case": "case_048",
+        "N": 1,
+        "kind": "singlecore",
+        "plan_scene": null
+      },
+      {
+        "case": "case_049",
+        "N": 1,
+        "kind": "singlecore",
+        "plan_scene": null
+      },
+      {
+        "case": "case_050",
+        "N": 1,
+        "kind": "singlecore",
+        "plan_scene": null
+      },
+      {
+        "case": "case_051",
+        "N": 1,
+        "kind": "singlecore",
+        "plan_scene": null
+      },
+      {
+        "case": "case_052",
+        "N": 1,
+        "kind": "singlecore",
+        "plan_scene": null
+      },
+      {
+        "case": "case_053",
+        "N": 1,
+        "kind": "singlecore",
+        "plan_scene": null
+      },
+      {
+        "case": "case_054",
+        "N": 1,
+        "kind": "singlecore",
+        "plan_scene": null
+      },
+      {
+        "case": "case_055",
+        "N": 1,
+        "kind": "singlecore",
+        "plan_scene": null
+      },
+      {
+        "case": "case_056",
+        "N": 1,
+        "kind": "singlecore",
+        "plan_scene": null
+      },
+      {
+        "case": "case_057",
+        "N": 1,
+        "kind": "singlecore",
+        "plan_scene": null
+      },
+      {
+        "case": "case_058",
+        "N": 1,
+        "kind": "singlecore",
+        "plan_scene": null
+      },
+      {
+        "case": "case_059",
+        "N": 1,
+        "kind": "singlecore",
+        "plan_scene": null
+      },
+      {
+        "case": "case_060",
+        "N": 1,
+        "kind": "singlecore",
+        "plan_scene": null
+      },
+      {
+        "case": "case_061",
+        "N": 1,
+        "kind": "singlecore",
+        "plan_scene": null
+      },
+      {
+        "case": "case_062",
+        "N": 1,
+        "kind": "singlecore",
+        "plan_scene": null
+      },
+      {
+        "case": "case_063",
+        "N": 1,
+        "kind": "singlecore",
+        "plan_scene": null
+      },
+      {
+        "case": "case_064",
+        "N": 1,
+        "kind": "singlecore",
+        "plan_scene": null
+      },
+      {
+        "case": "case_065",
+        "N": 1,
+        "kind": "singlecore",
+        "plan_scene": null
+      },
+      {
+        "case": "case_066",
+        "N": 1,
+        "kind": "singlecore",
+        "plan_scene": null
+      },
+      {
+        "case": "case_067",
+        "N": 1,
+        "kind": "singlecore",
+        "plan_scene": null
+      },
+      {
+        "case": "case_068",
+        "N": 1,
+        "kind": "singlecore",
+        "plan_scene": null
+      },
+      {
+        "case": "case_069",
+        "N": 1,
+        "kind": "singlecore",
+        "plan_scene": null
+      },
+      {
+        "case": "case_070",
+        "N": 1,
+        "kind": "singlecore",
+        "plan_scene": null
+      },
+      {
+        "case": "case_071",
+        "N": 1,
+        "kind": "singlecore",
+        "plan_scene": null
+      },
+      {
+        "case": "case_072",
+        "N": 1,
+        "kind": "singlecore",
+        "plan_scene": null
+      },
+      {
+        "case": "case_073",
+        "N": 1,
+        "kind": "singlecore",
+        "plan_scene": null
+      },
+      {
+        "case": "case_074",
+        "N": 1,
+        "kind": "singlecore",
+        "plan_scene": null
+      },
+      {
+        "case": "case_075",
+        "N": 1,
+        "kind": "singlecore",
+        "plan_scene": null
+      },
+      {
+        "case": "case_076",
+        "N": 1,
+        "kind": "singlecore",
+        "plan_scene": null
+      },
+      {
+        "case": "case_077",
+        "N": 1,
+        "kind": "singlecore",
+        "plan_scene": null
+      },
+      {
+        "case": "case_078",
+        "N": 1,
+        "kind": "singlecore",
+        "plan_scene": null
+      },
+      {
+        "case": "case_079",
+        "N": 1,
+        "kind": "singlecore",
+        "plan_scene": null
+      },
+      {
+        "case": "case_080",
+        "N": 1,
+        "kind": "singlecore",
+        "plan_scene": null
+      },
+      {
+        "case": "case_081",
+        "N": 1,
+        "kind": "singlecore",
+        "plan_scene": null
+      },
+      {
+        "case": "case_082",
+        "N": 1,
+        "kind": "singlecore",
+        "plan_scene": null
+      },
+      {
+        "case": "case_083",
+        "N": 1,
+        "kind": "singlecore",
+        "plan_scene": null
+      },
+      {
+        "case": "case_084",
+        "N": 1,
+        "kind": "singlecore",
+        "plan_scene": null
+      },
+      {
+        "case": "case_085",
+        "N": 1,
+        "kind": "singlecore",
+        "plan_scene": null
+      },
+      {
+        "case": "case_086",
+        "N": 1,
+        "kind": "singlecore",
+        "plan_scene": null
+      },
+      {
+        "case": "case_087",
+        "N": 1,
+        "kind": "singlecore",
+        "plan_scene": null
+      },
+      {
+        "case": "case_088",
+        "N": 1,
+        "kind": "singlecore",
+        "plan_scene": null
+      },
+      {
+        "case": "case_089",
+        "N": 1,
+        "kind": "singlecore",
+        "plan_scene": null
+      },
+      {
+        "case": "case_090",
+        "N": 1,
+        "kind": "singlecore",
+        "plan_scene": null
+      },
+      {
+        "case": "case_091",
+        "N": 1,
+        "kind": "singlecore",
+        "plan_scene": null
+      },
+      {
+        "case": "case_092",
+        "N": 1,
+        "kind": "singlecore",
+        "plan_scene": null
+      },
+      {
+        "case": "case_093",
+        "N": 1,
+        "kind": "singlecore",
+        "plan_scene": null
+      },
+      {
+        "case": "case_094",
+        "N": 1,
+        "kind": "singlecore",
+        "plan_scene": null
+      },
+      {
+        "case": "case_095",
+        "N": 1,
+        "kind": "singlecore",
+        "plan_scene": null
+      },
+      {
+        "case": "case_096",
+        "N": 1,
+        "kind": "singlecore",
+        "plan_scene": null
+      },
+      {
+        "case": "case_097",
+        "N": 1,
+        "kind": "singlecore",
+        "plan_scene": null
+      },
+      {
+        "case": "case_098",
+        "N": 1,
+        "kind": "singlecore",
+        "plan_scene": null
+      },
+      {
+        "case": "case_099",
+        "N": 1,
+        "kind": "singlecore",
+        "plan_scene": null
+      },
+      {
+        "case": "case_100",
+        "N": 1,
+        "kind": "singlecore",
+        "plan_scene": null
+      },
+      {
+        "case": "case_001",
+        "N": 5,
+        "kind": "problem_1",
+        "plan_scene": "A"
+      },
+      {
+        "case": "case_002",
+        "N": 5,
+        "kind": "problem_1",
+        "plan_scene": "A"
+      },
+      {
+        "case": "case_003",
+        "N": 5,
+        "kind": "problem_1",
+        "plan_scene": "A"
+      },
+      {
+        "case": "case_004",
+        "N": 5,
+        "kind": "problem_1",
+        "plan_scene": "A"
+      },
+      {
+        "case": "case_005",
+        "N": 5,
+        "kind": "problem_1",
+        "plan_scene": "A"
+      },
+      {
+        "case": "case_006",
+        "N": 5,
+        "kind": "problem_1",
+        "plan_scene": "A"
+      },
+      {
+        "case": "case_007",
+        "N": 5,
+        "kind": "problem_1",
+        "plan_scene": "A"
+      },
+      {
+        "case": "case_008",
+        "N": 5,
+        "kind": "problem_1",
+        "plan_scene": "A"
+      },
+      {
+        "case": "case_009",
+        "N": 5,
+        "kind": "problem_1",
+        "plan_scene": "A"
+      },
+      {
+        "case": "case_010",
+        "N": 5,
+        "kind": "problem_1",
+        "plan_scene": "A"
+      },
+      {
+        "case": "case_011",
+        "N": 5,
+        "kind": "problem_1",
+        "plan_scene": "A"
+      },
+      {
+        "case": "case_012",
+        "N": 5,
+        "kind": "problem_1",
+        "plan_scene": "A"
+      },
+      {
+        "case": "case_013",
+        "N": 5,
+        "kind": "problem_1",
+        "plan_scene": "A"
+      },
+      {
+        "case": "case_014",
+        "N": 5,
+        "kind": "problem_1",
+        "plan_scene": "A"
+      },
+      {
+        "case": "case_015",
+        "N": 5,
+        "kind": "problem_1",
+        "plan_scene": "A"
+      },
+      {
+        "case": "case_016",
+        "N": 5,
+        "kind": "problem_1",
+        "plan_scene": "A"
+      },
+      {
+        "case": "case_017",
+        "N": 5,
+        "kind": "problem_1",
+        "plan_scene": "A"
+      },
+      {
+        "case": "case_018",
+        "N": 5,
+        "kind": "problem_1",
+        "plan_scene": "A"
+      },
+      {
+        "case": "case_019",
+        "N": 5,
+        "kind": "problem_1",
+        "plan_scene": "A"
+      },
+      {
+        "case": "case_020",
+        "N": 5,
+        "kind": "problem_1",
+        "plan_scene": "A"
+      },
+      {
+        "case": "case_021",
+        "N": 5,
+        "kind": "problem_1",
+        "plan_scene": "A"
+      },
+      {
+        "case": "case_022",
+        "N": 5,
+        "kind": "problem_1",
+        "plan_scene": "A"
+      },
+      {
+        "case": "case_023",
+        "N": 5,
+        "kind": "problem_1",
+        "plan_scene": "A"
+      },
+      {
+        "case": "case_024",
+        "N": 5,
+        "kind": "problem_1",
+        "plan_scene": "A"
+      },
+      {
+        "case": "case_025",
+        "N": 5,
+        "kind": "problem_1",
+        "plan_scene": "A"
+      },
+      {
+        "case": "case_026",
+        "N": 5,
+        "kind": "problem_1",
+        "plan_scene": "A"
+      },
+      {
+        "case": "case_027",
+        "N": 5,
+        "kind": "problem_1",
+        "plan_scene": "A"
+      },
+      {
+        "case": "case_028",
+        "N": 5,
+        "kind": "problem_1",
+        "plan_scene": "A"
+      },
+      {
+        "case": "case_029",
+        "N": 5,
+        "kind": "problem_1",
+        "plan_scene": "A"
+      },
+      {
+        "case": "case_030",
+        "N": 5,
+        "kind": "problem_1",
+        "plan_scene": "A"
+      },
+      {
+        "case": "case_031",
+        "N": 5,
+        "kind": "problem_1",
+        "plan_scene": "A"
+      },
+      {
+        "case": "case_032",
+        "N": 5,
+        "kind": "problem_1",
+        "plan_scene": "A"
+      },
+      {
+        "case": "case_033",
+        "N": 5,
+        "kind": "problem_1",
+        "plan_scene": "A"
+      },
+      {
+        "case": "case_034",
+        "N": 5,
+        "kind": "problem_1",
+        "plan_scene": "A"
+      },
+      {
+        "case": "case_035",
+        "N": 5,
+        "kind": "problem_1",
+        "plan_scene": "A"
+      },
+      {
+        "case": "case_036",
+        "N": 5,
+        "kind": "problem_1",
+        "plan_scene": "A"
+      },
+      {
+        "case": "case_037",
+        "N": 5,
+        "kind": "problem_1",
+        "plan_scene": "A"
+      },
+      {
+        "case": "case_038",
+        "N": 5,
+        "kind": "problem_1",
+        "plan_scene": "A"
+      },
+      {
+        "case": "case_039",
+        "N": 5,
+        "kind": "problem_1",
+        "plan_scene": "A"
+      },
+      {
+        "case": "case_040",
+        "N": 5,
+        "kind": "problem_1",
+        "plan_scene": "A"
+      },
+      {
+        "case": "case_041",
+        "N": 5,
+        "kind": "problem_1",
+        "plan_scene": "A"
+      },
+      {
+        "case": "case_042",
+        "N": 5,
+        "kind": "problem_1",
+        "plan_scene": "A"
+      },
+      {
+        "case": "case_043",
+        "N": 5,
+        "kind": "problem_1",
+        "plan_scene": "A"
+      },
+      {
+        "case": "case_044",
+        "N": 5,
+        "kind": "problem_1",
+        "plan_scene": "A"
+      },
+      {
+        "case": "case_045",
+        "N": 5,
+        "kind": "problem_1",
+        "plan_scene": "A"
+      },
+      {
+        "case": "case_046",
+        "N": 5,
+        "kind": "problem_1",
+        "plan_scene": "A"
+      },
+      {
+        "case": "case_047",
+        "N": 5,
+        "kind": "problem_1",
+        "plan_scene": "A"
+      },
+      {
+        "case": "case_048",
+        "N": 5,
+        "kind": "problem_1",
+        "plan_scene": "A"
+      },
+      {
+        "case": "case_049",
+        "N": 5,
+        "kind": "problem_1",
+        "plan_scene": "A"
+      },
+      {
+        "case": "case_050",
+        "N": 5,
+        "kind": "problem_1",
+        "plan_scene": "A"
+      },
+      {
+        "case": "case_051",
+        "N": 5,
+        "kind": "problem_1",
+        "plan_scene": "A"
+      },
+      {
+        "case": "case_052",
+        "N": 5,
+        "kind": "problem_1",
+        "plan_scene": "A"
+      },
+      {
+        "case": "case_053",
+        "N": 5,
+        "kind": "problem_1",
+        "plan_scene": "A"
+      },
+      {
+        "case": "case_054",
+        "N": 5,
+        "kind": "problem_1",
+        "plan_scene": "A"
+      },
+      {
+        "case": "case_055",
+        "N": 5,
+        "kind": "problem_1",
+        "plan_scene": "A"
+      },
+      {
+        "case": "case_056",
+        "N": 5,
+        "kind": "problem_1",
+        "plan_scene": "A"
+      },
+      {
+        "case": "case_057",
+        "N": 5,
+        "kind": "problem_1",
+        "plan_scene": "A"
+      },
+      {
+        "case": "case_058",
+        "N": 5,
+        "kind": "problem_1",
+        "plan_scene": "A"
+      },
+      {
+        "case": "case_059",
+        "N": 5,
+        "kind": "problem_1",
+        "plan_scene": "A"
+      },
+      {
+        "case": "case_060",
+        "N": 5,
+        "kind": "problem_1",
+        "plan_scene": "A"
+      },
+      {
+        "case": "case_061",
+        "N": 5,
+        "kind": "problem_1",
+        "plan_scene": "A"
+      },
+      {
+        "case": "case_062",
+        "N": 5,
+        "kind": "problem_1",
+        "plan_scene": "A"
+      },
+      {
+        "case": "case_063",
+        "N": 5,
+        "kind": "problem_1",
+        "plan_scene": "A"
+      },
+      {
+        "case": "case_064",
+        "N": 5,
+        "kind": "problem_1",
+        "plan_scene": "A"
+      },
+      {
+        "case": "case_065",
+        "N": 5,
+        "kind": "problem_1",
+        "plan_scene": "A"
+      },
+      {
+        "case": "case_066",
+        "N": 5,
+        "kind": "problem_1",
+        "plan_scene": "A"
+      },
+      {
+        "case": "case_067",
+        "N": 5,
+        "kind": "problem_1",
+        "plan_scene": "A"
+      },
+      {
+        "case": "case_068",
+        "N": 5,
+        "kind": "problem_1",
+        "plan_scene": "A"
+      },
+      {
+        "case": "case_069",
+        "N": 5,
+        "kind": "problem_1",
+        "plan_scene": "A"
+      },
+      {
+        "case": "case_070",
+        "N": 5,
+        "kind": "problem_1",
+        "plan_scene": "A"
+      },
+      {
+        "case": "case_071",
+        "N": 5,
+        "kind": "problem_1",
+        "plan_scene": "A"
+      },
+      {
+        "case": "case_072",
+        "N": 5,
+        "kind": "problem_1",
+        "plan_scene": "A"
+      },
+      {
+        "case": "case_073",
+        "N": 5,
+        "kind": "problem_1",
+        "plan_scene": "A"
+      },
+      {
+        "case": "case_074",
+        "N": 5,
+        "kind": "problem_1",
+        "plan_scene": "A"
+      },
+      {
+        "case": "case_075",
+        "N": 5,
+        "kind": "problem_1",
+        "plan_scene": "A"
+      },
+      {
+        "case": "case_076",
+        "N": 5,
+        "kind": "problem_1",
+        "plan_scene": "A"
+      },
+      {
+        "case": "case_077",
+        "N": 5,
+        "kind": "problem_1",
+        "plan_scene": "A"
+      },
+      {
+        "case": "case_078",
+        "N": 5,
+        "kind": "problem_1",
+        "plan_scene": "A"
+      },
+      {
+        "case": "case_079",
+        "N": 5,
+        "kind": "problem_1",
+        "plan_scene": "A"
+      },
+      {
+        "case": "case_080",
+        "N": 5,
+        "kind": "problem_1",
+        "plan_scene": "A"
+      },
+      {
+        "case": "case_081",
+        "N": 5,
+        "kind": "problem_1",
+        "plan_scene": "A"
+      },
+      {
+        "case": "case_082",
+        "N": 5,
+        "kind": "problem_1",
+        "plan_scene": "A"
+      },
+      {
+        "case": "case_083",
+        "N": 5,
+        "kind": "problem_1",
+        "plan_scene": "A"
+      },
+      {
+        "case": "case_084",
+        "N": 5,
+        "kind": "problem_1",
+        "plan_scene": "A"
+      },
+      {
+        "case": "case_085",
+        "N": 5,
+        "kind": "problem_1",
+        "plan_scene": "A"
+      },
+      {
+        "case": "case_086",
+        "N": 5,
+        "kind": "problem_1",
+        "plan_scene": "A"
+      },
+      {
+        "case": "case_087",
+        "N": 5,
+        "kind": "problem_1",
+        "plan_scene": "A"
+      },
+      {
+        "case": "case_088",
+        "N": 5,
+        "kind": "problem_1",
+        "plan_scene": "A"
+      },
+      {
+        "case": "case_089",
+        "N": 5,
+        "kind": "problem_1",
+        "plan_scene": "A"
+      },
+      {
+        "case": "case_090",
+        "N": 5,
+        "kind": "problem_1",
+        "plan_scene": "A"
+      },
+      {
+        "case": "case_091",
+        "N": 5,
+        "kind": "problem_1",
+        "plan_scene": "A"
+      },
+      {
+        "case": "case_092",
+        "N": 5,
+        "kind": "problem_1",
+        "plan_scene": "A"
+      },
+      {
+        "case": "case_093",
+        "N": 5,
+        "kind": "problem_1",
+        "plan_scene": "A"
+      },
+      {
+        "case": "case_094",
+        "N": 5,
+        "kind": "problem_1",
+        "plan_scene": "A"
+      },
+      {
+        "case": "case_095",
+        "N": 5,
+        "kind": "problem_1",
+        "plan_scene": "A"
+      },
+      {
+        "case": "case_096",
+        "N": 5,
+        "kind": "problem_1",
+        "plan_scene": "A"
+      },
+      {
+        "case": "case_097",
+        "N": 5,
+        "kind": "problem_1",
+        "plan_scene": "A"
+      },
+      {
+        "case": "case_098",
+        "N": 5,
+        "kind": "problem_1",
+        "plan_scene": "A"
+      },
+      {
+        "case": "case_099",
+        "N": 5,
+        "kind": "problem_1",
+        "plan_scene": "A"
+      },
+      {
+        "case": "case_100",
+        "N": 5,
+        "kind": "problem_1",
+        "plan_scene": "A"
+      }
+    ],
+    "scene": "A",
+    "scope": "完整官方档案加已评局部优解；不宣称局部模块已全量消融"
+  },
+  "environment": {
+    "python": "3.12.13 | packaged by Anaconda, Inc. | (main, Mar 19 2026, 20:16:45) [MSC v.1942 64 bit (AMD64)]",
+    "platform": "Windows-11-10.0.26100-SP0",
+    "packages": {
+      "numpy": "2.4.6",
+      "scipy": "1.17.1",
+      "torch": "2.6.0+cu124"
+    }
+  },
+  "files": {
+    "J:\\数学建模\\改进\\results\\assemble_saved_additions_r19.py": "8505958b8360e855dc8ca67822c39f00e3338a9895eb8824dfac108b79edecd9",
+    "J:\\数学建模\\改进\\results\\p1_best_combined_r33\\official\\results.jsonl": "be8d8555b0e981a3a40d5aa5a9adddb2213bf317a37a63ad6936c0bb7b919a5d",
+    "J:\\数学建模\\改进\\results\\p1_boundary_release_rep_r39\\checkpoints\\case_005_A_N5.json": "a682e07c7600ea61ffb3a9b2e643613f7b12668e8359ab20ed84929006ddda5c",
+    "J:\\数学建模\\改进\\results\\p1_boundary_release_rep_r39\\checkpoints\\case_016_A_N5.json": "682a4ddb269ea63e10f6e96d9a4e4f98164c4f714b16986e60bf60c02c69879e",
+    "J:\\数学建模\\改进\\results\\p1_boundary_release_rep_r39\\checkpoints\\case_024_A_N5.json": "c0cef600b11a59966f0c10e9200c15d5239fa896e5a7f976c02bec945c8f27ca",
+    "J:\\数学建模\\改进\\results\\p1_boundary_release_rep_r39\\checkpoints\\case_044_A_N5.json": "6235719ae74307aeb32f8fdabff4a7c2ba8c27ac8c2cbce2b1c189b584182fd1",
+    "J:\\数学建模\\改进\\results\\p1_boundary_release_rep_r39\\checkpoints\\case_051_A_N5.json": "8df3c53a6d2b8878f2bc9561fb103b27b9372011222b697ebb29b934af0c5e5e",
+    "J:\\数学建模\\改进\\results\\p1_boundary_release_rep_r39\\checkpoints\\case_064_A_N5.json": "aa58f5b0ce2ba5ce788c48a98ed95efa2d49ae55285740455d3acea4c86d774f",
+    "J:\\数学建模\\改进\\results\\p1_boundary_release_rep_r39\\checkpoints\\case_086_A_N5.json": "7f0589448e869a1031493f127c1eb03332fc8c6ce10f4aeb04126e06c3db60f1",
+    "J:\\数学建模\\改进\\results\\p1_boundary_release_rep_r39\\checkpoints\\case_090_A_N5.json": "c657c0709ecb5896cf4d5985413d70194069ed3238f381adb1a3c7aebc52bd66"
+  }
+}

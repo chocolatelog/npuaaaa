@@ -1,6 +1,7 @@
 """官方评估：内容指纹复用、独立尝试、三组对照和统一清单。"""
 import argparse
 from concurrent.futures import ProcessPoolExecutor, as_completed
+from runtime_resources import resolve_workers, initialize_worker_threads
 from pathlib import Path
 
 from official_protocol import evaluate_job, read_ledger, verified_record, ATTACHMENT, SCENES
@@ -25,7 +26,7 @@ def main():
     parser = argparse.ArgumentParser()
     parser.add_argument('--cases', default='1-100')
     parser.add_argument('--cores', default='2,3,4,5')
-    parser.add_argument('--workers', type=int, default=4)
+    parser.add_argument('--workers', default='auto')
     parser.add_argument('--skip-singlecore', action='store_true')
     parser.add_argument('--problems', default='1,2,3')
     parser.add_argument('--three-way', action='store_true', help='问题三额外评估同一 B 方案，分离硬件与算法收益')
@@ -34,9 +35,14 @@ def main():
     parser.add_argument('--timeout', type=int, default=3600)
     parser.add_argument('--max-tasks', type=int, default=0)
     args = parser.parse_args()
+    initialize_worker_threads()
+    try:
+        args.workers = resolve_workers(args.workers).workers
+    except (ValueError, RuntimeError) as exc:
+        parser.error(str(exc))
     cores = list(dict.fromkeys(map(int, args.cores.split(','))))
     problems = list(dict.fromkeys('problem_'+p for p in args.problems.split(',')))
-    if (any(n not in (2,3,4,5) for n in cores) or any(p not in SCENES or p == 'singlecore' for p in problems)
+    if (any(n not in (1,2,3,4,5) for n in cores) or any(p not in SCENES or p == 'singlecore' for p in problems)
             or args.workers < 1 or args.timeout < 1 or args.max_tasks < 0):
         parser.error('核数、问题编号、并发数、超时或分批上限非法')
     jobs = build_jobs(parse_cases(args.cases), cores, problems, args.three_way, not args.skip_singlecore)
@@ -65,7 +71,7 @@ def main():
         jobs = pending[:args.max_tasks]
     print(f'[0/{len(jobs)}] 官方核验；并发 {args.workers}；损坏日志行 {warnings}', flush=True)
     failures, executed, reused = 0, 0, 0
-    with ProcessPoolExecutor(max_workers=args.workers) as pool:
+    with ProcessPoolExecutor(max_workers=args.workers, initializer=initialize_worker_threads) as pool:
         futures = {pool.submit(evaluate_job, job, str(out), str(Path(args.plans_dir).resolve()),
                                timeout=args.timeout): job for job in jobs}
         for i, future in enumerate(as_completed(futures), 1):

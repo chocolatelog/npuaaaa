@@ -1,0 +1,131 @@
+{
+  "copy": {
+    "completed": 20,
+    "official_candidates": 64,
+    "prediction_errors": 0,
+    "new_evaluations": 64,
+    "reused_evaluations": 20,
+    "task_seconds_sum": 2796.2769717000483,
+    "evaluation_seconds_sum": 549.3933789999573,
+    "case091": {
+      "baseline": {
+        "makespan": 1869902,
+        "added_copy_bytes": 54170124,
+        "scheduled_copy_bytes": 60747780,
+        "partition_added": 25915404,
+        "spill_added": 28254720,
+        "cache_hit_bytes": 28362752,
+        "cache_miss_bytes": 32343046,
+        "cache_hit_rate": 0.4672165251826522
+      },
+      "real": {
+        "makespan": 1859462,
+        "added_copy_bytes": 54339084,
+        "scheduled_copy_bytes": 60916740,
+        "partition_added": 25915404,
+        "spill_added": 28423680,
+        "cache_hit_bytes": 29247488,
+        "cache_miss_bytes": 31627270,
+        "cache_hit_rate": 0.48045345822976415
+      },
+      "selected_source": {
+        "module": "critical_copy_window",
+        "core": 1,
+        "subgraph": 289,
+        "at": 30,
+        "to": 22,
+        "pipe": "PIPE_MTE2",
+        "op_kind": "COPY_IN",
+        "observed_copy_duration": 136,
+        "crossed_pipe_groups": 8,
+        "span": 8,
+        "observed_start": 1088207,
+        "op_id": 1000051876,
+        "dependency_closure": true,
+        "moved_subgraphs": [
+          289
+        ],
+        "observed_duration_compatible": false,
+        "observed_duration_estimate": null,
+        "scope": "候选自主闭环预测，非官方结果；原官方决定是否采纳",
+        "closed_loop_makespan": 1859462,
+        "closed_loop_event_seconds": 1.57508450000023,
+        "closed_loop_events": 45338,
+        "closed_loop_cache_stats": {
+          "copy_in_hits": 7795,
+          "copy_in_misses": 8515,
+          "hit_bytes": 29247488,
+          "miss_bytes": 31627270,
+          "hits": 7795,
+          "accesses": 16310,
+          "hit_rate": 0.48045345822976415
+        }
+      }
+    }
+  },
+  "cache": {
+    "completed": 20,
+    "official_candidates": 56,
+    "prediction_errors": 0,
+    "new_evaluations": 56,
+    "reused_evaluations": 20,
+    "task_seconds_sum": 2727.5712227000186,
+    "evaluation_seconds_sum": 512.5080356999824,
+    "case091": {
+      "baseline": {
+        "makespan": 1859462,
+        "added_copy_bytes": 54339084,
+        "scheduled_copy_bytes": 60916740,
+        "partition_added": 25915404,
+        "spill_added": 28423680,
+        "cache_hit_bytes": 29247488,
+        "cache_miss_bytes": 31627270,
+        "cache_hit_rate": 0.48045345822976415
+      },
+      "real": {
+        "makespan": 1848812,
+        "added_copy_bytes": 54339084,
+        "scheduled_copy_bytes": 60916740,
+        "partition_added": 25915404,
+        "spill_added": 28423680,
+        "cache_hit_bytes": 29637120,
+        "cache_miss_bytes": 31237638,
+        "cache_hit_rate": 0.48685400934160594
+      },
+      "selected_source": {
+        "module": "cache_event_window",
+        "core": 3,
+        "op_id": 1000035144,
+        "subgraph": 3,
+        "tensor_id": 1000000043,
+        "size_bytes": 73728,
+        "time": 13000,
+        "target_time": 19145,
+        "reason": "inflight_duplicate",
+        "potential_saved_cycles": 933.8879999999999,
+        "at": 0,
+        "to": 1,
+        "anchor_start": 80385,
+        "span": 1,
+        "observed_slack": 13932,
+        "critical_potential": 0,
+        "moved_subgraphs": [
+          3
+        ],
+        "closed_loop_makespan": 1848812,
+        "closed_loop_cache_stats": {
+          "copy_in_hits": 7667,
+          "copy_in_misses": 8643,
+          "hit_bytes": 29637120,
+          "miss_bytes": 31237638,
+          "hits": 7667,
+          "accesses": 16310,
+          "hit_rate": 0.48685400934160594
+        },
+        "closed_loop_event_seconds": 1.9927899000031175,
+        "closed_loop_events": 46302,
+        "scope": "事件目标仅取父观测；新方案时序/命中自主预测，原官方最终裁决"
+      }
+    }
+  }
+}

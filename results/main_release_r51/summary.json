@@ -1,0 +1,119 @@
+{
+  "version": "main-abc-r51",
+  "updated_at": "2026-09-26T09:00+08:00",
+  "plans_verified": 1200,
+  "official_multicore": 1200,
+  "unique_singlecore": 100,
+  "groups": [
+    {
+      "kind": "problem_1",
+      "plan_scene": "A",
+      "N": 2,
+      "official_count": 100,
+      "comparable_count": 100,
+      "mean_speedup": 1.8560827496243923,
+      "mean_makespan": 1618212.16
+    },
+    {
+      "kind": "problem_1",
+      "plan_scene": "A",
+      "N": 3,
+      "official_count": 100,
+      "comparable_count": 100,
+      "mean_speedup": 2.6176601015898657,
+      "mean_makespan": 1139350.69
+    },
+    {
+      "kind": "problem_1",
+      "plan_scene": "A",
+      "N": 4,
+      "official_count": 100,
+      "comparable_count": 100,
+      "mean_speedup": 3.2948082130270473,
+      "mean_makespan": 898243.24
+    },
+    {
+      "kind": "problem_1",
+      "plan_scene": "A",
+      "N": 5,
+      "official_count": 100,
+      "comparable_count": 100,
+      "mean_speedup": 3.8580599816006194,
+      "mean_makespan": 730778.19
+    },
+    {
+      "kind": "problem_2",
+      "plan_scene": "B",
+      "N": 2,
+      "official_count": 100,
+      "comparable_count": 100,
+      "mean_speedup": 2.283194252857658,
+      "mean_makespan": 1471508.9
+    },
+    {
+      "kind": "problem_2",
+      "plan_scene": "B",
+      "N": 3,
+      "official_count": 100,
+      "comparable_count": 100,
+      "mean_speedup": 3.1238384734234135,
+      "mean_makespan": 1001517.74
+    },
+    {
+      "kind": "problem_2",
+      "plan_scene": "B",
+      "N": 4,
+      "official_count": 100,
+      "comparable_count": 100,
+      "mean_speedup": 3.818908525726562,
+      "mean_makespan": 751446.6
+    },
+    {
+      "kind": "problem_2",
+      "plan_scene": "B",
+      "N": 5,
+      "official_count": 100,
+      "comparable_count": 100,
+      "mean_speedup": 4.439668439892511,
+      "mean_makespan": 619499.97
+    },
+    {
+      "kind": "problem_3",
+      "plan_scene": "C",
+      "N": 2,
+      "official_count": 100,
+      "comparable_count": 100,
+      "mean_speedup": 2.2876954936734033,
+      "mean_makespan": 1470470.64
+    },
+    {
+      "kind": "problem_3",
+      "plan_scene": "C",
+      "N": 3,
+      "official_count": 100,
+      "comparable_count": 100,
+      "mean_speedup": 3.182165843814206,
+      "mean_makespan": 998276.91
+    },
+    {
+      "kind": "problem_3",
+      "plan_scene": "C",
+      "N": 4,
+      "official_count": 100,
+      "comparable_count": 100,
+      "mean_speedup": 3.910991868366478,
+      "mean_makespan": 746808.3
+    },
+    {
+      "kind": "problem_3",
+      "plan_scene": "C",
+      "N": 5,
+      "official_count": 100,
+      "comparable_count": 100,
+      "mean_speedup": 4.548731664848922,
+      "mean_makespan": 613416.95
+    }
+  ],
+  "scope": "历轮官方候选逐例取优档案；可重新评测保存方案，不等同默认入口单次从零搜索",
+  "historical_receipts": "清单保留原本地证据引用；异机须在新输出目录重新评测，未打包完整操作轨迹"
+}

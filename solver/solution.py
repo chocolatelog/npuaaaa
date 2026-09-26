@@ -128,11 +128,12 @@ class Context:
     轻量代理预测，只放行预测改进者做完整仿真。"""
 
     def __init__(self, model, num_cores, scene, traffic_weight=0.2,
-                 screen_enabled=False, seed=0):
+                 screen_enabled=False, seed=0, contention_weight=0.0):
         self.model = model
         self.num_cores = num_cores
         self.scene = scene
         self.traffic_weight = traffic_weight
+        self.contention_weight = float(contention_weight)
         self.n_evals = 0
         from construct import block_graph, upward_ranks
         self.bsuccs, self.bpreds, self.btraffic = block_graph(model)
@@ -307,12 +308,18 @@ class Context:
                         sol.sg_of_block[b] = tgt
                     sol.blocks_in_sg[s] = set()
 
-    def fitness(self, mk, added):
-        return mk * self.fitness_bias + self.traffic_weight * added / BW
+    def fitness(self, mk, added, info=None):
+        contention = 0.0
+        if self.contention_weight and info:
+            contention = float((info.get('bandwidth_proxy') or {}).get(
+                'critical_path_wait', 0.0))
+        return (mk * self.fitness_bias
+                + self.contention_weight * contention
+                + self.traffic_weight * added / BW)
 
     def eval_fitness(self, sol):
-        mk, added, _ = self.evaluate(sol)
-        return self.fitness(mk, added), mk, added
+        mk, added, info = self.evaluate(sol)
+        return self.fitness(mk, added, info), mk, added
 
     def random_move(self, sol, rng):
         """随机邻域动作，返回 (动作描述, 是否成功)。"""

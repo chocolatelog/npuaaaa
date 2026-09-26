@@ -1,0 +1,89 @@
+{
+  "coverage": {
+    "expected": 1300,
+    "official_success": 1300,
+    "pending": 0,
+    "failed_or_invalid": 0
+  },
+  "groups": [
+    {
+      "N": 2,
+      "count": 100,
+      "hardware_ratio_mean": 1.0017166462561329,
+      "algorithm_ratio_mean": 1.0000824693685202,
+      "hardware_time_reduction_mean": 0.0016994116085680632,
+      "algorithm_time_reduction_mean": 8.17948118719325e-05,
+      "hardware_losses": 0,
+      "algorithm_wins": 1,
+      "algorithm_losses": 0,
+      "hardware_regressions": []
+    },
+    {
+      "N": 3,
+      "count": 100,
+      "hardware_ratio_mean": 1.0175347030378772,
+      "algorithm_ratio_mean": 1.000900499556336,
+      "hardware_time_reduction_mean": 0.016369682183930555,
+      "algorithm_time_reduction_mean": 0.0008382182231296564,
+      "hardware_losses": 0,
+      "algorithm_wins": 5,
+      "algorithm_losses": 0,
+      "hardware_regressions": []
+    },
+    {
+      "N": 4,
+      "count": 100,
+      "hardware_ratio_mean": 1.0222227476799006,
+      "algorithm_ratio_mean": 1.0040809409658455,
+      "hardware_time_reduction_mean": 0.020703018919626948,
+      "algorithm_time_reduction_mean": 0.003846851251178115,
+      "hardware_losses": 0,
+      "algorithm_wins": 13,
+      "algorithm_losses": 0,
+      "hardware_regressions": []
+    },
+    {
+      "N": 5,
+      "count": 100,
+      "hardware_ratio_mean": 1.0218117059346212,
+      "algorithm_ratio_mean": 1.0077162781881266,
+      "hardware_time_reduction_mean": 0.020161127022365225,
+      "algorithm_time_reduction_mean": 0.007318947987310566,
+      "hardware_losses": 3,
+      "algorithm_wins": 24,
+      "algorithm_losses": 0,
+      "hardware_regressions": [
+        {
+          "case": "case_025",
+          "N": 5,
+          "b_problem2": 970670,
+          "b_problem3": 970679,
+          "c_problem3": 970679,
+          "hardware_speedup": 0.9999907281397867,
+          "algorithm_speedup": 1.0,
+          "combined_speedup": 0.9999907281397867
+        },
+        {
+          "case": "case_067",
+          "N": 5,
+          "b_problem2": 11879305,
+          "b_problem3": 11896117,
+          "c_problem3": 11863423,
+          "hardware_speedup": 0.9985867657488574,
+          "algorithm_speedup": 1.0027558656553004,
+          "combined_speedup": 1.001338736720422
+        },
+        {
+          "case": "case_089",
+          "N": 5,
+          "b_problem2": 125317,
+          "b_problem3": 125351,
+          "c_problem3": 125351,
+          "hardware_speedup": 0.9997287616373224,
+          "algorithm_speedup": 1.0,
+          "combined_speedup": 0.9997287616373224
+        }
+      ]
+    }
+  ]
+}

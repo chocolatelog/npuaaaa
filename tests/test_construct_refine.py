@@ -10,6 +10,7 @@ sys.path.insert(0, str(SOLVER))
 from construct_refine import (  # noqa: E402
     ConstructCandidate,
     build_construct_candidates,
+    build_large_construct_candidates,
     _evaluate,
     _coarsen_solution,
     _refine_boundary,
@@ -64,6 +65,36 @@ def test_build_candidates_has_twelve_r0_candidates(monkeypatch):
     assert {item.paradigm for item in items} == {"heft", "strip", "chain", "netbenefit"}
     assert {item.granularity for item in items} == {"coarse", "balanced", "fine"}
     assert all(isinstance(item.sol, Sol) for item in items)
+
+
+def test_large_construct_candidates_keep_distinct_low_cost_sources(monkeypatch):
+    import construct_refine
+
+    def fake_heft(model, cores, scene, **kwargs):
+        return [0, 0, 1], [0, 1]
+
+    def fake_strip(model, cores, scene, **kwargs):
+        return [0, 1, 1], [0, 1]
+
+    def fake_chain(model, cores, scene, **kwargs):
+        return [0, 1, 2], [0, 1, 0]
+
+    def fake_netbenefit(model, cores, scene, **kwargs):
+        return [1, 1, 0], [1, 0]
+
+    monkeypatch.setattr(construct_refine, "heft_construct", fake_heft)
+    monkeypatch.setattr(construct_refine, "strip_construct", fake_strip)
+    monkeypatch.setattr(construct_refine, "chain_construct", fake_chain)
+    monkeypatch.setattr(construct_refine, "netbenefit_construct", fake_netbenefit)
+
+    items = build_large_construct_candidates(TinyModel(), 2, "A",
+                                             max_candidates=4)
+    assert len(items) == 4
+    assert {item.paradigm for item in items} == {
+        "heft", "strip", "chain", "netbenefit"
+    }
+    assert len({item.signature for item in items}) == 4
+    assert all(item.reason.startswith("large:") for item in items)
 
 
 def test_legacy_pool_returns_solutions(monkeypatch):

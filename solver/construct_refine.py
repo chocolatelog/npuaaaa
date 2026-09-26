@@ -93,6 +93,58 @@ def _candidate(paradigm, granularity, scene, sol, level="R0", parent=None,
                               target_ops=target_ops, target_strips=target_strips)
 
 
+def build_large_construct_candidates(model, num_cores, scene,
+                                     max_sg_ops=1280, max_candidates=4):
+    """为超大图生成少量确定性的低成本构造来源。
+
+    超大图不进入常规的 12 项粒度池和邻域精化。这里保留四类已有
+    构造范式各一份，让调用方可以用同一个廉价代理比较计算负载、边界
+    流量、链式关键路径和净收益四种偏好。该函数不调用官方评估器，也
+    不改变任何硬件参数；构造失败时跳过该来源，最终由调用方保留父方案。
+    """
+    if scene not in SCENE_CONFIG:
+        raise ValueError(f"未知场景: {scene}")
+    if isinstance(max_sg_ops, bool) or int(max_sg_ops) < 1:
+        raise ValueError("max_sg_ops 必须为正整数")
+    if isinstance(max_candidates, bool) or int(max_candidates) < 1:
+        raise ValueError("max_candidates 必须为正整数")
+
+    max_sg_ops = int(max_sg_ops)
+    max_subgraphs = max(int(num_cores) * 2, 4)
+    traffic = SCENE_CONFIG[scene]["traffic_weight"]
+    specs = (
+        ("heft", "load", lambda: heft_construct(
+            model, num_cores, scene, max_sg_ops=max_sg_ops, balance=0.0)),
+        ("strip", "boundary", lambda: strip_construct(
+            model, num_cores, scene, num_strips=max_subgraphs)),
+        ("chain", "critical_path", lambda: chain_construct(
+            model, num_cores, scene, max_sg_ops=max_sg_ops,
+            max_subgraphs=max_subgraphs)),
+        ("netbenefit", "reuse", lambda: netbenefit_construct(
+            model, num_cores, scene, max_sg_ops=max_sg_ops,
+            mem_budget=SCENE_CONFIG[scene]["memory_budget"])),
+    )
+    result = []
+    seen = set()
+    for paradigm, reason, builder in specs:
+        if len(result) >= int(max_candidates):
+            break
+        try:
+            raw_sg, raw_core = builder()
+            item = _candidate(paradigm, "large", scene,
+                              Sol(raw_sg, raw_core), level="R0",
+                              target_ops=max_sg_ops,
+                              target_strips=max_subgraphs)
+        except (ArithmeticError, IndexError, KeyError, TypeError, ValueError):
+            continue
+        if item.signature in seen:
+            continue
+        item.reason = f"large:{reason}:traffic={traffic}"
+        seen.add(item.signature)
+        result.append(item)
+    return result
+
+
 def generate_base_candidates(model, num_cores, scene):
     result = []
     cfg = SCENE_CONFIG[scene]
@@ -192,7 +244,7 @@ def _evaluate(items, ctx):
         mk, added, info = ctx.evaluate(item.sol)
         spill = _spill_value(info)
         fitness_fn = getattr(ctx, "fitness", None)
-        fitness = (fitness_fn(mk, added) if fitness_fn is not None
+        fitness = (fitness_fn(mk, added, info) if fitness_fn is not None
                    else float(mk) + float(added) / 60.0)
         item.metrics = {"makespan": mk, "added_copy_bytes": added,
                         "spill_bytes": spill,
@@ -425,4 +477,4 @@ def build_construct_candidates(model, num_cores, scene, ctx=None, seed=0,
 
 __all__ = ["ConstructCandidate", "SCENE_CONFIG", "GRANULARITY_PROFILES",
            "resolve_granularity", "make_signature", "generate_base_candidates",
-           "build_construct_candidates"]
+           "build_construct_candidates", "build_large_construct_candidates"]
